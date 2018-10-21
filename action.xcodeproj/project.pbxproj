@@ -7,15 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E7CFFE21ABF211F1D5F5290 /* libPods-action.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBCE7C59AD5C72292F83DBEF /* libPods-action.a */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D0217C50AD003ACC53 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CF217C50AD003ACC53 /* ViewController.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
 		F0A401D8217C50AE003ACC53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D7217C50AE003ACC53 /* Assets.xcassets */; };
 		F0A401DB217C50AE003ACC53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D9217C50AE003ACC53 /* LaunchScreen.storyboard */; };
+		F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E3217C511B003ACC53 /* PreviewView.swift */; };
+		F0A40210217C511C003ACC53 /* TCPlayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E4217C511B003ACC53 /* TCPlayViewCell.swift */; };
+		F0A40211217C511C003ACC53 /* TCVodPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E5217C511B003ACC53 /* TCVodPlayViewController.swift */; };
+		F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E6217C511B003ACC53 /* PlayerView.swift */; };
+		F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */; };
+		F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EA217C511B003ACC53 /* RosyWriterRenderer.swift */; };
+		F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EB217C511B003ACC53 /* RosyWriterOpenCVRenderer.swift */; };
+		F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EC217C511B003ACC53 /* RosyWriterCIFilterRenderer.swift */; };
+		F0A40217217C511C003ACC53 /* CoreImageFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401ED217C511B003ACC53 /* CoreImageFilters.swift */; };
+		F0A40218217C511C003ACC53 /* RosyWriterOpenGLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EE217C511B003ACC53 /* RosyWriterOpenGLRenderer.swift */; };
+		F0A40219217C511C003ACC53 /* RosyWriterCapturePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EF217C511B003ACC53 /* RosyWriterCapturePipeline.swift */; };
+		F0A4021A217C511C003ACC53 /* OpenGLPixelBufferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401F1217C511B003ACC53 /* OpenGLPixelBufferView.swift */; };
+		F0A4021B217C511C003ACC53 /* MovieRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401F2217C511B003ACC53 /* MovieRecorder.swift */; };
+		F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401F6217C511B003ACC53 /* ObjC.swift */; };
+		F0A4021E217C511C003ACC53 /* NumTypes+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401F7217C511B003ACC53 /* NumTypes+Conversion.swift */; };
+		F0A4021F217C511C003ACC53 /* FourCharCode+StringLiteralConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401F8217C511B003ACC53 /* FourCharCode+StringLiteralConvertible.swift */; };
+		F0A40220217C511C003ACC53 /* FSPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FA217C511B003ACC53 /* FSPagerView.swift */; };
+		F0A40221217C511C003ACC53 /* FSPageViewTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FB217C511B003ACC53 /* FSPageViewTransformer.swift */; };
+		F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FC217C511B003ACC53 /* FollowingViewController.swift */; };
+		F0A40223217C511C003ACC53 /* FSPagerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FD217C511B003ACC53 /* FSPagerViewCell.swift */; };
+		F0A40224217C511C003ACC53 /* FSPagerViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FE217C511B003ACC53 /* FSPagerViewLayoutAttributes.swift */; };
+		F0A40225217C511C003ACC53 /* FSPageViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */; };
+		F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40200217C511B003ACC53 /* FSPageControl.swift */; };
+		F0A40227217C511C003ACC53 /* FSPagerCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */; };
+		F0A4023B217C5267003ACC53 /* NSData+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40233217C5267003ACC53 /* NSData+Common.m */; };
+		F0A4023C217C5267003ACC53 /* TCLog.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40234217C5267003ACC53 /* TCLog.m */; };
+		F0A4023D217C5267003ACC53 /* NSString+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40235217C5267003ACC53 /* NSString+Common.m */; };
+		F0A4023E217C5267003ACC53 /* TCLiveListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40237217C5267003ACC53 /* TCLiveListModel.m */; };
+		F0A4023F217C5267003ACC53 /* TCUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40239217C5267003ACC53 /* TCUtil.m */; };
+		F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40241217C5723003ACC53 /* ShaderUtilities.swift */; };
+		F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40244217C6267003ACC53 /* UserInfoVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A7B650591158F5054FC4821 /* Pods-action.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-action.release.xcconfig"; path = "Pods/Target Support Files/Pods-action/Pods-action.release.xcconfig"; sourceTree = "<group>"; };
+		AA622B2D5BA3975CE881DBA5 /* Pods-action.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-action.debug.xcconfig"; path = "Pods/Target Support Files/Pods-action/Pods-action.debug.xcconfig"; sourceTree = "<group>"; };
+		CBCE7C59AD5C72292F83DBEF /* libPods-action.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-action.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401CF217C50AD003ACC53 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +59,45 @@
 		F0A401D7217C50AE003ACC53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F0A401DA217C50AE003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F0A401DC217C50AE003ACC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F0A401E3217C511B003ACC53 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		F0A401E4217C511B003ACC53 /* TCPlayViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPlayViewCell.swift; sourceTree = "<group>"; };
+		F0A401E5217C511B003ACC53 /* TCVodPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCVodPlayViewController.swift; sourceTree = "<group>"; };
+		F0A401E6217C511B003ACC53 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCPURenderer.swift; sourceTree = "<group>"; };
+		F0A401EA217C511B003ACC53 /* RosyWriterRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterRenderer.swift; sourceTree = "<group>"; };
+		F0A401EB217C511B003ACC53 /* RosyWriterOpenCVRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterOpenCVRenderer.swift; sourceTree = "<group>"; };
+		F0A401EC217C511B003ACC53 /* RosyWriterCIFilterRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCIFilterRenderer.swift; sourceTree = "<group>"; };
+		F0A401ED217C511B003ACC53 /* CoreImageFilters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreImageFilters.swift; sourceTree = "<group>"; };
+		F0A401EE217C511B003ACC53 /* RosyWriterOpenGLRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterOpenGLRenderer.swift; sourceTree = "<group>"; };
+		F0A401EF217C511B003ACC53 /* RosyWriterCapturePipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCapturePipeline.swift; sourceTree = "<group>"; };
+		F0A401F1217C511B003ACC53 /* OpenGLPixelBufferView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLPixelBufferView.swift; sourceTree = "<group>"; };
+		F0A401F2217C511B003ACC53 /* MovieRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieRecorder.swift; sourceTree = "<group>"; };
+		F0A401F6217C511B003ACC53 /* ObjC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjC.swift; sourceTree = "<group>"; };
+		F0A401F7217C511B003ACC53 /* NumTypes+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NumTypes+Conversion.swift"; sourceTree = "<group>"; };
+		F0A401F8217C511B003ACC53 /* FourCharCode+StringLiteralConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FourCharCode+StringLiteralConvertible.swift"; sourceTree = "<group>"; };
+		F0A401FA217C511B003ACC53 /* FSPagerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPagerView.swift; sourceTree = "<group>"; };
+		F0A401FB217C511B003ACC53 /* FSPageViewTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPageViewTransformer.swift; sourceTree = "<group>"; };
+		F0A401FC217C511B003ACC53 /* FollowingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingViewController.swift; sourceTree = "<group>"; };
+		F0A401FD217C511B003ACC53 /* FSPagerViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPagerViewCell.swift; sourceTree = "<group>"; };
+		F0A401FE217C511B003ACC53 /* FSPagerViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPagerViewLayoutAttributes.swift; sourceTree = "<group>"; };
+		F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPageViewLayout.swift; sourceTree = "<group>"; };
+		F0A40200217C511B003ACC53 /* FSPageControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPageControl.swift; sourceTree = "<group>"; };
+		F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPagerCollectionView.swift; sourceTree = "<group>"; };
+		F0A4022F217C5267003ACC53 /* TCLiveListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCLiveListModel.h; sourceTree = "<group>"; };
+		F0A40230217C5267003ACC53 /* NSString+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Common.h"; sourceTree = "<group>"; };
+		F0A40231217C5267003ACC53 /* TCUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCUtil.h; sourceTree = "<group>"; };
+		F0A40232217C5267003ACC53 /* SDKHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDKHeader.h; sourceTree = "<group>"; };
+		F0A40233217C5267003ACC53 /* NSData+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Common.m"; sourceTree = "<group>"; };
+		F0A40234217C5267003ACC53 /* TCLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCLog.m; sourceTree = "<group>"; };
+		F0A40235217C5267003ACC53 /* NSString+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Common.m"; sourceTree = "<group>"; };
+		F0A40236217C5267003ACC53 /* TCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCConstants.h; sourceTree = "<group>"; };
+		F0A40237217C5267003ACC53 /* TCLiveListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCLiveListModel.m; sourceTree = "<group>"; };
+		F0A40238217C5267003ACC53 /* NSData+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Common.h"; sourceTree = "<group>"; };
+		F0A40239217C5267003ACC53 /* TCUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCUtil.m; sourceTree = "<group>"; };
+		F0A4023A217C5267003ACC53 /* TCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCLog.h; sourceTree = "<group>"; };
+		F0A40241217C5723003ACC53 /* ShaderUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderUtilities.swift; sourceTree = "<group>"; };
+		F0A40243217C576E003ACC53 /* action-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "action-Bridging-Header.h"; sourceTree = "<group>"; };
+		F0A40244217C6267003ACC53 /* UserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +105,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E7CFFE21ABF211F1D5F5290 /* libPods-action.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0BFE737EC4C6BAD580C121EA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AA622B2D5BA3975CE881DBA5 /* Pods-action.debug.xcconfig */,
+				3A7B650591158F5054FC4821 /* Pods-action.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		25073188CBCF24F934A69BEB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CBCE7C59AD5C72292F83DBEF /* libPods-action.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F0A401C1217C50AD003ACC53 = {
 			isa = PBXGroup;
 			children = (
 				F0A401CC217C50AD003ACC53 /* action */,
 				F0A401CB217C50AD003ACC53 /* Products */,
+				0BFE737EC4C6BAD580C121EA /* Pods */,
+				25073188CBCF24F934A69BEB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +150,12 @@
 		F0A401CC217C50AD003ACC53 /* action */ = {
 			isa = PBXGroup;
 			children = (
+				F0A40243217C576E003ACC53 /* action-Bridging-Header.h */,
+				F0A40244217C6267003ACC53 /* UserInfoVC.swift */,
+				F0A4022E217C5267003ACC53 /* TCLiveListMgr */,
+				F0A401F9217C511B003ACC53 /* Following */,
+				F0A401E2217C511B003ACC53 /* Play */,
+				F0A401E7217C511B003ACC53 /* Recorder */,
 				F0A401CD217C50AD003ACC53 /* AppDelegate.swift */,
 				F0A401CF217C50AD003ACC53 /* ViewController.swift */,
 				F0A401D1217C50AD003ACC53 /* Main.storyboard */,
@@ -67,6 +167,103 @@
 			path = action;
 			sourceTree = "<group>";
 		};
+		F0A401E2217C511B003ACC53 /* Play */ = {
+			isa = PBXGroup;
+			children = (
+				F0A401E3217C511B003ACC53 /* PreviewView.swift */,
+				F0A401E4217C511B003ACC53 /* TCPlayViewCell.swift */,
+				F0A401E5217C511B003ACC53 /* TCVodPlayViewController.swift */,
+				F0A401E6217C511B003ACC53 /* PlayerView.swift */,
+			);
+			path = Play;
+			sourceTree = "<group>";
+		};
+		F0A401E7217C511B003ACC53 /* Recorder */ = {
+			isa = PBXGroup;
+			children = (
+				F0A401E8217C511B003ACC53 /* Renderer */,
+				F0A401EF217C511B003ACC53 /* RosyWriterCapturePipeline.swift */,
+				F0A401F0217C511B003ACC53 /* Utilities */,
+				F0A401F5217C511B003ACC53 /* OOPUtils */,
+			);
+			path = Recorder;
+			sourceTree = "<group>";
+		};
+		F0A401E8217C511B003ACC53 /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */,
+				F0A401EA217C511B003ACC53 /* RosyWriterRenderer.swift */,
+				F0A401EB217C511B003ACC53 /* RosyWriterOpenCVRenderer.swift */,
+				F0A401EC217C511B003ACC53 /* RosyWriterCIFilterRenderer.swift */,
+				F0A401ED217C511B003ACC53 /* CoreImageFilters.swift */,
+				F0A401EE217C511B003ACC53 /* RosyWriterOpenGLRenderer.swift */,
+			);
+			path = Renderer;
+			sourceTree = "<group>";
+		};
+		F0A401F0217C511B003ACC53 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F0A40240217C5723003ACC53 /* GL */,
+				F0A401F1217C511B003ACC53 /* OpenGLPixelBufferView.swift */,
+				F0A401F2217C511B003ACC53 /* MovieRecorder.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F0A401F5217C511B003ACC53 /* OOPUtils */ = {
+			isa = PBXGroup;
+			children = (
+				F0A401F6217C511B003ACC53 /* ObjC.swift */,
+				F0A401F7217C511B003ACC53 /* NumTypes+Conversion.swift */,
+				F0A401F8217C511B003ACC53 /* FourCharCode+StringLiteralConvertible.swift */,
+			);
+			path = OOPUtils;
+			sourceTree = "<group>";
+		};
+		F0A401F9217C511B003ACC53 /* Following */ = {
+			isa = PBXGroup;
+			children = (
+				F0A401FA217C511B003ACC53 /* FSPagerView.swift */,
+				F0A401FB217C511B003ACC53 /* FSPageViewTransformer.swift */,
+				F0A401FC217C511B003ACC53 /* FollowingViewController.swift */,
+				F0A401FD217C511B003ACC53 /* FSPagerViewCell.swift */,
+				F0A401FE217C511B003ACC53 /* FSPagerViewLayoutAttributes.swift */,
+				F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */,
+				F0A40200217C511B003ACC53 /* FSPageControl.swift */,
+				F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */,
+			);
+			path = Following;
+			sourceTree = "<group>";
+		};
+		F0A4022E217C5267003ACC53 /* TCLiveListMgr */ = {
+			isa = PBXGroup;
+			children = (
+				F0A4022F217C5267003ACC53 /* TCLiveListModel.h */,
+				F0A40230217C5267003ACC53 /* NSString+Common.h */,
+				F0A40231217C5267003ACC53 /* TCUtil.h */,
+				F0A40232217C5267003ACC53 /* SDKHeader.h */,
+				F0A40233217C5267003ACC53 /* NSData+Common.m */,
+				F0A40234217C5267003ACC53 /* TCLog.m */,
+				F0A40235217C5267003ACC53 /* NSString+Common.m */,
+				F0A40236217C5267003ACC53 /* TCConstants.h */,
+				F0A40237217C5267003ACC53 /* TCLiveListModel.m */,
+				F0A40238217C5267003ACC53 /* NSData+Common.h */,
+				F0A40239217C5267003ACC53 /* TCUtil.m */,
+				F0A4023A217C5267003ACC53 /* TCLog.h */,
+			);
+			path = TCLiveListMgr;
+			sourceTree = "<group>";
+		};
+		F0A40240217C5723003ACC53 /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				F0A40241217C5723003ACC53 /* ShaderUtilities.swift */,
+			);
+			path = GL;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,9 +271,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F0A401DF217C50AE003ACC53 /* Build configuration list for PBXNativeTarget "action" */;
 			buildPhases = (
+				78AB40079962F8CD9F9BC60A /* [CP] Check Pods Manifest.lock */,
 				F0A401C6217C50AD003ACC53 /* Sources */,
 				F0A401C7217C50AD003ACC53 /* Frameworks */,
 				F0A401C8217C50AD003ACC53 /* Resources */,
+				A5D28CA779418A233E012B09 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -133,14 +332,86 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		78AB40079962F8CD9F9BC60A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-action-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A5D28CA779418A233E012B09 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-action/Pods-action-resources.sh",
+				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-action/Pods-action-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F0A401C6217C50AD003ACC53 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0A4023E217C5267003ACC53 /* TCLiveListModel.m in Sources */,
+				F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */,
+				F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */,
+				F0A4023B217C5267003ACC53 /* NSData+Common.m in Sources */,
+				F0A4023C217C5267003ACC53 /* TCLog.m in Sources */,
+				F0A4023F217C5267003ACC53 /* TCUtil.m in Sources */,
 				F0A401D0217C50AD003ACC53 /* ViewController.swift in Sources */,
+				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
+				F0A40220217C511C003ACC53 /* FSPagerView.swift in Sources */,
+				F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */,
+				F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */,
+				F0A4021F217C511C003ACC53 /* FourCharCode+StringLiteralConvertible.swift in Sources */,
+				F0A4023D217C5267003ACC53 /* NSString+Common.m in Sources */,
+				F0A40224217C511C003ACC53 /* FSPagerViewLayoutAttributes.swift in Sources */,
+				F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */,
+				F0A4021B217C511C003ACC53 /* MovieRecorder.swift in Sources */,
+				F0A4021E217C511C003ACC53 /* NumTypes+Conversion.swift in Sources */,
+				F0A4021A217C511C003ACC53 /* OpenGLPixelBufferView.swift in Sources */,
+				F0A40223217C511C003ACC53 /* FSPagerViewCell.swift in Sources */,
 				F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */,
+				F0A40225217C511C003ACC53 /* FSPageViewLayout.swift in Sources */,
+				F0A40218217C511C003ACC53 /* RosyWriterOpenGLRenderer.swift in Sources */,
+				F0A40227217C511C003ACC53 /* FSPagerCollectionView.swift in Sources */,
+				F0A40211217C511C003ACC53 /* TCVodPlayViewController.swift in Sources */,
+				F0A40217217C511C003ACC53 /* CoreImageFilters.swift in Sources */,
+				F0A40219217C511C003ACC53 /* RosyWriterCapturePipeline.swift in Sources */,
 				F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */,
+				F0A40221217C511C003ACC53 /* FSPageViewTransformer.swift in Sources */,
+				F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */,
+				F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */,
+				F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */,
+				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
+				F0A40210217C511C003ACC53 /* TCPlayViewCell.swift in Sources */,
+				F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +555,7 @@
 		};
 		F0A401E0217C50AE003ACC53 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AA622B2D5BA3975CE881DBA5 /* Pods-action.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -295,6 +567,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.action;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "action/action-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -302,6 +575,7 @@
 		};
 		F0A401E1217C50AE003ACC53 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A7B650591158F5054FC4821 /* Pods-action.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -313,6 +587,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.action;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "action/action-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
