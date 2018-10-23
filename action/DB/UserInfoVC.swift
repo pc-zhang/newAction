@@ -11,6 +11,7 @@ import CloudKit
 
 class UserInfoVC : UIViewController {
 
+    var userRecordID: CKRecord.ID?
     @IBOutlet weak var avatarV: UIImageView!
     @IBOutlet weak var nickNameV: UILabel!
     @IBOutlet weak var idV: UILabel!
@@ -18,31 +19,39 @@ class UserInfoVC : UIViewController {
     @IBOutlet weak var signV: UILabel!
     @IBOutlet weak var positionV: UILabel!
     
+    
     override func viewDidLoad() {
-        let publicDatabase = CKContainer.default().publicCloudDatabase
-        let predicate = NSPredicate(format: "sign = %@", "Show must go on !")
-        let query = CKQuery(recordType: "ActionUser", predicate: predicate)
-        publicDatabase.perform(query, inZoneWith: nil) { (records, error) in
+        CKContainer.default().fetchUserRecordID { (recordID, error) in
             if (error != nil) {
                 // Error handling for failed fetch from public database
             }
             else {
-                // Display the fetched records
-                guard let records = records else {
+                guard let recordID = recordID else {
                     return
                 }
-                if let record = records.first {
-                    DispatchQueue.main.async {
-                        self.avatarV.downloaded(from: record["avatarURL"] ?? "")
-                        self.avatarV.layer.cornerRadius = 8
-                        self.avatarV.layer.masksToBounds = true
-                        self.avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-                        self.avatarV.layer.borderWidth = 1
-                        
-                        self.nickNameV.text = record["nickName"]
-//                        self.idV.text = record["nickName"]
-//                        self.friendsV.text = record["nickName"]
-                        self.signV.text = record["sign"]
+                self.userRecordID = recordID
+                
+                CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { (record, error) in
+                    if (error != nil) {
+                        // Error handling for failed fetch from public database
+                    }
+                    else {
+                        guard let record = record else {
+                            return
+                        }
+                        // Display the fetched record
+                        DispatchQueue.main.async {
+                            self.avatarV.downloaded(from: record["avatarURL"] ?? "")
+                            self.avatarV.layer.cornerRadius = 8
+                            self.avatarV.layer.masksToBounds = true
+                            self.avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+                            self.avatarV.layer.borderWidth = 1
+                            
+                            self.nickNameV.text = record["nickName"]
+                            //                        self.idV.text = record["nickName"]
+                            //                        self.friendsV.text = record["nickName"]
+                            self.signV.text = record["sign"]
+                        }
                     }
                 }
             }

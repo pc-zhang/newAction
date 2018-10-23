@@ -53,7 +53,6 @@
 		F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */; };
 		F0A40257217D9287003ACC53 /* CKContainer+CloudShares.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */; };
 		F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */; };
-		F0A4025B217DA9BF003ACC53 /* UserLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025A217DA9BE003ACC53 /* UserLocalCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,7 +115,6 @@
 		F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandleCloudKitError.swift; sourceTree = "<group>"; };
 		F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKContainer+CloudShares.swift"; sourceTree = "<group>"; };
 		F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneLocalCache.swift; sourceTree = "<group>"; };
-		F0A4025A217DA9BE003ACC53 /* UserLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocalCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -288,7 +286,6 @@
 		F0A40259217D9292003ACC53 /* DB */ = {
 			isa = PBXGroup;
 			children = (
-				F0A4025A217DA9BE003ACC53 /* UserLocalCache.swift */,
 				F0A40249217D9285003ACC53 /* BaseLocalCache.swift */,
 				F0A4024D217D9286003ACC53 /* CacheItem.swift */,
 				F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */,
@@ -428,7 +425,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A4023E217C5267003ACC53 /* TCLiveListModel.m in Sources */,
-				F0A4025B217DA9BF003ACC53 /* UserLocalCache.swift in Sources */,
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
 				F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */,
 				F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */,
