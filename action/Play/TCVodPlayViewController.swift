@@ -14,7 +14,7 @@ import CloudKit
 
 let kTCLivePlayError: String = "kTCLivePlayError"
 
-class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching, RosyWriterCapturePipelineDelegate, UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TCPlayViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching, RosyWriterCapturePipelineDelegate, UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TCPlayViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, URLSessionDelegate {
     
     // MARK: - UI Controls
     
@@ -249,7 +249,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         let playViewCell = cell as! TCPlayViewCell
         
         if indexPath.row < works.count {
-            let playerItem = AVPlayerItem(url: URL(string: works[indexPath.row] as String)!)
+            playViewCell.url = URL(string: works[indexPath.row] as String)
+            let playerItem = AVPlayerItem(url: playViewCell.url!)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
         }
@@ -440,14 +441,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         return isRecording
     }
     
-    func chorus(process processHandler: ((CGFloat) -> Void)!) {
-//        TCUtil.report(xiaoshipin_videochorus, userName: nil, code: 0, msg: "合唱事件")
-//        if let index = tableView.indexPathsForVisibleRows?.first?.row {
-//            TCUtil.downloadVideo(self.lives[index].playurl, process: processHandler) { (videoPath) in
-//                self.addClip(try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(videoPath!))
-//            }
-//        }
+    func chorus(url: URL) {
+        addClip(url)
     }
+    
     
     func tapPlayViewCell() {
         if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {

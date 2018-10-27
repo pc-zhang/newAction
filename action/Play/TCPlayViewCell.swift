@@ -6,19 +6,15 @@ The `UICollectionViewCell` used to represent data in the collection view.
 */
 
 import UIKit
-import Foundation
 import AVFoundation
-import MobileCoreServices
-import Accelerate
-import Photos
 
 protocol TCPlayViewCellDelegate: NSObjectProtocol {
-    func chorus(process processHandler: ((CGFloat) -> Void)!)
+    func chorus(url: URL)
     func tapPlayViewCell()
     func funcIsRecording() -> Bool
 }
 
-final class TCPlayViewCell: UITableViewCell {
+final class TCPlayViewCell: UITableViewCell, URLSessionDownloadDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -46,10 +42,61 @@ final class TCPlayViewCell: UITableViewCell {
 
     @IBAction func clickChorus(_ button: UIButton) {
         chorus.isHidden = true
-        delegate?.chorus(process: { (process) in
-            self.downloadProcess = sqrt(process)/2
-        })
+        let backgroundTask = urlSession.downloadTask(with: url!)
+        backgroundTask.resume()
     }
+    
+    // #MARK: - URLSessionDownloadDelegate
+    
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        DispatchQueue.main.async {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                let backgroundCompletionHandler =
+                appDelegate.backgroundCompletionHandler else {
+                    return
+            }
+            backgroundCompletionHandler()
+        }
+    }
+    
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        guard let httpResponse = downloadTask.response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+                print ("server error")
+                return
+        }
+        do {
+            let documentsURL = try
+                FileManager.default.url(for: .documentDirectory,
+                                        in: .userDomainMask,
+                                        appropriateFor: nil,
+                                        create: false)
+            let savedURL = documentsURL.appendingPathComponent(
+                location.lastPathComponent).appendingPathExtension("mp4")
+            try FileManager.default.moveItem(at: location, to: savedURL)
+            
+            delegate?.chorus(url: savedURL)
+            
+            DispatchQueue.main.async {
+                self.downloadProcess = 0.5
+            }
+        } catch {
+            print ("file error: \(error)")
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        // println("download task did write data")
+        
+        let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        
+        DispatchQueue.main.async {
+            self.downloadProcess = CGFloat(sqrt(progress)/2)
+        }
+    }
+    
     
     // MARK: Properties
     static let reuseIdentifier = "TCPlayViewCell"
@@ -58,6 +105,14 @@ final class TCPlayViewCell: UITableViewCell {
     @IBOutlet weak var chorus: UIButton!
     
     var player = AVPlayer()
+    var url : URL?
+    
+    private lazy var urlSession: URLSession = {
+        let config = URLSessionConfiguration.background(withIdentifier: "MySession")
+        config.isDiscretionary = true
+        config.sessionSendsLaunchEvents = true
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
     
     var delegate: TCPlayViewCellDelegate?
     var downloadProgressLayer: CAShapeLayer?

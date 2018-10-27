@@ -23,6 +23,8 @@ class MessagesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        collectionV.decelerationRate = .fast
+        
         CKContainer.default().fetchUserRecordID { (recordID, error) in
             if (error != nil) {
                 // Error handling for failed fetch from public database
