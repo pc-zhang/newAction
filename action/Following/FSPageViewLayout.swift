@@ -21,7 +21,7 @@ class FSPagerViewLayout: UICollectionViewLayout {
     }
     
     fileprivate var pagerView: FSPagerView? {
-        return self.collectionView?.superview?.superview as? FSPagerView
+        return self.collectionView?.superview as? FSPagerView
     }
     
     fileprivate var isInfinite: Bool = true

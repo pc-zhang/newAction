@@ -37,11 +37,6 @@
 		F0A40225217C511C003ACC53 /* FSPageViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */; };
 		F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40200217C511B003ACC53 /* FSPageControl.swift */; };
 		F0A40227217C511C003ACC53 /* FSPagerCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */; };
-		F0A4023B217C5267003ACC53 /* NSData+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40233217C5267003ACC53 /* NSData+Common.m */; };
-		F0A4023C217C5267003ACC53 /* TCLog.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40234217C5267003ACC53 /* TCLog.m */; };
-		F0A4023D217C5267003ACC53 /* NSString+Common.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40235217C5267003ACC53 /* NSString+Common.m */; };
-		F0A4023E217C5267003ACC53 /* TCLiveListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40237217C5267003ACC53 /* TCLiveListModel.m */; };
-		F0A4023F217C5267003ACC53 /* TCUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A40239217C5267003ACC53 /* TCUtil.m */; };
 		F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40241217C5723003ACC53 /* ShaderUtilities.swift */; };
 		F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40244217C6267003ACC53 /* UserInfoVC.swift */; };
 		F0A40248217C6348003ACC53 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A40247217C6348003ACC53 /* CloudKit.framework */; };
@@ -53,6 +48,10 @@
 		F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */; };
 		F0A40257217D9287003ACC53 /* CKContainer+CloudShares.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */; };
 		F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */; };
+		F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025C21808464003ACC53 /* UserLocalCache.swift */; };
+		F0A4025F218319E0003ACC53 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025E218319E0003ACC53 /* MessagesVC.swift */; };
+		F0A402612183373B003ACC53 /* PlayerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402602183373B003ACC53 /* PlayerViewCell.swift */; };
+		F0A402632183408E003ACC53 /* MessagesViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402622183408D003ACC53 /* MessagesViewLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,20 +89,7 @@
 		F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPageViewLayout.swift; sourceTree = "<group>"; };
 		F0A40200217C511B003ACC53 /* FSPageControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPageControl.swift; sourceTree = "<group>"; };
 		F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FSPagerCollectionView.swift; sourceTree = "<group>"; };
-		F0A4022F217C5267003ACC53 /* TCLiveListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCLiveListModel.h; sourceTree = "<group>"; };
-		F0A40230217C5267003ACC53 /* NSString+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Common.h"; sourceTree = "<group>"; };
-		F0A40231217C5267003ACC53 /* TCUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCUtil.h; sourceTree = "<group>"; };
-		F0A40232217C5267003ACC53 /* SDKHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDKHeader.h; sourceTree = "<group>"; };
-		F0A40233217C5267003ACC53 /* NSData+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Common.m"; sourceTree = "<group>"; };
-		F0A40234217C5267003ACC53 /* TCLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCLog.m; sourceTree = "<group>"; };
-		F0A40235217C5267003ACC53 /* NSString+Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Common.m"; sourceTree = "<group>"; };
-		F0A40236217C5267003ACC53 /* TCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCConstants.h; sourceTree = "<group>"; };
-		F0A40237217C5267003ACC53 /* TCLiveListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCLiveListModel.m; sourceTree = "<group>"; };
-		F0A40238217C5267003ACC53 /* NSData+Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Common.h"; sourceTree = "<group>"; };
-		F0A40239217C5267003ACC53 /* TCUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCUtil.m; sourceTree = "<group>"; };
-		F0A4023A217C5267003ACC53 /* TCLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCLog.h; sourceTree = "<group>"; };
 		F0A40241217C5723003ACC53 /* ShaderUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderUtilities.swift; sourceTree = "<group>"; };
-		F0A40243217C576E003ACC53 /* action-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "action-Bridging-Header.h"; sourceTree = "<group>"; };
 		F0A40244217C6267003ACC53 /* UserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoVC.swift; sourceTree = "<group>"; };
 		F0A40246217C6342003ACC53 /* action.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = action.entitlements; sourceTree = "<group>"; };
 		F0A40247217C6348003ACC53 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -115,6 +101,10 @@
 		F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandleCloudKitError.swift; sourceTree = "<group>"; };
 		F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKContainer+CloudShares.swift"; sourceTree = "<group>"; };
 		F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneLocalCache.swift; sourceTree = "<group>"; };
+		F0A4025C21808464003ACC53 /* UserLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocalCache.swift; sourceTree = "<group>"; };
+		F0A4025E218319E0003ACC53 /* MessagesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
+		F0A402602183373B003ACC53 /* PlayerViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewCell.swift; sourceTree = "<group>"; };
+		F0A402622183408D003ACC53 /* MessagesViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,9 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				F0A40246217C6342003ACC53 /* action.entitlements */,
-				F0A40243217C576E003ACC53 /* action-Bridging-Header.h */,
 				F0A40259217D9292003ACC53 /* DB */,
-				F0A4022E217C5267003ACC53 /* TCLiveListMgr */,
 				F0A401F9217C511B003ACC53 /* Following */,
 				F0A401E2217C511B003ACC53 /* Play */,
 				F0A401E7217C511B003ACC53 /* Recorder */,
@@ -244,9 +232,12 @@
 		F0A401F9217C511B003ACC53 /* Following */ = {
 			isa = PBXGroup;
 			children = (
+				F0A4025E218319E0003ACC53 /* MessagesVC.swift */,
+				F0A402602183373B003ACC53 /* PlayerViewCell.swift */,
+				F0A402622183408D003ACC53 /* MessagesViewLayout.swift */,
+				F0A401FC217C511B003ACC53 /* FollowingViewController.swift */,
 				F0A401FA217C511B003ACC53 /* FSPagerView.swift */,
 				F0A401FB217C511B003ACC53 /* FSPageViewTransformer.swift */,
-				F0A401FC217C511B003ACC53 /* FollowingViewController.swift */,
 				F0A401FD217C511B003ACC53 /* FSPagerViewCell.swift */,
 				F0A401FE217C511B003ACC53 /* FSPagerViewLayoutAttributes.swift */,
 				F0A401FF217C511B003ACC53 /* FSPageViewLayout.swift */,
@@ -254,25 +245,6 @@
 				F0A40201217C511B003ACC53 /* FSPagerCollectionView.swift */,
 			);
 			path = Following;
-			sourceTree = "<group>";
-		};
-		F0A4022E217C5267003ACC53 /* TCLiveListMgr */ = {
-			isa = PBXGroup;
-			children = (
-				F0A4022F217C5267003ACC53 /* TCLiveListModel.h */,
-				F0A40230217C5267003ACC53 /* NSString+Common.h */,
-				F0A40231217C5267003ACC53 /* TCUtil.h */,
-				F0A40232217C5267003ACC53 /* SDKHeader.h */,
-				F0A40233217C5267003ACC53 /* NSData+Common.m */,
-				F0A40234217C5267003ACC53 /* TCLog.m */,
-				F0A40235217C5267003ACC53 /* NSString+Common.m */,
-				F0A40236217C5267003ACC53 /* TCConstants.h */,
-				F0A40237217C5267003ACC53 /* TCLiveListModel.m */,
-				F0A40238217C5267003ACC53 /* NSData+Common.h */,
-				F0A40239217C5267003ACC53 /* TCUtil.m */,
-				F0A4023A217C5267003ACC53 /* TCLog.h */,
-			);
-			path = TCLiveListMgr;
 			sourceTree = "<group>";
 		};
 		F0A40240217C5723003ACC53 /* GL */ = {
@@ -292,6 +264,7 @@
 				F0A4024C217D9286003ACC53 /* CKDatabase+CloudShares.swift */,
 				F0A4024A217D9285003ACC53 /* Database.swift */,
 				F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */,
+				F0A4025C21808464003ACC53 /* UserLocalCache.swift */,
 				F0A4024B217D9286003ACC53 /* TopicLocalCache.swift */,
 				F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */,
 				F0A40244217C6267003ACC53 /* UserInfoVC.swift */,
@@ -310,7 +283,6 @@
 				F0A401C6217C50AD003ACC53 /* Sources */,
 				F0A401C7217C50AD003ACC53 /* Frameworks */,
 				F0A401C8217C50AD003ACC53 /* Resources */,
-				A5D28CA779418A233E012B09 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -397,26 +369,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A5D28CA779418A233E012B09 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-action/Pods-action-resources.sh",
-				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-action/Pods-action-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -424,17 +376,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0A4023E217C5267003ACC53 /* TCLiveListModel.m in Sources */,
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
+				F0A402612183373B003ACC53 /* PlayerViewCell.swift in Sources */,
 				F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */,
 				F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */,
 				F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */,
 				F0A40251217D9287003ACC53 /* BaseLocalCache.swift in Sources */,
-				F0A4023B217C5267003ACC53 /* NSData+Common.m in Sources */,
-				F0A4023C217C5267003ACC53 /* TCLog.m in Sources */,
 				F0A40257217D9287003ACC53 /* CKContainer+CloudShares.swift in Sources */,
 				F0A40252217D9287003ACC53 /* Database.swift in Sources */,
-				F0A4023F217C5267003ACC53 /* TCUtil.m in Sources */,
 				F0A40254217D9287003ACC53 /* CKDatabase+CloudShares.swift in Sources */,
 				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
 				F0A40220217C511C003ACC53 /* FSPagerView.swift in Sources */,
@@ -442,7 +391,6 @@
 				F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */,
 				F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */,
 				F0A4021F217C511C003ACC53 /* FourCharCode+StringLiteralConvertible.swift in Sources */,
-				F0A4023D217C5267003ACC53 /* NSString+Common.m in Sources */,
 				F0A40224217C511C003ACC53 /* FSPagerViewLayoutAttributes.swift in Sources */,
 				F0A40255217D9287003ACC53 /* CacheItem.swift in Sources */,
 				F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */,
@@ -453,14 +401,17 @@
 				F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */,
 				F0A40225217C511C003ACC53 /* FSPageViewLayout.swift in Sources */,
 				F0A40218217C511C003ACC53 /* RosyWriterOpenGLRenderer.swift in Sources */,
+				F0A4025F218319E0003ACC53 /* MessagesVC.swift in Sources */,
 				F0A40227217C511C003ACC53 /* FSPagerCollectionView.swift in Sources */,
 				F0A40211217C511C003ACC53 /* TCVodPlayViewController.swift in Sources */,
+				F0A402632183408E003ACC53 /* MessagesViewLayout.swift in Sources */,
 				F0A40217217C511C003ACC53 /* CoreImageFilters.swift in Sources */,
 				F0A40219217C511C003ACC53 /* RosyWriterCapturePipeline.swift in Sources */,
 				F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */,
 				F0A40221217C511C003ACC53 /* FSPageViewTransformer.swift in Sources */,
 				F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */,
 				F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */,
+				F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */,
 				F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */,
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
 				F0A40210217C511C003ACC53 /* TCPlayViewCell.swift in Sources */,
@@ -621,7 +572,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.action;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "action/action-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -642,7 +593,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.action;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "action/action-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

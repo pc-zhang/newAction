@@ -10,6 +10,7 @@ import UIKit
 import Accelerate
 import AVFoundation
 import CoreServices
+import CloudKit
 
 let kTCLivePlayError: String = "kTCLivePlayError"
 
@@ -157,6 +158,32 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        CKContainer.default().fetchUserRecordID { (recordID, error) in
+            if (error != nil) {
+                // Error handling for failed fetch from public database
+            }
+            else {
+                guard let recordID = recordID else {
+                    return
+                }
+                
+                CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { (record, error) in
+                    if (error != nil) {
+                        // Error handling for failed fetch from public database
+                    }
+                    else {
+                        guard let record = record, let works = record["works"] as? [NSString] else {
+                            return
+                        }
+                        self.works = works
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    }
+                }
+            }
+        }
+        
         if composition==nil {
             composition = AVMutableComposition()
             // Add two video tracks and two audio tracks.
@@ -167,42 +194,11 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             _ = composition!.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         }
         
-        if(!self.lives.isEmpty) {
-            self.lives.removeAll()
-        }
-        
         tableView.rowHeight = tableView.bounds.height - 2
         tableView.contentSize.width = tableView.bounds.width
         tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 1, right: 0)
         tableView.contentOffset = CGPoint(x: 0, y: -1)
-        
-        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
-            self.isLoading = true
-            self.lives = []
-            self.liveListMgr?.queryVideoList(.up)
-        })
-        tableView.mj_header.isHidden = true
-        
-        tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingBlock: {
-            self.isLoading = true
-            self.liveListMgr?.queryVideoList(.down)
-        })
-        tableView.mj_footer.isHidden = true
-        
-        // 先加载缓存的数据，然后再开始网络请求，以防用户打开是看到空数据
-        //        liveListMgr.loadVodsFromArchive()
-        //        doFetchList()
-        
-        DispatchQueue.main.async {
-            self.tableView.mj_header.beginRefreshing()
-        }
-        
-        tableView.mj_header.endRefreshing {
-            self.isLoading = false
-        }
-        tableView.mj_footer.endRefreshing {
-            self.isLoading = false
-        }
+        tableView.decelerationRate = .fast
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
@@ -229,10 +225,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         _capturePipeline.renderingEnabled = _allowedToUseGPU
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)        
-    }
 
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -256,9 +248,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let playViewCell = cell as! TCPlayViewCell
         
-        if indexPath.row < lives.count {
-            let liveInfo = lives[indexPath.row]
-            let playerItem = AVPlayerItem(url: URL(string: liveInfo.playurl)!)
+        if indexPath.row < works.count {
+            let playerItem = AVPlayerItem(url: URL(string: works[indexPath.row] as String)!)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
         }
@@ -271,10 +262,18 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         playViewCell.player.replaceCurrentItem(with: nil)
     }
     
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if let tableView = scrollView as? UITableView {
+            let targetY = scrollView.contentOffset.y + velocity.y * 500
+            let indexPath = IndexPath(row: Int((targetY + tableView.rowHeight/2) / tableView.rowHeight), section: 0)
+            targetContentOffset.pointee.y = CGFloat(indexPath.row) * tableView.rowHeight - 1
+        }
+    }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if let tableView = scrollView as? UITableView {
             let indexPath = IndexPath(row: Int((self.tableView.contentOffset.y + tableView.rowHeight/2) / tableView.rowHeight), section: 0)
-            tableView.setContentOffset(CGPoint(x: 0, y: CGFloat(indexPath.row) * tableView.rowHeight - 1), animated: true)
+            
             if let playViewCell = tableView.cellForRow(at: indexPath) as? TCPlayViewCell {
                 playViewCell.player.play()
             }
@@ -296,7 +295,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return lives.count
+        return works.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -442,12 +441,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func chorus(process processHandler: ((CGFloat) -> Void)!) {
-        TCUtil.report(xiaoshipin_videochorus, userName: nil, code: 0, msg: "合唱事件")
-        if let index = tableView.indexPathsForVisibleRows?.first?.row {
-            TCUtil.downloadVideo(self.lives[index].playurl, process: processHandler) { (videoPath) in
-                self.addClip(try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(videoPath!))
-            }
-        }
+//        TCUtil.report(xiaoshipin_videochorus, userName: nil, code: 0, msg: "合唱事件")
+//        if let index = tableView.indexPathsForVisibleRows?.first?.row {
+//            TCUtil.downloadVideo(self.lives[index].playurl, process: processHandler) { (videoPath) in
+//                self.addClip(try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(videoPath!))
+//            }
+//        }
     }
     
     func tapPlayViewCell() {
@@ -605,106 +604,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             addClip(videoURL)
         }
         picker.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-    
-    // MARK: Net fetch
-    /**
-     * 拉取直播列表。TCLiveListMgr在启动是，会将所有数据下载下来。在未全部下载完前，通过loadLives借口，
-     * 能取到部分数据。通过finish接口，判断是否已取到最后的数据
-     *
-     */
-    func doFetchList() {
-        let range = NSMakeRange(self.lives.count, 20)
-
-        var finish: ObjCBool = false
-        var result = liveListMgr?.readVods(range, finish: &finish)
-        
-        if result != nil {
-            result = mergeResult(result: result! as! [TCLiveInfo])
-            self.lives.append(contentsOf: result! as! [TCLiveInfo])
-        } else {
-            if finish.boolValue {
-//                let hud = HUDHelper.sharedInstance()?.tipMessage("没有啦")
-//                hud?.isUserInteractionEnabled = false
-            }
-        }
-        tableView.mj_header.isHidden = true
-        tableView.mj_footer.isHidden = true
-        tableView.mj_header.endRefreshing()
-        tableView.mj_footer.endRefreshing()
-        tableView.reloadData()
-    }
-    
-    /**
-     *  将取到的数据于已存在的数据进行合并。
-     *
-     *  @param result 新拉取到的数据
-     *
-     *  @return 新数据去除已存在记录后，剩余的数据
-     */
-    func mergeResult(result: [TCLiveInfo]) -> [TCLiveInfo] {
-        // 每个直播的播放地址不同，通过其进行去重处理
-        let existArray = self.lives.map { (obj) -> String in
-            obj.playurl
-        }
-        
-        let newArray = result.filter { (obj) -> Bool in
-            !existArray.contains(obj.playurl)
-        }
-        
-        return newArray
-    }
-    
-    /**
-     *  TCLiveListMgr有新数据过来
-     *
-     *  @param noti
-     */
-    @objc func newDataAvailable(noti: NSNotification) {
-        self.doFetchList()
-    }
-    
-    /**
-     *  TCLiveListMgr数据有更新
-     *
-     *  @param noti
-     */
-    @objc func listDataUpdated(noti: NSNotification) {
-    //    [self setup];
-    }
-    
-    
-    /**
-     *  TCLiveListMgr内部出错
-     *
-     *  @param noti
-     */
-    @objc func svrError(noti: NSNotification) {
-        let e = noti.object
-        if ((e as? NSError) != nil) {
-//            HUDHelper.alert(e.debugDescription)
-        }
-        
-        // 如果还在加载，停止加载动画
-        if self.isLoading {
-            tableView.mj_header.endRefreshing()
-            tableView.mj_footer.endRefreshing()
-            self.isLoading = false
-        }
-    }
-    
-    /**
-     *  TCPlayViewController出错，加入房间失败
-     *
-     */
-    @objc func playError(noti: NSNotification) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5), execute: {
-            //        [self.tableView.mj_header beginRefreshing];
-            //加房间失败后，刷新列表，不需要刷新动画
-            self.lives = []
-            self.isLoading = true
-            self.liveListMgr?.queryVideoList(.up)
-        })
     }
     
     
@@ -1038,36 +937,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    var liveListMgr: TCLiveListMgr?
     var isLoading: Bool = false
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        self.lives = []
-        liveListMgr = TCLiveListMgr.shared()
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(newDataAvailable),
-            name: NSNotification.Name(rawValue: kTCLiveListNewDataAvailable),
-            object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(listDataUpdated),
-            name: NSNotification.Name(rawValue: kTCLiveListUpdated),
-            object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(svrError),
-            name: NSNotification.Name(rawValue: kTCLiveListSvrError),
-            object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(playError),
-            name: NSNotification.Name(rawValue: kTCLivePlayError),
-            object: nil)
-    }
-    
     
     private var _addedObservers: Bool = false
     private var _recording: Bool = false
@@ -1131,7 +1001,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     private var playerItem: AVPlayerItem? = nil
     
-    var lives: [TCLiveInfo] = []
-        
+    var works : [NSString] = []
 }
 

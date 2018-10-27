@@ -20,10 +20,6 @@ protocol TCPlayViewCellDelegate: NSObjectProtocol {
 
 final class TCPlayViewCell: UITableViewCell {
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         self.playerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TCPlayViewCell.tapPlayViewCell(_:))))

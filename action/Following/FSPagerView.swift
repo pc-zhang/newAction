@@ -220,7 +220,6 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     
     internal weak var collectionViewLayout: FSPagerViewLayout!
     internal weak var collectionView: FSPagerViewCollectionView!
-    internal weak var contentView: UIView!
     
     internal var timer: Timer?
     internal var numberOfItems: Int = 0
@@ -272,8 +271,7 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     open override func layoutSubviews() {
         super.layoutSubviews()
         self.backgroundView?.frame = self.bounds
-        self.contentView.frame = self.bounds
-        self.collectionView.frame = self.contentView.bounds
+        self.collectionView.frame = self.bounds
     }
     
     open override func willMove(toWindow newWindow: UIWindow?) {
@@ -287,18 +285,18 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     
     #if TARGET_INTERFACE_BUILDER
     
-    open override func prepareForInterfaceBuilder() {
-        super.prepareForInterfaceBuilder()
-        self.contentView.layer.borderWidth = 1
-        self.contentView.layer.cornerRadius = 5
-        self.contentView.layer.masksToBounds = true
-        self.contentView.frame = self.bounds
-        let label = UILabel(frame: self.contentView.bounds)
-        label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 25)
-        label.text = "FSPagerView"
-        self.contentView.addSubview(label)
-    }
+//    open override func prepareForInterfaceBuilder() {
+//        super.prepareForInterfaceBuilder()
+//        self.contentView.layer.borderWidth = 1
+//        self.contentView.layer.cornerRadius = 5
+//        self.contentView.layer.masksToBounds = true
+//        self.contentView.frame = self.bounds
+//        let label = UILabel(frame: self.contentView.bounds)
+//        label.textAlignment = .center
+//        label.font = UIFont.boldSystemFont(ofSize: 25)
+//        label.text = "FSPagerView"
+//        self.contentView.addSubview(label)
+//    }
     
     #endif
 
@@ -548,23 +546,15 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     // MARK: - Private functions
     
     fileprivate func commonInit() {
-        
-        // Content View
-        let contentView = UIView(frame:CGRect.zero)
-        contentView.backgroundColor = UIColor.clear
-        self.addSubview(contentView)
-        self.contentView = contentView
-        
         // UICollectionView
         let collectionViewLayout = FSPagerViewLayout()
         let collectionView = FSPagerViewCollectionView(frame: CGRect.zero, collectionViewLayout: collectionViewLayout)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = UIColor.clear
-        self.contentView.addSubview(collectionView)
+        self.addSubview(collectionView)
         self.collectionView = collectionView
         self.collectionViewLayout = collectionViewLayout
-        
     }
     
     fileprivate func startTimer() {

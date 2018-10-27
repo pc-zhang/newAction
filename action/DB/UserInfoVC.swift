@@ -8,6 +8,7 @@
 
 import Foundation
 import CloudKit
+import UIKit
 
 class UserInfoVC : UIViewController {
 
@@ -39,6 +40,7 @@ class UserInfoVC : UIViewController {
                         guard let record = record else {
                             return
                         }
+                        
                         // Display the fetched record
                         DispatchQueue.main.async {
                             self.avatarV.downloaded(from: record["avatarURL"] ?? "")
@@ -51,6 +53,12 @@ class UserInfoVC : UIViewController {
                             //                        self.idV.text = record["nickName"]
                             //                        self.friendsV.text = record["nickName"]
                             self.signV.text = record["sign"]
+                            
+                            if let assetList = record["works"] as? [NSString] {
+                                for assetURL in assetList {
+                                    
+                                }
+                            }
                         }
                     }
                 }
