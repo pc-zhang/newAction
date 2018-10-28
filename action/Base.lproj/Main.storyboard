@@ -38,20 +38,37 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="685" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="XSo-WA-wwC">
-                                <rect key="frame" x="0.0" y="44" width="375" height="685"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2bu-9R-7bk">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="PHF-gk-tud" appends="YES" id="XBq-Ct-DaF"/>
+                                    <outletCollection property="gestureRecognizers" destination="n7c-RM-fl8" appends="YES" id="Aov-7d-m6V"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JPX-Ds-d7n" customClass="PlayerView" customModule="action" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="PWk-PI-Os9" appends="YES" id="ja1-wS-W1m"/>
+                                </connections>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="729" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="XSo-WA-wwC">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" restorationIdentifier="TCPlayViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TCPlayViewCell" id="iOU-wk-1ZJ" customClass="TCPlayViewCell" customModule="action" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="1" width="375" height="685"/>
+                                        <rect key="frame" x="0.0" y="1" width="375" height="729"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iOU-wk-1ZJ" id="gG4-NL-fHz">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="685"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tah-Bn-JfE" customClass="PlayerView" customModule="action" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="685"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dwJ-oB-HNP">
                                                             <rect key="frame" x="317" y="304" width="50" height="50"/>
@@ -114,7 +131,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tph-iE-WFU" userLabel="topline">
-                                <rect key="frame" x="0.0" y="44" width="375" height="1"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="Iow-Vh-Eap"/>
@@ -127,19 +144,24 @@
                                     <constraint firstAttribute="height" constant="1" id="mKw-zl-jos"/>
                                 </constraints>
                             </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kq1-y9-mGu">
-                                <rect key="frame" x="157" y="713" width="100" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kq1-y9-mGu">
+                                <rect key="frame" x="137.66666666666666" y="629" width="100" height="50"/>
                                 <color key="backgroundColor" red="1" green="0.4082706156" blue="0.4243272387" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="2YV-gp-v70"/>
+                                    <constraint firstAttribute="height" constant="50" id="hD4-4I-SIR"/>
+                                </constraints>
                                 <state key="normal" title="Record"/>
                                 <connections>
                                     <action selector="toggleRecording:" destination="bIk-Mb-60k" eventType="touchUpInside" id="OHB-N1-hsJ"/>
                                 </connections>
                             </button>
-                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.25" maximumZoomScale="2" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Qg7-0j-VPA" userLabel="Timeline2">
-                                <rect key="frame" x="19.5" y="588" width="375" height="75"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.25" maximumZoomScale="2" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Qg7-0j-VPA" userLabel="Timeline2">
+                                <rect key="frame" x="0.0" y="503" width="375" height="75"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="Pp7-mP-YBd"/>
+                                </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="vjq-HG-TOm">
                                     <size key="itemSize" width="75" height="75"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -162,14 +184,19 @@
                                     <outlet property="delegate" destination="bIk-Mb-60k" id="Jem-GK-MJL"/>
                                 </connections>
                             </collectionView>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6jw-3B-ft6">
-                                <rect key="frame" x="206" y="588" width="2" height="75"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6jw-3B-ft6">
+                                <rect key="frame" x="186.66666666666666" y="503" width="2" height="75"/>
                                 <color key="backgroundColor" red="1" green="0.4082706156" blue="0.4243272387" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="2" id="9u4-hM-aix"/>
+                                </constraints>
                             </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MfK-IJ-jHo">
-                                <rect key="frame" x="364" y="64" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MfK-IJ-jHo">
+                                <rect key="frame" x="337" y="21" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="X0R-tT-LGJ"/>
+                                    <constraint firstAttribute="width" constant="30" id="YOy-Ub-bQ7"/>
+                                </constraints>
                                 <state key="normal" title="Button" image="export"/>
                                 <connections>
                                     <action selector="export:" destination="bIk-Mb-60k" eventType="touchUpInside" id="UDc-Pj-2rH"/>
@@ -180,14 +207,32 @@
                         <constraints>
                             <constraint firstItem="nOI-v6-lwK" firstAttribute="leading" secondItem="0kr-d8-xHx" secondAttribute="leading" id="3Xe-Uv-g3K"/>
                             <constraint firstAttribute="trailing" secondItem="Tph-iE-WFU" secondAttribute="trailing" id="4r8-8N-v61"/>
+                            <constraint firstItem="Qg7-0j-VPA" firstAttribute="width" secondItem="XSo-WA-wwC" secondAttribute="width" id="6bj-ta-tOk"/>
+                            <constraint firstItem="6jw-3B-ft6" firstAttribute="centerX" secondItem="Qg7-0j-VPA" secondAttribute="centerX" id="8Go-xU-Ofy"/>
+                            <constraint firstAttribute="trailing" secondItem="MfK-IJ-jHo" secondAttribute="trailing" constant="8" id="BTa-q1-fo1"/>
+                            <constraint firstItem="2bu-9R-7bk" firstAttribute="centerX" secondItem="XSo-WA-wwC" secondAttribute="centerX" id="CfW-H0-7TJ"/>
+                            <constraint firstItem="MfK-IJ-jHo" firstAttribute="top" secondItem="Tph-iE-WFU" secondAttribute="bottom" constant="20" id="Eja-0s-URd"/>
                             <constraint firstItem="Tph-iE-WFU" firstAttribute="leading" secondItem="0kr-d8-xHx" secondAttribute="leading" id="IoM-Id-Fre"/>
                             <constraint firstItem="XSo-WA-wwC" firstAttribute="bottom" secondItem="CDZ-jg-prP" secondAttribute="bottom" id="J4M-Ry-7fW"/>
+                            <constraint firstItem="JPX-Ds-d7n" firstAttribute="centerX" secondItem="XSo-WA-wwC" secondAttribute="centerX" id="JgU-GH-r77"/>
+                            <constraint firstItem="nOI-v6-lwK" firstAttribute="top" secondItem="Qg7-0j-VPA" secondAttribute="bottom" constant="150" id="Rgl-RU-NKJ"/>
+                            <constraint firstItem="Qg7-0j-VPA" firstAttribute="centerX" secondItem="XSo-WA-wwC" secondAttribute="centerX" id="Rrd-fp-hMR"/>
+                            <constraint firstItem="JPX-Ds-d7n" firstAttribute="height" secondItem="XSo-WA-wwC" secondAttribute="height" id="WBO-Gx-NPg"/>
                             <constraint firstItem="XSo-WA-wwC" firstAttribute="trailing" secondItem="CDZ-jg-prP" secondAttribute="trailing" id="XvK-O4-XWI"/>
+                            <constraint firstItem="2bu-9R-7bk" firstAttribute="height" secondItem="XSo-WA-wwC" secondAttribute="height" id="Y0s-IK-rq5"/>
                             <constraint firstItem="Tph-iE-WFU" firstAttribute="top" secondItem="XSo-WA-wwC" secondAttribute="top" id="YSX-Qh-ogl"/>
+                            <constraint firstItem="6jw-3B-ft6" firstAttribute="height" secondItem="Qg7-0j-VPA" secondAttribute="height" id="c9v-6I-6hB"/>
+                            <constraint firstItem="kq1-y9-mGu" firstAttribute="centerX" secondItem="XSo-WA-wwC" secondAttribute="centerX" id="cLd-d1-Bkd"/>
+                            <constraint firstItem="JPX-Ds-d7n" firstAttribute="centerY" secondItem="XSo-WA-wwC" secondAttribute="centerY" id="fBd-Fe-zqt"/>
+                            <constraint firstItem="JPX-Ds-d7n" firstAttribute="width" secondItem="XSo-WA-wwC" secondAttribute="width" id="hNe-CP-I11"/>
+                            <constraint firstItem="CDZ-jg-prP" firstAttribute="bottom" secondItem="kq1-y9-mGu" secondAttribute="bottom" constant="50" id="kQY-kS-1ip"/>
+                            <constraint firstItem="6jw-3B-ft6" firstAttribute="centerY" secondItem="Qg7-0j-VPA" secondAttribute="centerY" id="l9P-28-hiA"/>
                             <constraint firstItem="XSo-WA-wwC" firstAttribute="bottom" secondItem="nOI-v6-lwK" secondAttribute="bottom" id="nGZ-g3-ElM"/>
-                            <constraint firstItem="XSo-WA-wwC" firstAttribute="top" secondItem="CDZ-jg-prP" secondAttribute="top" id="rsc-Jr-rZe"/>
+                            <constraint firstItem="XSo-WA-wwC" firstAttribute="top" secondItem="0kr-d8-xHx" secondAttribute="top" id="rsc-Jr-rZe"/>
+                            <constraint firstItem="2bu-9R-7bk" firstAttribute="width" secondItem="XSo-WA-wwC" secondAttribute="width" id="tYB-oe-TgR"/>
                             <constraint firstItem="XSo-WA-wwC" firstAttribute="leading" secondItem="CDZ-jg-prP" secondAttribute="leading" id="vJs-0y-x3F"/>
                             <constraint firstAttribute="trailing" secondItem="nOI-v6-lwK" secondAttribute="trailing" id="vRy-g4-aVu"/>
+                            <constraint firstItem="2bu-9R-7bk" firstAttribute="centerY" secondItem="XSo-WA-wwC" secondAttribute="centerY" id="yv1-U8-3zW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="CDZ-jg-prP"/>
                     </view>
@@ -196,11 +241,27 @@
                         <outlet property="backgroundTimelineView" destination="Qg7-0j-VPA" id="1mT-aB-5aw"/>
                         <outlet property="exportButton" destination="MfK-IJ-jHo" id="eDz-zg-1Dn"/>
                         <outlet property="middleLine" destination="6jw-3B-ft6" id="Ucd-yh-wfG"/>
+                        <outlet property="playerV" destination="JPX-Ds-d7n" id="IKx-8a-mZ2"/>
                         <outlet property="recordButton" destination="kq1-y9-mGu" id="iFg-Pj-vm1"/>
                         <outlet property="tableView" destination="XSo-WA-wwC" id="Ntg-O9-TYw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cqJ-VC-KBN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="PWk-PI-Os9">
+                    <connections>
+                        <action selector="tapPlayView:" destination="bIk-Mb-60k" id="RDJ-lz-wSK"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="PHF-gk-tud">
+                    <connections>
+                        <action selector="swipeChangeFilter:" destination="bIk-Mb-60k" id="gT2-VG-Aui"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="n7c-RM-fl8">
+                    <connections>
+                        <action selector="swipeChangeFilter:" destination="bIk-Mb-60k" id="3zU-jL-Iu3"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2906.4000000000001" y="738.91625615763553"/>
         </scene>

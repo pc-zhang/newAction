@@ -80,15 +80,7 @@ class MessagesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDa
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        if let cell = pagerView.collectionView.visibleCells[1] as? FSPagerViewCell {
-//            cell.player.play()
-//        }
-//        if let cell = pagerView.collectionView.visibleCells[0] as? FSPagerViewCell {
-//            cell.player.pause()
-//        }
-//        if let cell = pagerView.collectionView.visibleCells[2] as? FSPagerViewCell {
-//            cell.player.pause()
-//        }
+
     }
     
 }

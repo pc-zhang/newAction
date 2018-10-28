@@ -14,7 +14,7 @@ import CloudKit
 
 let kTCLivePlayError: String = "kTCLivePlayError"
 
-class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching, RosyWriterCapturePipelineDelegate, UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TCPlayViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, URLSessionDelegate {
+class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching, RosyWriterCapturePipelineDelegate, UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TCPlayViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, URLSessionDownloadDelegate {
     
     // MARK: - UI Controls
     
@@ -60,13 +60,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
                                                    queue: DispatchQueue.global())
-        timer.scheduleRepeating(deadline: .now(), interval: .milliseconds(250))
+        timer.schedule(deadline: .now(), repeating: .milliseconds(250))
         timer.setEventHandler {
             DispatchQueue.main.async {
-                if let cell = self.tableView.visibleCells.first as? TCPlayViewCell
-                {
-                    cell.downloadProcess = CGFloat(exporter.progress)
-                }
+                self.downloadProcess = CGFloat(exporter.progress)
             }
         }
         timer.resume()
@@ -74,10 +71,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         exporter.exportAsynchronously {
             timer.cancel()
             DispatchQueue.main.async {
-                if let cell = self.tableView.visibleCells.first as? TCPlayViewCell
-                {
-                    cell.downloadProcess = CGFloat(exporter.progress)
-                }
+                self.downloadProcess = CGFloat(exporter.progress)
+                
                 if (exporter.status == .completed) {
                     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)){
                         UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path, self, #selector(self.video), nil)
@@ -89,7 +84,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    @objc func video(videoPath: NSString, didFinishSavingWithError error:NSError, contextInfo contextInfo:Any) -> Void {
+    @objc func video(videoPath: NSString, didFinishSavingWithError error:NSError, contextInfo:Any) -> Void {
     }
     
     @IBAction func swipeChangeFilter(_ swipeGesture: UISwipeGestureRecognizer) {
@@ -128,10 +123,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             
             _recording = true
             
-            tapPlayViewCell()
+            tapPlayView(0)
             Timer.scheduledTimer(withTimeInterval: self.recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
                 self._capturePipeline.stopRecording()
-                self.tapPlayViewCell()
+                self.tapPlayView(0)
             })
             
         }
@@ -198,7 +193,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.contentSize.width = tableView.bounds.width
         tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 1, right: 0)
         tableView.contentOffset = CGPoint(x: 0, y: -1)
-        tableView.decelerationRate = .fast
+        tableView.decelerationRate = UIScrollView.DecelerationRate(rawValue: UIScrollView.DecelerationRate.fast.rawValue / 1000.0)
+        
+        downloadProgressLayer = CAShapeLayer()
+        downloadProgressLayer!.frame = tableView.bounds
+        downloadProgressLayer!.position = CGPoint(x:tableView.bounds.width/2, y:tableView.bounds.height/2)
+        tableView.layer.addSublayer(downloadProgressLayer!)
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
@@ -265,7 +265,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if let tableView = scrollView as? UITableView {
-            let targetY = scrollView.contentOffset.y + velocity.y * 500
+            var targetY : CGFloat
+            if velocity.y > 0 {
+                targetY = scrollView.contentOffset.y + min(velocity.y * 500, tableView.bounds.height)
+            } else {
+                targetY = scrollView.contentOffset.y + max(velocity.y * 500, -tableView.bounds.height)
+            }
             let indexPath = IndexPath(row: Int((targetY + tableView.rowHeight/2) / tableView.rowHeight), section: 0)
             targetContentOffset.pointee.y = CGFloat(indexPath.row) * tableView.rowHeight - 1
         }
@@ -325,18 +330,16 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     // MARK: - UICollectionViewDelegate
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let cell = self.tableView.visibleCells.first as? TCPlayViewCell, cell.player.rate == 0, let _timelineView = scrollView as? UICollectionView {
+        if let _timelineView = scrollView as? UICollectionView, player.rate == 0 {
             currentTime = Double((_timelineView.contentOffset.x + _timelineView.frame.width/2) / (_timelineView.frame.width / visibleTimeRange))
         }
     }
     
     @IBAction func pan(_ recognizer: UIPanGestureRecognizer) {
-        if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-            cell.player.pause()
-        }
+        player.pause()
         seekTimer?.invalidate()
         isRecording = false
-        tableView.visibleCells.first?.setNeedsLayout()
+        self.viewDidLayoutSubviews()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -346,18 +349,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         
         recordTimeRange = segment.timeMapping.target
         isRecording = true
-        tableView.visibleCells.first?.setNeedsLayout()
+        self.viewDidLayoutSubviews()
         
-        if let indexOfHistogram = histograms.index(where: {$0.time == recordTimeRange.start}) {
+        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
             _capturePipeline.startRunning()
-            
-            let leftSwipe = UISwipeGestureRecognizer(target: self, action: "swipeChangeFilter:")
-            leftSwipe.direction = .left
-            let rightSwipe = UISwipeGestureRecognizer(target: self, action: "swipeChangeFilter:")
-            rightSwipe.direction = .right
-            
-            tableView.visibleCells.first?.addGestureRecognizer(leftSwipe)
-            tableView.visibleCells.first?.addGestureRecognizer(rightSwipe)
         }
     }
     
@@ -441,37 +436,42 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         return isRecording
     }
     
+    var player = AVPlayer()
+    
     func chorus(url: URL) {
-        addClip(url)
+        DispatchQueue.main.async {
+            self.tableView.isScrollEnabled = false
+        }
+        
+        let backgroundTask = urlSession.downloadTask(with: url)
+        backgroundTask.resume()
     }
     
     
-    func tapPlayViewCell() {
-        if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-            if cell.player.rate == 0 {
-                // Not playing forward, so play.
-                if currentTime == duration {
-                    // At end, so got back to begining.
-                    currentTime = 0.0
-                }
-                
-                cell.player.play()
-                
-                //todo: animate
-                if #available(iOS 10.0, *) {
-                    seekTimer?.invalidate()
-                    seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
-                        self.backgroundTimelineView.contentOffset.x = CGFloat(self.currentTime/Double(self.visibleTimeRange)*Double(self.backgroundTimelineView.frame.width)) - self.backgroundTimelineView.frame.size.width/2
-                    })
-                } else {
-                    // Fallback on earlier versions
-                }
+    @IBAction func tapPlayView(_ sender: Any) {
+        if player.rate == 0 {
+            // Not playing forward, so play.
+            if currentTime == duration {
+                // At end, so got back to begining.
+                currentTime = 0.0
             }
-            else {
-                // Playing, so pause.
-                cell.player.pause()
+            
+            player.play()
+            
+            //todo: animate
+            if #available(iOS 10.0, *) {
                 seekTimer?.invalidate()
+                seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
+                    self.backgroundTimelineView.contentOffset.x = CGFloat(self.currentTime/Double(self.visibleTimeRange)*Double(self.backgroundTimelineView.frame.width)) - self.backgroundTimelineView.frame.size.width/2
+                })
+            } else {
+                // Fallback on earlier versions
             }
+        }
+        else {
+            // Playing, so pause.
+            player.pause()
+            seekTimer?.invalidate()
         }
     }
     
@@ -542,20 +542,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                     var error: NSError?
                     
                     if newAsset.statusOfValue(forKey: key, error: &error) == .failed {
-                        let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
-                        
-                        let message = String.localizedStringWithFormat(stringFormat, key)
-                        
-                        
                         return
                     }
                 }
                 
                 // We can't play this asset.
                 if !newAsset.isPlayable || newAsset.hasProtectedContent {
-                    let message = NSLocalizedString("error.asset_not_playable.description", comment: "Can't use this AVAsset because it isn't playable or has protected content")
-                    
-                    
                     return
                 }
                 
@@ -580,7 +572,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.currentTime = self.recordTimeRange.start.seconds
                 
                 self.isRecording = false
-                self.tableView.visibleCells.first?.setNeedsLayout()
+                self.viewDidLayoutSubviews()
             }
         }
     }
@@ -608,7 +600,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
 
     
     func addClip(_ movieURL: URL) {
-        self.tableView.isScrollEnabled = false
         let newAsset = AVURLAsset(url: movieURL, options: nil)
         
         /*
@@ -680,12 +671,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.middleLine.isHidden = false
                 self.exportButton.isHidden = false
                 
+                self.tableView.isHidden = true
+                self.playerV.layer.addSublayer(self.downloadProgressLayer!)
+                self.playerV.player = self.player
+                
                 // update timeline
-                if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-                    let currentTime = cell.player.currentTime()
-                    self.updatePlayer()
-                    self.currentTime = currentTime.seconds
-                }
+                self.updatePlayer()
                 
                 DispatchQueue.global(qos: .background).async {
                     var videoTrackOutput : AVAssetReaderTrackOutput?
@@ -703,10 +694,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
                             let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                             DispatchQueue.main.async {
-                                if let cell = self.tableView.visibleCells.first as? TCPlayViewCell
-                                {
-                                    cell.downloadProcess = 0.5 + CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)/2
-                                }
+                                self.downloadProcess = 0.5 + CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)/2
                             }
 
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
@@ -853,9 +841,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         playerItem.videoComposition = videoComposition
         playerItem.audioMix = audioMix
         
-        if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-            cell.player.replaceCurrentItem(with: playerItem)
-        }
+        player.replaceCurrentItem(with: playerItem)
         
         self.backgroundTimelineView.reloadData()
     }
@@ -880,10 +866,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         _previewView!.transform = _capturePipeline.transformFromVideoBufferOrientationToOrientation(AVCaptureVideoOrientation(rawValue: currentInterfaceOrientation.rawValue)!, withAutoMirroring: true) // Front camera preview should be mirrored
         
         self.view.insertSubview(_previewView!, at: 0)
-        var bounds = CGRect.zero
-        bounds.size = self.view.convert(self.view.bounds, to: _previewView).size
-        _previewView!.bounds = bounds
-        _previewView!.center = CGPoint(x: self.view.bounds.size.width/2.0, y: self.view.bounds.size.height/2.0)
+        _previewView!.frame = tableView.frame
     }
     
     @objc func deviceOrientationDidChange() {
@@ -911,7 +894,78 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    // #MARK: - URLSessionDownloadDelegate
+    
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        DispatchQueue.main.async {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                let backgroundCompletionHandler =
+                appDelegate.backgroundCompletionHandler else {
+                    return
+            }
+            backgroundCompletionHandler()
+        }
+    }
+    
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        guard let httpResponse = downloadTask.response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+                print ("server error")
+                return
+        }
+        do {
+            let documentsURL = try
+                FileManager.default.url(for: .documentDirectory,
+                                        in: .userDomainMask,
+                                        appropriateFor: nil,
+                                        create: false)
+            let savedURL = documentsURL.appendingPathComponent(
+                location.lastPathComponent).appendingPathExtension("mp4")
+            try FileManager.default.moveItem(at: location, to: savedURL)
+            
+            DispatchQueue.main.async {
+                self.downloadProcess = 0.5
+            }
+            
+            addClip(savedURL)
+
+        } catch {
+            print ("file error: \(error)")
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        // println("download task did write data")
+        
+        let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        
+        DispatchQueue.main.async {
+            self.downloadProcess = CGFloat(sqrt(progress)/2)
+        }
+    }
+    
+    // MARK: - layout
+    override func viewDidLayoutSubviews() {
+        if funcIsRecording() {
+            playerV.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width/3, height: tableView.bounds.height/3)
+            playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        } else {
+            playerV.frame = self.view.bounds
+            playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        }
+    }
+    
+    
     // MARK: - Models
+    
+    private lazy var urlSession: URLSession = {
+        let config = URLSessionConfiguration.background(withIdentifier: "MySession")
+        config.isDiscretionary = true
+        config.sessionSendsLaunchEvents = true
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
     
     var recordTimeRange = CMTimeRange.zero
     
@@ -946,6 +1000,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     private var _capturePipeline: RosyWriterCapturePipeline!
     
     @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var playerV: PlayerView!
     
     var histograms = [(time: CMTime, histogram: [[vImagePixelCount]])]()
     
@@ -964,23 +1019,17 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     ]
     var currentTime: Double {
         get {
-            if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-                return CMTimeGetSeconds(cell.player.currentTime())
-            } else {
-                return 0
-            }
+            return CMTimeGetSeconds(player.currentTime())
         }
         set {
             let newTime = CMTimeMakeWithSeconds(newValue, preferredTimescale: 600)
             //todo: more tolerance
-            if let cell = self.tableView.visibleCells.first as? TCPlayViewCell {
-                cell.player.seek(to: newTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-            }
+            player.seek(to: newTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
         }
     }
     
     var duration: Double {
-        if let cell = self.tableView.visibleCells.first as? TCPlayViewCell, let currentItem = cell.player.currentItem {
+        if let currentItem = player.currentItem {
             return CMTimeGetSeconds(currentItem.duration)
         }
         
@@ -999,5 +1048,22 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     private var playerItem: AVPlayerItem? = nil
     
     var works : [NSString] = []
+    
+    var downloadProgressLayer: CAShapeLayer?
+    var downloadProcess: CGFloat = 0 {
+        didSet {
+            if downloadProcess != 0 {
+                self.downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                self.downloadProgressLayer?.path = CGPath(rect: tableView.bounds, transform: nil)
+                self.downloadProgressLayer?.borderWidth = 0
+                self.downloadProgressLayer?.lineWidth = 10
+                self.downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                self.downloadProgressLayer?.strokeStart = 0
+                self.downloadProgressLayer?.strokeEnd = downloadProcess
+            } else {
+                self.downloadProgressLayer?.path = nil
+            }
+        }
+    }
 }
 
