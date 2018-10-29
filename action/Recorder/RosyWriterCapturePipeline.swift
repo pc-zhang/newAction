@@ -147,17 +147,6 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
 //        _videoDataOutputQueue = DispatchQueue(label: "com.apple.sample.capturepipeline.video", attributes: [])
 //        _videoDataOutputQueue.setTarget(queue: DispatchQueue.global(qos: .userInteractive))
         
-        // USE_XXX_RENDERER is set in the project's build settings for each target
-//        #if USE_OPENGL_RENDERER
-//            _renderer = RosyWriterOpenGLRenderer()
-//        #elseif USE_CPU_RENDERER
-//            _renderer = RosyWriterCPURenderer()
-//        #elseif USE_CIFILTER_RENDERER
-//            _renderer = RosyWriterCIFilterRenderer()
-//        #elseif USE_OPENCV_RENDERER
-//            _renderer = RosyWriterOpenCVRenderer()
-//        #endif
-        
         _renderer = RosyWriterCIFilterRenderer()
         
         _pipelineRunningTask = UIBackgroundTaskIdentifier.invalid

@@ -674,6 +674,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.tableView.isHidden = true
                 self.playerV.layer.addSublayer(self.downloadProgressLayer!)
                 self.playerV.player = self.player
+                self.playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 
                 // update timeline
                 self.updatePlayer()
@@ -808,8 +809,9 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 let transformer2 = AVMutableVideoCompositionLayerInstruction(assetTrack: secondVideoTrack)
                 
                 let renderSize2 = secondVideoTrack.naturalSize.applying(secondVideoTrack.preferredTransform)
-                let renderScale = self.videoComposition!.renderSize.height / renderSize2.height
-                transformer2.setTransform(secondVideoTrack.preferredTransform.scaledBy(x: renderScale, y: renderScale), at: instruction.timeRange.start)
+                let renderScale = videoComposition!.renderSize.width / renderSize2.width
+                let translateY = (renderSize2.height * renderScale - videoComposition!.renderSize.height) / 2
+                transformer2.setTransform(secondVideoTrack.preferredTransform.scaledBy(x: renderScale, y: renderScale).concatenating(CGAffineTransform(translationX: 0, y: -translateY)), at: instruction.timeRange.start)
                 instruction.layerInstructions = [transformer2]
             } else {
                 let transformer1 = AVMutableVideoCompositionLayerInstruction(assetTrack: firstVideoTrack)
@@ -951,9 +953,15 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         if funcIsRecording() {
             playerV.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width/3, height: tableView.bounds.height/3)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
+                let scale = tableView.bounds.width / width
+                let offsetY = (tableView.bounds.height - height * scale) / 2
+                _previewView?.frame = CGRect(x: 0, y: offsetY, width: tableView.bounds.width, height: height * scale)
+            }
         } else {
-            playerV.frame = self.view.bounds
+            playerV.frame = view.bounds
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            _previewView?.frame = tableView.bounds
         }
     }
     
