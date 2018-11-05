@@ -40,6 +40,7 @@ final class TCPlayViewCell: UITableViewCell {
 
     @IBAction func clickChorus(_ button: UIButton) {
         chorus.isHidden = true
+        player.pause()
         delegate?.chorus(url: url!)
     }
     

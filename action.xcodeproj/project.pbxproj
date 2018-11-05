@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1E7CFFE21ABF211F1D5F5290 /* libPods-action.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBCE7C59AD5C72292F83DBEF /* libPods-action.a */; };
+		F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */; };
+		F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025537821904D1A00261DEA /* EditUserInfoVC.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
@@ -50,7 +52,7 @@
 		F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */; };
 		F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025C21808464003ACC53 /* UserLocalCache.swift */; };
 		F0A4025F218319E0003ACC53 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025E218319E0003ACC53 /* MessagesVC.swift */; };
-		F0A402612183373B003ACC53 /* PlayerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402602183373B003ACC53 /* PlayerViewCell.swift */; };
+		F0A402612183373B003ACC53 /* GifViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402602183373B003ACC53 /* GifViewCell.swift */; };
 		F0A402632183408E003ACC53 /* MessagesViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402622183408D003ACC53 /* MessagesViewLayout.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +60,8 @@
 		3A7B650591158F5054FC4821 /* Pods-action.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-action.release.xcconfig"; path = "Pods/Target Support Files/Pods-action/Pods-action.release.xcconfig"; sourceTree = "<group>"; };
 		AA622B2D5BA3975CE881DBA5 /* Pods-action.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-action.debug.xcconfig"; path = "Pods/Target Support Files/Pods-action/Pods-action.debug.xcconfig"; sourceTree = "<group>"; };
 		CBCE7C59AD5C72292F83DBEF /* libPods-action.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-action.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "iOSDevCenters+GIF.swift"; sourceTree = "<group>"; };
+		F025537821904D1A00261DEA /* EditUserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoVC.swift; sourceTree = "<group>"; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401D2217C50AD003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -103,7 +107,7 @@
 		F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneLocalCache.swift; sourceTree = "<group>"; };
 		F0A4025C21808464003ACC53 /* UserLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocalCache.swift; sourceTree = "<group>"; };
 		F0A4025E218319E0003ACC53 /* MessagesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
-		F0A402602183373B003ACC53 /* PlayerViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewCell.swift; sourceTree = "<group>"; };
+		F0A402602183373B003ACC53 /* GifViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifViewCell.swift; sourceTree = "<group>"; };
 		F0A402622183408D003ACC53 /* MessagesViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -233,7 +237,8 @@
 			isa = PBXGroup;
 			children = (
 				F0A4025E218319E0003ACC53 /* MessagesVC.swift */,
-				F0A402602183373B003ACC53 /* PlayerViewCell.swift */,
+				F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */,
+				F0A402602183373B003ACC53 /* GifViewCell.swift */,
 				F0A402622183408D003ACC53 /* MessagesViewLayout.swift */,
 				F0A401FC217C511B003ACC53 /* FollowingViewController.swift */,
 				F0A401FA217C511B003ACC53 /* FSPagerView.swift */,
@@ -258,6 +263,7 @@
 		F0A40259217D9292003ACC53 /* DB */ = {
 			isa = PBXGroup;
 			children = (
+				F025537821904D1A00261DEA /* EditUserInfoVC.swift */,
 				F0A40249217D9285003ACC53 /* BaseLocalCache.swift */,
 				F0A4024D217D9286003ACC53 /* CacheItem.swift */,
 				F0A4024F217D9287003ACC53 /* CKContainer+CloudShares.swift */,
@@ -377,7 +383,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
-				F0A402612183373B003ACC53 /* PlayerViewCell.swift in Sources */,
+				F0A402612183373B003ACC53 /* GifViewCell.swift in Sources */,
 				F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */,
 				F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */,
 				F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */,
@@ -412,8 +418,10 @@
 				F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */,
 				F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */,
 				F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */,
+				F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */,
 				F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */,
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
+				F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */,
 				F0A40210217C511C003ACC53 /* TCPlayViewCell.swift in Sources */,
 				F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */,
 			);

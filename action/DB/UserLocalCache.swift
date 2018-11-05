@@ -27,35 +27,51 @@ import CloudKit
 // 2. Call public methods directly, otherwise will trigger a deadlock.
 //
 final class UserLocalCache: BaseLocalCache {
-
-    let container = CKContainer.default()
-    let database = CKContainer.default().publicCloudDatabase
-    let zone = CKRecordZone.default()
-    var userRecord : CKRecord?
+    
+    let container: CKContainer
+    let database: CKDatabase
+    var userRecordID: CKRecord.ID?
+    var gifs : [CKAsset]?
+    var avatarPath : String?
+    var nickName : String?
+    var sign : String?
     
     override init() {
+        self.container = CKContainer.default()
+        self.database = container.publicCloudDatabase
+        
         super.init()
         
         CKContainer.default().fetchUserRecordID { (recordID, error) in
-            if (error != nil) {
-                // Error handling for failed fetch from public database
-            }
-            else {
-                guard let recordID = recordID else {
-                    return
-                }
-                
-                CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { (record, error) in
-                    if (error != nil) {
-                        // Error handling for failed fetch from public database
-                    }
-                    else {
-                        self.userRecord = record
-                    }
-                }
+            if let recordID = recordID {
+                self.performWriterBlock { self.userRecordID = recordID }
+                self.updateWithRecordID(recordID)
             }
         }
+        
     }
-
+    
+    
+    // Convenient method for updating the cache with one specified record ID.
+    //
+    func updateWithRecordID(_ recordID: CKRecord.ID) {
+        
+        let fetchRecordsOp = CKFetchRecordsOperation(recordIDs: [recordID])
+        fetchRecordsOp.fetchRecordsCompletionBlock = {recordsByRecordID, error in
+            
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: [recordID]) == nil,
+                let userRecord = recordsByRecordID?[recordID]  else { return }
+            
+            self.performWriterBlock {
+                self.avatarPath = (userRecord["avatarImage"] as? CKAsset)?.fileURL.path
+                self.nickName = userRecord["nickName"]
+                self.sign = userRecord["sign"]
+                self.gifs = userRecord["gifs"]
+            }
+        }
+        fetchRecordsOp.database = database
+        operationQueue.addOperation(fetchRecordsOp)
+        postWhenOperationQueueClear(name: .userCacheDidChange)
+    }
+    
 }
-

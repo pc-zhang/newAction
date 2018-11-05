@@ -15,8 +15,7 @@ class MessagesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDa
     
     // MARK: - Models
     
-    var works : [NSString] = []
-    var isLoading: Bool = false
+    var gifs : [CKAsset] = []
     @IBOutlet weak var collectionV: UICollectionView!
     
     // MARK: - ViewController Life Cycles
@@ -39,10 +38,10 @@ class MessagesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDa
                         // Error handling for failed fetch from public database
                     }
                     else {
-                        guard let record = record, let works = record["works"] as? [NSString] else {
+                        guard let record = record, let gifs = record["gifs"] as? [CKAsset] else {
                             return
                         }
-                        self.works = works
+                        self.gifs = gifs
                         DispatchQueue.main.async {
                             self.collectionV.reloadData()
                         }
@@ -54,33 +53,23 @@ class MessagesVC: UIViewController, UICollectionViewDelegate, UICollectionViewDa
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return works.count
+        return gifs.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayerViewCell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GifViewCell", for: indexPath)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row < works.count {
-            let playerItem = AVPlayerItem(url: URL(string: works[indexPath.row] as String)!)
-            if let cell = cell as? PlayerViewCell {
-                cell.player.replaceCurrentItem(with: playerItem)
-                cell.player.seek(to: .zero)
+        if indexPath.row < gifs.count {
+            let imageData = try? Data(contentsOf: (gifs[indexPath.row] as CKAsset).fileURL)
+            let advTimeGif = UIImage.gifImageWithData(imageData!)
+            
+            if let cell = cell as? GifViewCell {
+                cell.imageV.image = advTimeGif
             }
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? PlayerViewCell {
-            cell.player.pause()
-            cell.player.replaceCurrentItem(with: nil)
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-
     }
     
 }

@@ -13,10 +13,14 @@ extension Notification.Name {
     static let zoneCacheDidChange = Notification.Name("zoneCacheDidChange")
     static let topicCacheDidChange = Notification.Name("topicCacheDidChange")
     static let zoneDidSwitch = Notification.Name("zoneDidSwtich")
+    static let userCacheDidChange = Notification.Name("userCacheDidChange")
 }
 
 // Type and type alias for notification payload.
 //
+struct UserCacheChanges {
+}
+
 struct TopicCacheChanges {
     private(set) var recordIDsDeleted: [CKRecord.ID]
     private(set) var recordsChanged: [CKRecord]
@@ -43,6 +47,7 @@ class NotificationObject<T> {
     }
 }
 
+typealias UserCacheDidChange = NotificationObject<UserCacheChanges>
 typealias TopicCacheDidChange = NotificationObject<TopicCacheChanges>
 typealias ZoneCacheDidChange = NotificationObject<ZoneCacheChanges>
 typealias ZoneDidSwitch = NotificationObject<ZoneSwitched>

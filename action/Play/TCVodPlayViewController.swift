@@ -76,6 +76,24 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 if (exporter.status == .completed) {
                     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)){
                         UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path, self, #selector(self.video), nil)
+                        
+                        guard let userRecordID = self.userRecordID else {
+                            return
+                        }
+                        
+                        let artworkRecord = CKRecord(recordType: "Artwork")
+                        artworkRecord["artist"] = CKRecord.Reference(recordID: userRecordID, action: .none)
+                        artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
+                        
+                        CKContainer.default().publicCloudDatabase.save(artworkRecord) {
+                            (record, error) in
+                            if let error = error {
+                                // Insert error handling
+                                return
+                            }
+                            // Insert successfully saved record code
+                        }
+
                     }
                 } else {
                     _ = 1
@@ -154,27 +172,27 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidLoad()
         
         CKContainer.default().fetchUserRecordID { (recordID, error) in
+            self.userRecordID = recordID
+        }
+        
+        let date = NSDate(timeInterval: -60.0 * 120, since: Date())
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creationDate > %@", date))
+        CKContainer.default().publicCloudDatabase.perform(query, inZoneWith: nil) { (records, error) in
             if (error != nil) {
                 // Error handling for failed fetch from public database
             }
             else {
-                guard let recordID = recordID else {
-                    return
+                self.artWorks = []
+                
+                for record in records ?? [] {
+                    let ckasset = record["video"] as! CKAsset
+                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                    try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
+                    self.artWorks.append(savedURL)
                 }
                 
-                CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { (record, error) in
-                    if (error != nil) {
-                        // Error handling for failed fetch from public database
-                    }
-                    else {
-                        guard let record = record, let works = record["works"] as? [NSString] else {
-                            return
-                        }
-                        self.works = works
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
                 }
             }
         }
@@ -196,9 +214,9 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.decelerationRate = UIScrollView.DecelerationRate(rawValue: UIScrollView.DecelerationRate.fast.rawValue / 1000.0)
         
         downloadProgressLayer = CAShapeLayer()
-        downloadProgressLayer!.frame = tableView.bounds
-        downloadProgressLayer!.position = CGPoint(x:tableView.bounds.width/2, y:tableView.bounds.height/2)
-        tableView.layer.addSublayer(downloadProgressLayer!)
+        downloadProgressLayer!.frame = playerV.bounds
+        downloadProgressLayer!.position = CGPoint(x:playerV.bounds.width/2, y:playerV.bounds.height/2)
+        playerV.layer.addSublayer(downloadProgressLayer!)
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
@@ -248,8 +266,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let playViewCell = cell as! TCPlayViewCell
         
-        if indexPath.row < works.count {
-            playViewCell.url = URL(string: works[indexPath.row] as String)
+        if indexPath.row < artWorks.count {
+            playViewCell.url = artWorks[indexPath.row]
             let playerItem = AVPlayerItem(url: playViewCell.url!)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
@@ -301,7 +319,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return works.count
+        return artWorks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -441,10 +459,13 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     func chorus(url: URL) {
         DispatchQueue.main.async {
             self.tableView.isScrollEnabled = false
+            self.downloadProcess = 0.5
         }
         
-        let backgroundTask = urlSession.downloadTask(with: url)
-        backgroundTask.resume()
+        addClip(url)
+        
+//        let backgroundTask = urlSession.downloadTask(with: url)
+//        backgroundTask.resume()
     }
     
     
@@ -672,7 +693,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.exportButton.isHidden = false
                 
                 self.tableView.isHidden = true
-                self.playerV.layer.addSublayer(self.downloadProgressLayer!)
                 self.playerV.player = self.player
                 self.playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 
@@ -950,18 +970,19 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     // MARK: - layout
     override func viewDidLayoutSubviews() {
+        let safeArea = view.bounds.inset(by: view.safeAreaInsets)
         if funcIsRecording() {
-            playerV.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width/3, height: tableView.bounds.height/3)
+            playerV.frame = CGRect(x: 0, y: 0, width: safeArea.width/3, height: safeArea.height/3)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
-                let scale = tableView.bounds.width / width
-                let offsetY = (tableView.bounds.height - height * scale) / 2
-                _previewView?.frame = CGRect(x: 0, y: offsetY, width: tableView.bounds.width, height: height * scale)
+                let scale = safeArea.width / width
+                let offsetY = (safeArea.height - height * scale) / 2
+                _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
             }
         } else {
-            playerV.frame = view.bounds
+            playerV.frame = safeArea
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            _previewView?.frame = tableView.bounds
+            _previewView?.frame = safeArea
         }
     }
     
@@ -1055,14 +1076,15 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     private var playerItem: AVPlayerItem? = nil
     
-    var works : [NSString] = []
+    var artWorks : [URL] = []
+    var userRecordID : CKRecord.ID?
     
     var downloadProgressLayer: CAShapeLayer?
     var downloadProcess: CGFloat = 0 {
         didSet {
             if downloadProcess != 0 {
                 self.downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                self.downloadProgressLayer?.path = CGPath(rect: tableView.bounds, transform: nil)
+                self.downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
                 self.downloadProgressLayer?.borderWidth = 0
                 self.downloadProgressLayer?.lineWidth = 10
                 self.downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)

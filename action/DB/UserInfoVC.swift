@@ -10,8 +10,9 @@ import Foundation
 import CloudKit
 import UIKit
 
-class UserInfoVC : UIViewController {
+class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
+    var gifs : [CKAsset] = []
     var userRecordID: CKRecord.ID?
     @IBOutlet weak var avatarV: UIImageView!
     @IBOutlet weak var nickNameV: UILabel!
@@ -19,52 +20,75 @@ class UserInfoVC : UIViewController {
     @IBOutlet weak var friendsV: UILabel!
     @IBOutlet weak var signV: UILabel!
     @IBOutlet weak var positionV: UILabel!
+    @IBOutlet weak var collectionV: UICollectionView!
     
+    private var userCacheOrNil: UserLocalCache? {
+        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
+    }
     
     override func viewDidLoad() {
-        CKContainer.default().fetchUserRecordID { (recordID, error) in
-            if (error != nil) {
-                // Error handling for failed fetch from public database
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).userCacheDidChange(_:)),
+            name: NSNotification.Name.userCacheDidChange, object: nil)
+        spinner.startAnimating()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func userCacheDidChange(_ notification: Notification) {
+        
+        if let userCache = userCacheOrNil {
+            if let imagePath = userCache.avatarPath {
+                let advTimeGif = UIImage(contentsOfFile: imagePath)
+                self.avatarV.image = advTimeGif
             }
-            else {
-                guard let recordID = recordID else {
-                    return
-                }
-                self.userRecordID = recordID
-                
-                CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { (record, error) in
-                    if (error != nil) {
-                        // Error handling for failed fetch from public database
-                    }
-                    else {
-                        guard let record = record else {
-                            return
-                        }
-                        
-                        // Display the fetched record
-                        DispatchQueue.main.async {
-                            self.avatarV.downloaded(from: record["avatarURL"] ?? "")
-                            self.avatarV.layer.cornerRadius = 8
-                            self.avatarV.layer.masksToBounds = true
-                            self.avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-                            self.avatarV.layer.borderWidth = 1
-                            
-                            self.nickNameV.text = record["nickName"]
-                            //                        self.idV.text = record["nickName"]
-                            //                        self.friendsV.text = record["nickName"]
-                            self.signV.text = record["sign"]
-                            
-                            if let assetList = record["works"] as? [NSString] {
-                                for assetURL in assetList {
-                                    
-                                }
-                            }
-                        }
-                    }
-                }
+            self.avatarV.layer.cornerRadius = 8
+            self.avatarV.layer.masksToBounds = true
+            self.avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+            self.avatarV.layer.borderWidth = 1
+            
+            self.nickNameV.text = userCache.nickName
+            self.signV.text = userCache.sign
+            
+            self.collectionV.reloadData()
+        }
+        
+        spinner.stopAnimating()
+    }
+    
+    @IBAction func done(bySegue: UIStoryboardSegue) {
+        if bySegue.identifier == "" {
+//            saveRecord()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return gifs.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GifViewCell", for: indexPath)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row < gifs.count {
+            let imageData = try? Data(contentsOf: (gifs[indexPath.row] as CKAsset).fileURL)
+            let advTimeGif = UIImage.gifImageWithData(imageData!)
+            
+            if let cell = cell as? GifViewCell {
+                cell.imageV.image = advTimeGif
             }
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellWidth = (collectionView.bounds.width - 10) / 3
+        return CGSize(width: cellWidth, height: cellWidth / 9.0 * 16)
+    }
+    
 }
 
 extension UIImageView {
@@ -85,5 +109,28 @@ extension UIImageView {
     func downloaded(from link: String, contentMode mode: UIView.ContentMode = .scaleAspectFill) {
         guard let url = URL(string: link) else { return }
         downloaded(from: url, contentMode: mode)
+    }
+}
+
+class SpinnerViewController: UIViewController {
+    
+    lazy var spinner: UIActivityIndicatorView = {
+        return UIActivityIndicatorView(style: .gray)
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.addSubview(spinner)
+        view.bringSubviewToFront(spinner)
+        spinner.hidesWhenStopped = true
+        spinner.color = .blue
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        spinner.center = CGPoint(x: view.frame.size.width / 2,
+                                 y: view.frame.size.height / 2)
     }
 }

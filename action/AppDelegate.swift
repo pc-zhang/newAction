@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var ubiquityIdentityToken: (NSCoding & NSCopying & NSObjectProtocol)?
     var zoneCacheOrNil: ZoneLocalCache?
     var topicCacheOrNil: TopicLocalCache?
+    var userCacheOrNil: UserLocalCache?
     
     // Keep the share we accepted so that we can select the zone when the share comes in.
     //
@@ -71,6 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkAccountStatus(for: container) { available in
             guard available else { return self.handleAccountUnavailable() }
             self.zoneCacheOrNil = ZoneLocalCache(self.container)
+            self.userCacheOrNil = UserLocalCache()
         }
         return true
     }
@@ -118,6 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             self.zoneCacheOrNil = ZoneLocalCache(self.container)
+            self.userCacheOrNil = UserLocalCache()
         }
     }
 
