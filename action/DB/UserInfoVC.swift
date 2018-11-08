@@ -12,9 +12,15 @@ import UIKit
 
 class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
-    var gifs : [CKAsset] = []
     var userRecordID: CKRecord.ID?
-    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var avatarV: UIImageView! {
+        didSet {
+            avatarV.layer.cornerRadius = 8
+            avatarV.layer.masksToBounds = true
+            avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+            avatarV.layer.borderWidth = 1
+        }
+    }
     @IBOutlet weak var nickNameV: UILabel!
     @IBOutlet weak var idV: UILabel!
     @IBOutlet weak var friendsV: UILabel!
@@ -27,9 +33,10 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         NotificationCenter.default.addObserver(
             self, selector: #selector(type(of:self).userCacheDidChange(_:)),
-            name: NSNotification.Name.userCacheDidChange, object: nil)
+            name: .userCacheDidChange, object: nil)
         spinner.startAnimating()
     }
     
@@ -40,17 +47,15 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     @objc func userCacheDidChange(_ notification: Notification) {
         
         if let userCache = userCacheOrNil {
-            if let imagePath = userCache.avatarPath {
-                let advTimeGif = UIImage(contentsOfFile: imagePath)
-                self.avatarV.image = advTimeGif
+            userCache.performReaderBlockAndWait {
+                if let imagePath = userCache.avatarURL?.path {
+                    let advTimeGif = UIImage(contentsOfFile: imagePath)
+                    self.avatarV.image = advTimeGif
+                }
+                
+                self.nickNameV.text = userCache.nickName
+                self.signV.text = userCache.sign
             }
-            self.avatarV.layer.cornerRadius = 8
-            self.avatarV.layer.masksToBounds = true
-            self.avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-            self.avatarV.layer.borderWidth = 1
-            
-            self.nickNameV.text = userCache.nickName
-            self.signV.text = userCache.sign
             
             self.collectionV.reloadData()
         }
@@ -65,7 +70,7 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return gifs.count
+        return userCacheOrNil?.gifs.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -74,6 +79,9 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let gifs = userCacheOrNil?.gifs else {
+            return
+        }
         if indexPath.row < gifs.count {
             let imageData = try? Data(contentsOf: (gifs[indexPath.row] as CKAsset).fileURL)
             let advTimeGif = UIImage.gifImageWithData(imageData!)
@@ -112,7 +120,7 @@ extension UIImageView {
     }
 }
 
-class SpinnerViewController: UIViewController {
+class SpinnerViewController: UITableViewController {
     
     lazy var spinner: UIActivityIndicatorView = {
         return UIActivityIndicatorView(style: .gray)
