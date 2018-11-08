@@ -471,20 +471,43 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="168"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="VwM-A3-9dw">
-                                                    <rect key="frame" x="127.66666666666669" y="24" width="120" height="120"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n4p-GD-L1U">
+                                                    <rect key="frame" x="125" y="21.666666666666671" width="125" height="125.00000000000001"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="VwM-A3-9dw">
+                                                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                        </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="更换头像" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b6G-Be-iSU">
+                                                            <rect key="frame" x="0.0" y="100" width="125" height="25"/>
+                                                            <color key="backgroundColor" white="0.66666666666666663" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="120" id="Oij-vR-Chh"/>
-                                                        <constraint firstAttribute="width" constant="120" id="biN-kY-y1Q"/>
+                                                        <constraint firstAttribute="trailing" secondItem="VwM-A3-9dw" secondAttribute="trailing" id="4Jb-T8-ZTm"/>
+                                                        <constraint firstAttribute="bottom" secondItem="VwM-A3-9dw" secondAttribute="bottom" id="B2p-Uk-7gN"/>
+                                                        <constraint firstAttribute="bottom" secondItem="b6G-Be-iSU" secondAttribute="bottom" id="BmI-l7-flG"/>
+                                                        <constraint firstItem="b6G-Be-iSU" firstAttribute="height" secondItem="n4p-GD-L1U" secondAttribute="height" multiplier="1:5" id="Etp-gH-nab"/>
+                                                        <constraint firstItem="b6G-Be-iSU" firstAttribute="leading" secondItem="n4p-GD-L1U" secondAttribute="leading" id="TnP-vL-J3o"/>
+                                                        <constraint firstItem="VwM-A3-9dw" firstAttribute="leading" secondItem="n4p-GD-L1U" secondAttribute="leading" id="VwX-6R-AeP"/>
+                                                        <constraint firstItem="VwM-A3-9dw" firstAttribute="top" secondItem="n4p-GD-L1U" secondAttribute="top" id="hUl-cd-6lP"/>
+                                                        <constraint firstAttribute="width" secondItem="n4p-GD-L1U" secondAttribute="height" multiplier="1:1" id="j4k-Zr-3Gg"/>
+                                                        <constraint firstAttribute="trailing" secondItem="b6G-Be-iSU" secondAttribute="trailing" id="mTa-FA-mGF"/>
                                                     </constraints>
-                                                </imageView>
+                                                </view>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="VwM-A3-9dw" firstAttribute="centerX" secondItem="a0x-Dc-aD8" secondAttribute="centerX" id="QYf-lK-v8C"/>
-                                                <constraint firstItem="VwM-A3-9dw" firstAttribute="centerY" secondItem="a0x-Dc-aD8" secondAttribute="centerY" id="cgt-RQ-XJv"/>
+                                                <constraint firstItem="n4p-GD-L1U" firstAttribute="centerY" secondItem="a0x-Dc-aD8" secondAttribute="centerY" id="Q3y-tf-fdc"/>
+                                                <constraint firstItem="n4p-GD-L1U" firstAttribute="centerX" secondItem="a0x-Dc-aD8" secondAttribute="centerX" id="pb7-ub-agj"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="n4p-GD-L1U" firstAttribute="width" secondItem="Zj7-1R-5aQ" secondAttribute="width" multiplier="1:3" id="P95-TS-X4p"/>
+                                        </constraints>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="nPU-1q-l3x">
                                         <rect key="frame" x="0.0" y="168" width="375" height="44"/>
@@ -661,6 +684,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="avatarV" destination="VwM-A3-9dw" id="w8W-I4-939"/>
+                        <outlet property="avatarWrapperV" destination="n4p-GD-L1U" id="du0-A9-1qV"/>
                         <outlet property="locationTextField" destination="z6m-4a-dNs" id="hlc-zP-xIa"/>
                         <outlet property="nickNameTextField" destination="3TS-Ss-GlD" id="I2b-x0-R73"/>
                         <outlet property="sexLabel" destination="MxM-i3-6oo" id="XcU-55-Kza"/>
@@ -671,7 +695,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n8A-ST-qtQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Lvw-Rg-DHo" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1076" y="739"/>
+            <point key="canvasLocation" x="1076" y="738.91625615763553"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ods-xo-31R">

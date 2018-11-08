@@ -9,8 +9,26 @@
 import Foundation
 import CloudKit
 import UIKit
+import MobileCoreServices
 
-class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDelegate {
+class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    private var avatarURL : URL? {
+        didSet {
+            if let path = avatarURL?.path {
+                avatarV.image = UIImage(contentsOfFile: path)
+            }
+        }
+    }
+    
+    private lazy var picker : UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.sourceType = .savedPhotosAlbum
+        picker.mediaTypes = [kUTTypeImage as String]
+        picker.delegate = self
+        picker.allowsEditing = true
+        return picker
+    }()
     
     private var userCacheOrNil: UserLocalCache? {
         return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
@@ -32,7 +50,7 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
         
         if let userCache = userCacheOrNil {
             userCache.performReaderBlockAndWait {
-                if let imagePath = userCache.avatarURL?.path {
+                if let imagePath = userCache.avatarImage?.fileURL.path {
                     let advTimeGif = UIImage(contentsOfFile: imagePath)
                     self.avatarV.image = advTimeGif
                 }
@@ -55,12 +73,19 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
     @IBOutlet weak var textVCharCountLabel: UILabel!
     
     @IBOutlet weak var sexLabel: UILabel!
+    
+    @IBOutlet weak var avatarWrapperV: UIView! {
+        didSet {
+            avatarWrapperV.layer.cornerRadius = avatarWrapperV.bounds.width / 10
+            avatarWrapperV.layer.masksToBounds = true
+            avatarWrapperV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+            avatarWrapperV.layer.borderWidth = 1
+        }
+    }
+    
     @IBOutlet weak var avatarV: UIImageView! {
         didSet {
-            avatarV.layer.cornerRadius = 8
-            avatarV.layer.masksToBounds = true
-            avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-            avatarV.layer.borderWidth = 1
+            avatarV.contentMode = .scaleAspectFill
         }
     }
     
@@ -73,7 +98,7 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
         resignAllTextFirstResponder()
         if nickNameTextField.text != "" && locationTextField.text != "" {
             if let userCache = userCacheOrNil {
-                userCache.changeUserInfo(avatarURL: userCache.avatarURL ?? URL(fileURLWithPath: ""), nickName: nickNameTextField.text ?? "", sex: sexLabel.text ?? "", location: locationTextField.text ?? "", sign: signTextV.text)
+                userCache.changeUserInfo(avatarURL: avatarURL ?? URL(fileURLWithPath: ""), nickName: nickNameTextField.text ?? "", sex: sexLabel.text ?? "", location: locationTextField.text ?? "", sign: signTextV.text)
                 spinner.startAnimating()
             }
             return true
@@ -132,8 +157,14 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
         
         if indexPath.row == 0 {
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            actionSheet.addAction(UIAlertAction(title: "拍照", style: .default, handler: nil))
-            actionSheet.addAction(UIAlertAction(title: "相册", style: .default, handler: nil))
+            actionSheet.addAction(UIAlertAction(title: "拍照", style: .default, handler: { (action) in
+                self.picker.sourceType = .camera
+                self.present(self.picker, animated: true)
+            }))
+            actionSheet.addAction(UIAlertAction(title: "相册", style: .default, handler: { (action) in
+                self.picker.sourceType = .savedPhotosAlbum
+                self.present(self.picker, animated: true)
+            }))
             actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
             
             present(actionSheet, animated: true)
@@ -167,6 +198,30 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
         nickNameTextField.resignFirstResponder()
         locationTextField.resignFirstResponder()
         signTextV.resignFirstResponder()
+    }
+    
+    // MARK: UIImagePickerControllerDelegate, UINavigationControllerDelegate
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL {
+            DispatchQueue.main.async {
+                self.avatarURL = imageURL
+            }
+        } else if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            if let imageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+                FileManager.default.createFile(atPath: imageURL.path, contents: image.pngData(), attributes: nil)
+                DispatchQueue.main.async {
+                    self.avatarURL = imageURL
+                }
+            }
+        }
+
+        picker.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
 }

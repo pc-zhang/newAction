@@ -15,7 +15,8 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     var userRecordID: CKRecord.ID?
     @IBOutlet weak var avatarV: UIImageView! {
         didSet {
-            avatarV.layer.cornerRadius = 8
+            avatarV.contentMode = .scaleAspectFill
+            avatarV.layer.cornerRadius = avatarV.bounds.width/10
             avatarV.layer.masksToBounds = true
             avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
             avatarV.layer.borderWidth = 1
@@ -48,7 +49,7 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
         
         if let userCache = userCacheOrNil {
             userCache.performReaderBlockAndWait {
-                if let imagePath = userCache.avatarURL?.path {
+                if let imagePath = userCache.avatarImage?.fileURL.path {
                     let advTimeGif = UIImage(contentsOfFile: imagePath)
                     self.avatarV.image = advTimeGif
                 }

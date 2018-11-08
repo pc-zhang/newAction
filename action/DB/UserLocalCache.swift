@@ -31,7 +31,7 @@ final class UserLocalCache: BaseLocalCache {
     let container: CKContainer
     let database: CKDatabase
     var userRecord: CKRecord?
-    var avatarURL : URL?
+    var avatarImage : CKAsset?
     var nickName : String?
     var sex : String?
     var location : String?
@@ -74,7 +74,7 @@ final class UserLocalCache: BaseLocalCache {
     
     func updateCacheWithRecord(userRecord: CKRecord) {
         self.userRecord = userRecord
-        self.avatarURL = (userRecord["avatarImage"] as? CKAsset)?.fileURL
+        self.avatarImage = userRecord["avatarImage"] as? CKAsset
         self.nickName = userRecord["nickName"]
         self.sex = userRecord["sex"]
         self.location = userRecord["location"]
