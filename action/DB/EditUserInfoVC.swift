@@ -23,7 +23,6 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
     
     private lazy var picker : UIImagePickerController = {
         let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
         picker.mediaTypes = [kUTTypeImage as String]
         picker.delegate = self
         picker.allowsEditing = true
@@ -159,6 +158,7 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "拍照", style: .default, handler: { (action) in
                 self.picker.sourceType = .camera
+                self.picker.cameraFlashMode = .off
                 self.present(self.picker, animated: true)
             }))
             actionSheet.addAction(UIAlertAction(title: "相册", style: .default, handler: { (action) in
@@ -208,11 +208,7 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL {
-            DispatchQueue.main.async {
-                self.avatarURL = imageURL
-            }
-        } else if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             if let imageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
                 FileManager.default.createFile(atPath: imageURL.path, contents: image.pngData(), attributes: nil)
                 DispatchQueue.main.async {
