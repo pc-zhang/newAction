@@ -92,7 +92,7 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         var artworksCount = 0
         userCacheOrNil?.performReaderBlockAndWait {
-            artworksCount = userCacheOrNil!.artworkGifs.count
+            artworksCount = userCacheOrNil!.artworkThumbnails.count
         }
         return artworksCount
     }
@@ -103,11 +103,11 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        var artworkGifs : [URL]? = nil
+        var artworkGifs : [CKAsset]? = nil
         userCacheOrNil?.performReaderBlockAndWait {
-            artworkGifs = userCacheOrNil!.artworkGifs
+            artworkGifs = userCacheOrNil!.artworkThumbnails
         }
-        if let artworkGifs = artworkGifs, let imageData = try? Data(contentsOf: artworkGifs[indexPath.row]), let cell = cell as? GifViewCell {
+        if let artworkGifs = artworkGifs, let imageData = try? Data(contentsOf: artworkGifs[indexPath.row].fileURL), let cell = cell as? GifViewCell {
             cell.imageV.image = UIImage.gifImageWithData(imageData)
         }
     }

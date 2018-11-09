@@ -42,12 +42,9 @@ final class UserLocalCache: BaseLocalCache {
 //        }
 //    }
     
-    var artworkGifs: [URL] {
-        return artworkRecords.map {
-            if let ckasset = $0["gif"] as? CKAsset {
-                return ckasset.fileURL
-            }
-            return URL(fileURLWithPath: "")
+    var artworkThumbnails: [CKAsset] {
+        return artworkRecords.compactMap {
+            return $0["thumbnail"] as? CKAsset
         }
     }
     
@@ -119,13 +116,14 @@ final class UserLocalCache: BaseLocalCache {
             self.artworkRecords = []
         }
         let queryArtworksOp = CKQueryOperation(query: CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "artist = %@", recordID)))
+        queryArtworksOp.desiredKeys = ["thumbnail"]
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
             if let ckasset = artworkRecord["video"] as? CKAsset {
                 let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
                 try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-                self.performWriterBlock {
-                    self.artworkRecords.append(artworkRecord)
-                }
+            }
+            self.performWriterBlock {
+                self.artworkRecords.append(artworkRecord)
             }
         }
         queryArtworksOp.queryCompletionBlock = { (cursor, error) in

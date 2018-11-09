@@ -43,7 +43,47 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         present(picker, animated: true)
     }
     
+    func generateThumbnail() -> CKAsset? {
+        let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
+        imageGenerator.maximumSize = CGSize(width: 120, height: 160)
+        imageGenerator.appliesPreferredTrackTransform = true
+        imageGenerator.videoComposition = videoComposition
+        
+        var iter = 0
+        var iterTime = CMTime.zero
+        var images: [CGImage] = []
+        
+        while iter < 30 {
+            if let image = try? imageGenerator.copyCGImage(at: iterTime, actualTime: nil) {
+                images.append(image)
+            }
+            iterTime = CMTimeAdd(iterTime, CMTime(value: 1, timescale: 30))
+            iter = iter + 1
+        }
+        
+        let fileProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFLoopCount as String: 0]]  as CFDictionary
+        let frameProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [(kCGImagePropertyGIFDelayTime as String): 0.01]] as CFDictionary
+        
+        let documentsDirectoryURL: URL? = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        if let fileURL = documentsDirectoryURL?.appendingPathComponent("thumbnail.gif"), let url = fileURL as CFURL? {
+            if let destination = CGImageDestinationCreateWithURL(url, kUTTypeGIF, images.count, nil) {
+                CGImageDestinationSetProperties(destination, fileProperties)
+                for image in images {
+                    CGImageDestinationAddImage(destination, image, frameProperties)
+                }
+                if !CGImageDestinationFinalize(destination) {
+                    print("Failed to finalize the image destination")
+                } else {
+                    return CKAsset(fileURL: fileURL)
+                }
+            }
+        }
+        
+        return nil
+    }
+    
     @IBAction func export(_ sender: Any) {
+        let thumbnail = generateThumbnail()
         // Create the export session with the composition and set the preset to the highest quality.
         let compatiblePresets = AVAssetExportSession.exportPresets(compatibleWith: composition!)
         let exporter = AVAssetExportSession(asset: composition!, presetName: AVAssetExportPreset960x540)!
@@ -84,7 +124,9 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                         let artworkRecord = CKRecord(recordType: "Artwork")
                         artworkRecord["artist"] = CKRecord.Reference(recordID: userRecordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
-                        
+                        if let thumbnail = thumbnail {
+                            artworkRecord["thumbnail"] = thumbnail
+                        }
                         CKContainer.default().publicCloudDatabase.save(artworkRecord) {
                             (record, error) in
                             if let error = error {
@@ -1096,4 +1138,3 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
 }
-
