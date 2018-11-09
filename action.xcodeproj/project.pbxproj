@@ -52,7 +52,6 @@
 		F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */; };
 		F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025C21808464003ACC53 /* UserLocalCache.swift */; };
 		F0A4025F218319E0003ACC53 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025E218319E0003ACC53 /* MessagesVC.swift */; };
-		F0A402612183373B003ACC53 /* GifViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402602183373B003ACC53 /* GifViewCell.swift */; };
 		F0A402632183408E003ACC53 /* MessagesViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A402622183408D003ACC53 /* MessagesViewLayout.swift */; };
 /* End PBXBuildFile section */
 
@@ -107,7 +106,6 @@
 		F0A40250217D9287003ACC53 /* ZoneLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneLocalCache.swift; sourceTree = "<group>"; };
 		F0A4025C21808464003ACC53 /* UserLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocalCache.swift; sourceTree = "<group>"; };
 		F0A4025E218319E0003ACC53 /* MessagesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
-		F0A402602183373B003ACC53 /* GifViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifViewCell.swift; sourceTree = "<group>"; };
 		F0A402622183408D003ACC53 /* MessagesViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -238,7 +236,6 @@
 			children = (
 				F0A4025E218319E0003ACC53 /* MessagesVC.swift */,
 				F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */,
-				F0A402602183373B003ACC53 /* GifViewCell.swift */,
 				F0A402622183408D003ACC53 /* MessagesViewLayout.swift */,
 				F0A401FC217C511B003ACC53 /* FollowingViewController.swift */,
 				F0A401FA217C511B003ACC53 /* FSPagerView.swift */,
@@ -383,7 +380,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
-				F0A402612183373B003ACC53 /* GifViewCell.swift in Sources */,
 				F0A40258217D9287003ACC53 /* ZoneLocalCache.swift in Sources */,
 				F0A40222217C511C003ACC53 /* FollowingViewController.swift in Sources */,
 				F0A40226217C511C003ACC53 /* FSPageControl.swift in Sources */,

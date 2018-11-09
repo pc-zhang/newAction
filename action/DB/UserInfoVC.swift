@@ -10,24 +10,15 @@ import Foundation
 import CloudKit
 import UIKit
 
-class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
+    lazy var spinner: UIActivityIndicatorView = {
+        return UIActivityIndicatorView(style: .gray)
+    }()
+    
 
     var userRecordID: CKRecord.ID?
-    @IBOutlet weak var avatarV: UIImageView! {
-        didSet {
-            avatarV.contentMode = .scaleAspectFill
-            avatarV.layer.cornerRadius = avatarV.bounds.width/10
-            avatarV.layer.masksToBounds = true
-            avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-            avatarV.layer.borderWidth = 1
-        }
-    }
-    @IBOutlet weak var nickNameV: UILabel!
-    @IBOutlet weak var idV: UILabel!
-    @IBOutlet weak var friendsV: UILabel!
-    @IBOutlet weak var signV: UILabel!
-    @IBOutlet weak var positionV: UILabel!
-    @IBOutlet weak var collectionV: UICollectionView!
+    
     
     private var userCacheOrNil: UserLocalCache? {
         return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
@@ -38,7 +29,18 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
         NotificationCenter.default.addObserver(
             self, selector: #selector(type(of:self).userCacheDidChange(_:)),
             name: .userCacheDidChange, object: nil)
-        spinner.startAnimating()
+        view.addSubview(spinner)
+        view.bringSubviewToFront(spinner)
+        spinner.hidesWhenStopped = true
+        spinner.color = .blue
+//        spinner.startAnimating()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        spinner.center = CGPoint(x: view.frame.size.width / 2,
+                                 y: view.frame.size.height / 2)
     }
     
     deinit {
@@ -47,19 +49,7 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     
     @objc func userCacheDidChange(_ notification: Notification) {
         
-        if let userCache = userCacheOrNil {
-            userCache.performReaderBlockAndWait {
-                if let imagePath = userCache.avatarImage?.fileURL.path {
-                    let advTimeGif = UIImage(contentsOfFile: imagePath)
-                    self.avatarV.image = advTimeGif
-                }
-                
-                self.nickNameV.text = userCache.nickName
-                self.signV.text = userCache.sign
-            }
-            
-            self.collectionV.reloadData()
-        }
+        self.collectionView.reloadData()
         
         spinner.stopAnimating()
     }
@@ -70,16 +60,33 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userCacheOrNil?.gifs.count ?? 0
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
+        if let userCache = userCacheOrNil, let headerV = headerV as? UserInfoHeaderV {
+            userCache.performReaderBlockAndWait {
+                if let imagePath = userCache.avatarImage?.fileURL.path {
+                    let advTimeGif = UIImage(contentsOfFile: imagePath)
+                    headerV.avatarV.image = advTimeGif
+                }
+
+                headerV.nickNameV.text = userCache.nickName
+                headerV.signV.text = userCache.sign
+            }
+            
+        }
+        return headerV
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GifViewCell", for: indexPath)
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let gifs = userCacheOrNil?.gifs else {
             return
         }
@@ -100,46 +107,42 @@ class UserInfoVC : SpinnerViewController, UICollectionViewDelegate, UICollection
     
 }
 
-extension UIImageView {
-    func downloaded(from url: URL, contentMode mode: UIView.ContentMode = .scaleAspectFill) {
-        contentMode = mode
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard
-                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                let data = data, error == nil,
-                let image = UIImage(data: data)
-                else { return }
-            DispatchQueue.main.async() {
-                self.image = image
-            }
-            }.resume()
-    }
-    func downloaded(from link: String, contentMode mode: UIView.ContentMode = .scaleAspectFill) {
-        guard let url = URL(string: link) else { return }
-        downloaded(from: url, contentMode: mode)
-    }
+
+class GifViewCell: UICollectionViewCell {
+    
+    @IBOutlet weak var imageV: UIImageView!
+    
 }
 
-class SpinnerViewController: UITableViewController {
+class UserInfoHeaderV: UICollectionReusableView {
     
-    lazy var spinner: UIActivityIndicatorView = {
-        return UIActivityIndicatorView(style: .gray)
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.addSubview(spinner)
-        view.bringSubviewToFront(spinner)
-        spinner.hidesWhenStopped = true
-        spinner.color = .blue
+    @IBOutlet weak var avatarV: UIImageView! {
+        didSet {
+            avatarV.contentMode = .scaleAspectFill
+            avatarV.layer.cornerRadius = avatarV.bounds.width/10
+            avatarV.layer.masksToBounds = true
+            avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+            avatarV.layer.borderWidth = 1
+        }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    @IBOutlet weak var nickNameV: UILabel!
+    @IBOutlet weak var idV: UILabel!
+    @IBOutlet weak var friendsV: UILabel!
+    @IBOutlet weak var signV: UILabel!
+    @IBOutlet weak var positionV: UILabel!
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+    
+    func commonInit() {
         
-        spinner.center = CGPoint(x: view.frame.size.width / 2,
-                                 y: view.frame.size.height / 2)
     }
 }

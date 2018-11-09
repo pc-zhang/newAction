@@ -11,7 +11,12 @@ import CloudKit
 import UIKit
 import MobileCoreServices
 
-class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    lazy var spinner: UIActivityIndicatorView = {
+        return UIActivityIndicatorView(style: .gray)
+    }()
+
     
     private var avatarURL : URL? {
         didSet {
@@ -33,12 +38,24 @@ class EditUserInfoVC : SpinnerViewController, UITextFieldDelegate, UITextViewDel
         return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        spinner.center = CGPoint(x: view.frame.size.width / 2,
+                                 y: view.frame.size.height / 2)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(
             self, selector: #selector(type(of:self).userCacheDidChange(_:)),
             name: .userCacheDidChange, object: nil)
-        spinner.startAnimating()
+        view.addSubview(spinner)
+        view.bringSubviewToFront(spinner)
+        spinner.hidesWhenStopped = true
+        spinner.color = .blue
+//        spinner.startAnimating()
     }
     
     deinit {
