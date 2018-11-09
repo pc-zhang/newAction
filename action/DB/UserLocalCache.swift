@@ -31,12 +31,56 @@ final class UserLocalCache: BaseLocalCache {
     let container: CKContainer
     let database: CKDatabase
     var userRecord: CKRecord?
-    var avatarImage : CKAsset?
-    var nickName : String?
-    var sex : String?
-    var location : String?
-    var sign : String?
-    var gifs : [CKAsset] = []
+    var artworkRecords: [CKRecord] = []
+    
+//    var artworkURLs: [URL] {
+//        return artworkRecords.map {
+//            if let ckasset = $0["video"] as? CKAsset {
+//                return ckasset.fileURL.appendingPathExtension("mp4")
+//            }
+//            return URL(fileURLWithPath: "")
+//        }
+//    }
+    
+    var artworkGifs: [URL] {
+        return artworkRecords.map {
+            if let ckasset = $0["gif"] as? CKAsset {
+                return ckasset.fileURL
+            }
+            return URL(fileURLWithPath: "")
+        }
+    }
+    
+    var avatarImage : CKAsset? {
+        guard let userRecord = userRecord else {
+            return nil
+        }
+        return userRecord["avatarImage"] as? CKAsset
+    }
+    var nickName : String? {
+        guard let userRecord = userRecord else {
+            return nil
+        }
+        return userRecord["nickName"]
+    }
+    var sex : String? {
+        guard let userRecord = userRecord else {
+            return nil
+        }
+        return userRecord["sex"]
+    }
+    var location : String? {
+        guard let userRecord = userRecord else {
+            return nil
+        }
+        return userRecord["location"]
+    }
+    var sign : String? {
+        guard let userRecord = userRecord else {
+            return nil
+        }
+        return userRecord["sign"]
+    }
     
     override init() {
         self.container = CKContainer.default()
@@ -64,28 +108,40 @@ final class UserLocalCache: BaseLocalCache {
                 let userRecord = recordsByRecordID?[recordID]  else { return }
             
             self.performWriterBlock {
-                self.updateCacheWithRecord(userRecord: userRecord)
+                self.userRecord = userRecord
             }
         }
         fetchRecordsOp.database = database
         operationQueue.addOperation(fetchRecordsOp)
         postWhenOperationQueueClear(name: .userCacheDidChange)
-    }
-    
-    func updateCacheWithRecord(userRecord: CKRecord) {
-        self.userRecord = userRecord
-        self.avatarImage = userRecord["avatarImage"] as? CKAsset
-        self.nickName = userRecord["nickName"]
-        self.sex = userRecord["sex"]
-        self.location = userRecord["location"]
-        self.sign = userRecord["sign"]
-    }
-    
-    func changeUserInfo(avatarURL: URL, nickName: String, sex: String, location: String, sign: String) {
-        guard let userRecord = self.userRecord else {
-            return
+        
+        self.performWriterBlock {
+            self.artworkRecords = []
         }
-        userRecord["avatarImage"] = CKAsset(fileURL: avatarURL)
+        let queryArtworksOp = CKQueryOperation(query: CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "artist = %@", recordID)))
+        queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
+            if let ckasset = artworkRecord["video"] as? CKAsset {
+                let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
+                self.performWriterBlock {
+                    self.artworkRecords.append(artworkRecord)
+                }
+            }
+        }
+        queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: [recordID]) == nil else { return }
+        }
+        queryArtworksOp.database = database
+        operationQueue.addOperation(queryArtworksOp)
+        postWhenOperationQueueClear(name: .userCacheDidChange)
+        
+    }
+    
+    func changeUserInfo(avatarAsset: CKAsset, nickName: String, sex: String, location: String, sign: String) -> Bool {
+        guard let userRecord = self.userRecord else {
+            return false
+        }
+        userRecord["avatarImage"] = avatarAsset
         userRecord["nickName"] = nickName
         userRecord["sex"] = sex
         userRecord["location"] = location
@@ -93,16 +149,23 @@ final class UserLocalCache: BaseLocalCache {
         
         let operation = CKModifyRecordsOperation(recordsToSave: [userRecord], recordIDsToDelete: nil)
         
+        var succeed: Bool = true
+        
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-            guard handleCloudKitError(error, operation: .modifyRecords, alert: true) == nil,
+            succeed = (error == nil)
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [userRecord.recordID], alert: true) == nil,
                 let newRecord = records?[0] else { return }
             
             self.performWriterBlock {
-                self.updateCacheWithRecord(userRecord: newRecord)
+                self.userRecord = newRecord
             }
         }
         operation.database = database
         operationQueue.addOperation(operation)
-        postWhenOperationQueueClear(name: .userCacheDidChange)
+        operationQueue.waitUntilAllOperationsAreFinished()
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
+        }
+        return succeed
     }
 }

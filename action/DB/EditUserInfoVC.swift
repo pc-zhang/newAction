@@ -18,9 +18,9 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     }()
 
     
-    private var avatarURL : URL? {
+    private var avatarAsset : CKAsset? {
         didSet {
-            if let path = avatarURL?.path {
+            if let path = avatarAsset?.fileURL.path {
                 avatarV.image = UIImage(contentsOfFile: path)
             }
         }
@@ -39,13 +39,6 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        spinner.center = CGPoint(x: view.frame.size.width / 2,
-                                 y: view.frame.size.height / 2)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(
@@ -55,7 +48,10 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         view.bringSubviewToFront(spinner)
         spinner.hidesWhenStopped = true
         spinner.color = .blue
+        spinner.center = CGPoint(x: view.frame.size.width / 2,
+                                 y: view.frame.size.height / 2)
 //        spinner.startAnimating()
+        updateUI()
     }
     
     deinit {
@@ -63,24 +59,34 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     }
     
     @objc func userCacheDidChange(_ notification: Notification) {
-        
-        if let userCache = userCacheOrNil {
-            userCache.performReaderBlockAndWait {
-                if let imagePath = userCache.avatarImage?.fileURL.path {
-                    let advTimeGif = UIImage(contentsOfFile: imagePath)
-                    self.avatarV.image = advTimeGif
-                }
-                
-                self.nickNameTextField.text = userCache.nickName
-                self.sexLabel.text = userCache.sex
-                self.locationTextField.text = userCache.location
-                self.signTextV.text = userCache.sign
-                self.textVCharCountLabel.text = "\(self.signTextV.text.count)/120"
-            }
-            
-        }
+        updateUI()
         
         spinner.stopAnimating()
+    }
+    
+    func updateUI() {
+        var imageURL: URL?
+        var nickName: String?
+        var sex: String?
+        var location: String?
+        var sign: String?
+        
+        userCacheOrNil?.performReaderBlockAndWait {
+            imageURL = userCacheOrNil!.avatarImage?.fileURL
+            nickName = userCacheOrNil!.nickName
+            sex = userCacheOrNil!.sex
+            location = userCacheOrNil!.location
+            sign = userCacheOrNil!.sign
+        }
+        
+        if let imageURL = imageURL {
+            self.avatarAsset = CKAsset(fileURL: imageURL)
+        }
+        self.nickNameTextField.text = nickName
+        self.sexLabel.text = sex
+        self.locationTextField.text = location
+        self.signTextV.text = sign
+        self.textVCharCountLabel.text = "\(self.signTextV.text.count)/120"
     }
 
     @IBOutlet weak var signTextV: UITextView! 
@@ -113,15 +119,33 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         resignAllTextFirstResponder()
         if nickNameTextField.text != "" && locationTextField.text != "" {
-            if let userCache = userCacheOrNil {
-                userCache.changeUserInfo(avatarURL: avatarURL ?? URL(fileURLWithPath: ""), nickName: nickNameTextField.text ?? "", sex: sexLabel.text ?? "", location: locationTextField.text ?? "", sign: signTextV.text)
-                spinner.startAnimating()
+            guard let avatarAsset = avatarAsset, let nickName = nickNameTextField?.text, let sex = sexLabel?.text, let location = locationTextField?.text, let sign = signTextV?.text else {
+                let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
+                present(alert, animated: true)
+                
+                return false
             }
-            return true
+            
+            spinner.startAnimating()
+
+            let succeed = userCacheOrNil?.changeUserInfo(avatarAsset: avatarAsset, nickName: nickName, sex: sex, location: location, sign: sign)
+            
+            spinner.stopAnimating()
+            
+            if let succeed = succeed, succeed == true {
+                return true
+            }
+
+            let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
+            present(alert, animated: true)
+            
+            return false
+            
         } else {
             let alert = UIAlertController(title: "昵称和地区不能为空", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
-            
             present(alert, animated: true)
             
             return false
@@ -225,13 +249,11 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            if let imageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage, let imageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
                 FileManager.default.createFile(atPath: imageURL.path, contents: image.pngData(), attributes: nil)
                 DispatchQueue.main.async {
-                    self.avatarURL = imageURL
+                    self.avatarAsset = CKAsset(fileURL: imageURL)
                 }
-            }
         }
 
         picker.presentingViewController?.dismiss(animated: true, completion: nil)

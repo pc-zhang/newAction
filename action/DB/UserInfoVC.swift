@@ -62,23 +62,39 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
-        if let userCache = userCacheOrNil, let headerV = headerV as? UserInfoHeaderV {
-            userCache.performReaderBlockAndWait {
-                if let imagePath = userCache.avatarImage?.fileURL.path {
-                    let advTimeGif = UIImage(contentsOfFile: imagePath)
-                    headerV.avatarV.image = advTimeGif
-                }
-
-                headerV.nickNameV.text = userCache.nickName
-                headerV.signV.text = userCache.sign
+        if let headerV = headerV as? UserInfoHeaderV {
+            var imagePath: String?
+            var nickName: String?
+            var sex: String?
+            var location: String?
+            var sign: String?
+            
+            userCacheOrNil?.performReaderBlockAndWait {
+                imagePath = userCacheOrNil!.avatarImage?.fileURL.path
+                nickName = userCacheOrNil!.nickName
+                sex = userCacheOrNil!.sex
+                location = userCacheOrNil!.location
+                sign = userCacheOrNil!.sign
             }
+            
+            if let imagePath = imagePath {
+                let advTimeGif = UIImage(contentsOfFile: imagePath)
+                headerV.avatarV.image = advTimeGif
+            }
+            
+            headerV.nickNameV.text = nickName
+            headerV.signV.text = sign
             
         }
         return headerV
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        var artworksCount = 0
+        userCacheOrNil?.performReaderBlockAndWait {
+            artworksCount = userCacheOrNil!.artworkGifs.count
+        }
+        return artworksCount
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -87,22 +103,18 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let gifs = userCacheOrNil?.gifs else {
-            return
+        var artworkGifs : [URL]? = nil
+        userCacheOrNil?.performReaderBlockAndWait {
+            artworkGifs = userCacheOrNil!.artworkGifs
         }
-        if indexPath.row < gifs.count {
-            let imageData = try? Data(contentsOf: (gifs[indexPath.row] as CKAsset).fileURL)
-            let advTimeGif = UIImage.gifImageWithData(imageData!)
-            
-            if let cell = cell as? GifViewCell {
-                cell.imageV.image = advTimeGif
-            }
+        if let artworkGifs = artworkGifs, let imageData = try? Data(contentsOf: artworkGifs[indexPath.row]), let cell = cell as? GifViewCell {
+            cell.imageV.image = UIImage.gifImageWithData(imageData)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = (collectionView.bounds.width - 10) / 3
-        return CGSize(width: cellWidth, height: cellWidth / 9.0 * 16)
+        let cellWidth = (collectionView.bounds.width - 2) / 3
+        return CGSize(width: cellWidth, height: cellWidth / 3.0 * 4)
     }
     
 }
