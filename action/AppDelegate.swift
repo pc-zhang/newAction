@@ -17,8 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     var ubiquityIdentityToken: (NSCoding & NSCopying & NSObjectProtocol)?
-    var zoneCacheOrNil: ZoneLocalCache?
-    var topicCacheOrNil: TopicLocalCache?
     var userCacheOrNil: UserLocalCache?
     
     // Keep the share we accepted so that we can select the zone when the share comes in.
@@ -36,13 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         // Observe the .zoneCacheDidChange and .zoneDidSwitch to update the topic cache if needed.
         //
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(type(of:self).zoneCacheDidChange(_:)),
-            name: .zoneCacheDidChange, object: nil)
-        
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(type(of:self).zoneDidSwitch(_:)),
-            name: .zoneDidSwitch, object: nil)
         
         // Register for remote notification.
         // The local caches rely on subscription notifications, so notifications have to be granted in this sample.
@@ -71,7 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         checkAccountStatus(for: container) { available in
             guard available else { return self.handleAccountUnavailable() }
-            self.zoneCacheOrNil = ZoneLocalCache(self.container)
             self.userCacheOrNil = UserLocalCache()
         }
         return true
@@ -91,37 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
         application.applicationIconBadgeNumber = 0 // Clear the badge number.
         
-        checkAccountStatus(for: container) { available in
-            
-            // Be sure to update the user token before leaving.
-            //
-            defer { self.ubiquityIdentityToken = FileManager.default.ubiquityIdentityToken }
-            
-            // No account available. The user logged out or iCloud Drive is disabled.
-            //
-            if available == false {
-                self.handleAccountUnavailable()
-                return
-            }
-            
-            // If old token is nil, a new user logged in so load the cache for the new user.
-            //
-            guard let oldToken = self.ubiquityIdentityToken else {
-                self.zoneCacheOrNil = ZoneLocalCache(self.container)
-                return
-            }
-            
-            // Account available but no user switching, don't need to do anything.
-            // The changes from iCloud, if any, will go through CKNotifications.
-            //
-            if let newToken = FileManager.default.ubiquityIdentityToken,
-                newToken.isEqual(oldToken) {
-                return
-            }
-            
-            self.zoneCacheOrNil = ZoneLocalCache(self.container)
-            self.userCacheOrNil = UserLocalCache()
-        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -138,10 +97,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,didReceiveRemoteNotification userInfo: [AnyHashable : Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        guard let zoneCache = zoneCacheOrNil else {
-            fatalError("\(#function): zoneCache shouldn't be nil")
-        }
-        
         // When the app is transiting from background to foreground, appWillEnterForeground should have already
         // refreshed the local cache, so simply return when application.applicationState == .inactive.
         //
@@ -154,13 +109,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         guard let subscriptionID = notification.subscriptionID else { return }
         
-        // We use CKDatabaseSubscription to synchronize the changes. Note that it doesn't support the default zones.
-        //
-        if notification.notificationType == .database {
-            for database in zoneCache.databases where database.cloudKitDB.name == subscriptionID {
-                zoneCache.fetchChanges(from: database)
-            }
-        }
     }
     
     // Report the error when failed to register the notifications.
@@ -288,98 +236,6 @@ extension AppDelegate { // MARK: - Account status checking.
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         window?.rootViewController?.present(alert, animated: true)
         
-        // Clear the cache and post zoneCacheDidChange to upate the UI.
-        // AppDelete.zoneCacheDidChange and try to load the first zone, which doesn't exist in this
-        // case, thus triggers a .topicCacheDidChange to clear the topic UI.
-        //
-        zoneCacheOrNil = nil
-        NotificationCenter.default.post(name: .zoneCacheDidChange, object: nil)
     }
 }
 
-// AppDelegate acts as the coordinator to manage the life cycle of the local cache.
-// Refreshing topic cache when zonesDidChange happens; and refresh the UI when there is no cache at all.
-//
-extension AppDelegate { // MARK: - Local cache coordinator
-    
-    // Create a topic cache for the first zone, or return nil if there is no zone.
-    //
-    private func topicCacheForFirstZone() -> TopicLocalCache? {
-        
-        if let (database, zone) = zoneCacheOrNil?.firstZone() {
-            return TopicLocalCache(container: container, database: database.cloudKitDB, zone: zone)
-        }
-        return nil
-    }
-    
-    // The notification handler of .zoneCacheDidChange. Update the topic cache if it is stale.
-    //
-    @objc func zoneCacheDidChange(_ notification: Notification) {
-        
-        // If topicCache is nil, build it up with the first zone and set to self.topicCache,
-        // TopicLocalCache.fetchChanges will trigger the UI update.
-        // If the first zone doesn't even exist, post to clear the UI immediately.
-        //
-        guard let topicCache = topicCacheOrNil else {
-            
-            topicCacheOrNil = topicCacheForFirstZone()
-            if topicCacheOrNil == nil {
-                NotificationCenter.default.post(name: .topicCacheDidChange, object: nil)
-            }
-            return
-        }
-        
-        // Now, topic cache is ready, grab the notification payload.
-        //
-        guard let zoneChanges = (notification.object as? ZoneCacheDidChange)?.payload else { return }
-        
-        // If there is a just-accpeted share, show it by switching to the zone
-        //
-        if zoneChanges.database.cloudKitDB.databaseScope == .shared,
-            let zoneID = shareMetadataToOpen?.share.recordID.zoneID,
-            let zone = zoneCacheOrNil?.zoneWithID(zoneID, scope: .shared),
-            zoneChanges.zoneIDsChanged.contains(zoneID) {
-            
-            shareMetadataToOpen = nil
-            
-            let notificaitonObject = ZoneDidSwitch()
-            notificaitonObject.payload = ZoneSwitched(database: zoneChanges.database, zone: zone)
-            NotificationCenter.default.post(name: .zoneDidSwitch, object: notificaitonObject)
-            
-            return
-        }
-        
-        // If the current zone was deleted, move to the first zone or clear the cache if no zone exists.
-        // If topicCacheForFirstZone() returns nil because no first zone now,
-        // use NotificationCenter.default to post .topicCacheDidChange to clear the UI immediately.
-        //
-        if zoneChanges.database.cloudKitDB.databaseScope == topicCache.database.databaseScope,
-            zoneChanges.zoneIDsDeleted.contains(topicCache.zone.zoneID) {
-            
-            topicCacheOrNil = topicCacheForFirstZone()
-            if topicCacheOrNil == nil {
-                NotificationCenter.default.post(name: .topicCacheDidChange, object: nil)
-            }
-            return
-        }
-        
-        // If the current zone was changed, then fetch the changes.
-        //
-        if zoneChanges.database.cloudKitDB.databaseScope == topicCache.database.databaseScope,
-            zoneChanges.zoneIDsChanged.contains(topicCache.zone.zoneID) {
-            
-            topicCache.fetchChanges()
-            return
-        }
-    }
-    
-    @objc func zoneDidSwitch(_ notification: Notification) {
-        
-        guard let payload = (notification.object as? ZoneDidSwitch)?.payload else {
-            fatalError("\(#function): Wrong notification object!")
-        }
-        topicCacheOrNil = TopicLocalCache(container: container,
-                                          database: payload.database.cloudKitDB,
-                                          zone: payload.zone)
-    }
-}

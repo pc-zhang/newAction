@@ -33,7 +33,7 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
         view.bringSubviewToFront(spinner)
         spinner.hidesWhenStopped = true
         spinner.color = .blue
-//        spinner.startAnimating()
+        spinner.startAnimating()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,7 +122,11 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
 
 class GifViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var imageV: UIImageView!
+    @IBOutlet weak var imageV: UIImageView! {
+        didSet {
+            imageV.contentMode = .scaleAspectFill
+        }
+    }
     
 }
 

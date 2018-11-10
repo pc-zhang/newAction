@@ -110,7 +110,6 @@ final class UserLocalCache: BaseLocalCache {
         }
         fetchRecordsOp.database = database
         operationQueue.addOperation(fetchRecordsOp)
-        postWhenOperationQueueClear(name: .userCacheDidChange)
         
         self.performWriterBlock {
             self.artworkRecords = []

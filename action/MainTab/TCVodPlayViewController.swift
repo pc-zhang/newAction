@@ -45,7 +45,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func generateThumbnail() -> CKAsset? {
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
-        imageGenerator.maximumSize = CGSize(width: 120, height: 160)
+        imageGenerator.maximumSize = CGSize(width: 90, height: 160)
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.videoComposition = videoComposition
         
@@ -53,16 +53,16 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         var iterTime = CMTime.zero
         var images: [CGImage] = []
         
-        while iter < 30 {
+        while iter < 5 {
             if let image = try? imageGenerator.copyCGImage(at: iterTime, actualTime: nil) {
                 images.append(image)
             }
-            iterTime = CMTimeAdd(iterTime, CMTime(value: 1, timescale: 30))
+            iterTime = CMTimeAdd(iterTime, CMTime(value: 1, timescale: 10))
             iter = iter + 1
         }
         
         let fileProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFLoopCount as String: 0]]  as CFDictionary
-        let frameProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [(kCGImagePropertyGIFDelayTime as String): 0.01]] as CFDictionary
+        let frameProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [(kCGImagePropertyGIFDelayTime as String): 0.3]] as CFDictionary
         
         let documentsDirectoryURL: URL? = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         if let fileURL = documentsDirectoryURL?.appendingPathComponent("thumbnail.gif"), let url = fileURL as CFURL? {
@@ -217,7 +217,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             self.userRecordID = recordID
         }
         
-        let date = NSDate(timeInterval: -60.0 * 120, since: Date())
+        let date = NSDate(timeInterval: -60.0 * 120000, since: Date())
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creationDate > %@", date))
         CKContainer.default().publicCloudDatabase.perform(query, inZoneWith: nil) { (records, error) in
             if (error != nil) {

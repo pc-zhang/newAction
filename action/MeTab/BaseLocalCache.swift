@@ -10,32 +10,16 @@ import Foundation
 import CloudKit
 
 extension Notification.Name {
-    static let zoneCacheDidChange = Notification.Name("zoneCacheDidChange")
-    static let topicCacheDidChange = Notification.Name("topicCacheDidChange")
-    static let zoneDidSwitch = Notification.Name("zoneDidSwtich")
     static let userCacheDidChange = Notification.Name("userCacheDidChange")
 }
 
 // Type and type alias for notification payload.
 //
 struct UserCacheChanges {
-}
-
-struct TopicCacheChanges {
     private(set) var recordIDsDeleted: [CKRecord.ID]
     private(set) var recordsChanged: [CKRecord]
 }
 
-struct ZoneCacheChanges {
-    private(set) var database: Database
-    private(set) var zoneIDsDeleted = [CKRecordZone.ID]()
-    private(set) var zoneIDsChanged = [CKRecordZone.ID]()
-}
-
-struct ZoneSwitched {
-    private(set) var database: Database
-    private(set) var zone: CKRecordZone
-}
 // We need to capture the object and change the payload in CloudKit operation callbacks,
 // so wrap the payload with a class to get the reference semantic.
 //
@@ -48,9 +32,6 @@ class NotificationObject<T> {
 }
 
 typealias UserCacheDidChange = NotificationObject<UserCacheChanges>
-typealias TopicCacheDidChange = NotificationObject<TopicCacheChanges>
-typealias ZoneCacheDidChange = NotificationObject<ZoneCacheChanges>
-typealias ZoneDidSwitch = NotificationObject<ZoneSwitched>
 
 // BaseLocalCache and subclasses follow these rules to be thread-safe:
 // 1. Public methods access mutable properties via "perform...".
