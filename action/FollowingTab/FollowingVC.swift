@@ -108,7 +108,7 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if cursor != nil {
+        if cursor != nil || artworkRecords.count == 0 {
             return artworkRecords.count + 1
         } else {
             return artworkRecords.count
@@ -117,11 +117,10 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell: UITableViewCell
+        var identifier: String
         
         if indexPath.row == artworkRecords.count, let cursor = cursor {
-            cell = tableView.dequeueReusableCell(withIdentifier: "NextPageLoaderCell", for: indexPath)
-            
+            identifier = "NextPageLoaderCell"
             if !isFetchingData {
                 isFetchingData = true
                 
@@ -162,10 +161,19 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
                 }
             }
         } else {
-            cell = tableView.dequeueReusableCell(withIdentifier: FollowingViewCell.reuseIdentifier, for: indexPath) as! FollowingViewCell
+            identifier = FollowingViewCell.reuseIdentifier
         }
         
-        return cell
+        if artworkRecords.count == 0 {
+            identifier = "NextPageLoaderCell"
+        }
+        
+        if identifier == FollowingViewCell.reuseIdentifier {
+            return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! FollowingViewCell
+        } else {
+            return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        }
+        
     }
     
     // MARK: - UITableViewPrefetch
