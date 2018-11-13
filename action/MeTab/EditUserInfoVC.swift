@@ -113,7 +113,7 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     
     @IBAction func cancel(_ sender: Any) {
         resignAllTextFirstResponder()
-        presentingViewController?.dismiss(animated: true, completion: {})
+        navigationController?.popViewController(animated: true)
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {

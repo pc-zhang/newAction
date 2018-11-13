@@ -8,15 +8,15 @@ The `UICollectionViewCell` used to represent data in the collection view.
 import UIKit
 import AVFoundation
 
-protocol TCPlayViewCellDelegate: NSObjectProtocol {
+protocol MainViewCellDelegate: NSObjectProtocol {
     func chorus(url: URL)
 }
 
-final class TCPlayViewCell: UITableViewCell {
+final class MainViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.playerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TCPlayViewCell.tapPlayViewCell(_:))))
+        self.playerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainViewCell.tapPlayViewCell(_:))))
         
         playerView.player = player
     }
@@ -53,7 +53,7 @@ final class TCPlayViewCell: UITableViewCell {
     var player = AVPlayer()
     var url : URL?
     
-    var delegate: TCPlayViewCellDelegate?
+    var delegate: MainViewCellDelegate?
     
 }
 
