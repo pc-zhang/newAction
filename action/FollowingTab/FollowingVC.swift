@@ -98,10 +98,19 @@ class FollowingVC: UITableViewController {
             }
             playViewCell.titleV.text = artworkRecord["title"] as? String
             
-            let likesCount = (artworkInfosDict[artworkRecord]?["Likes"] as? [CKRecord])?.count ?? 0
-            let reviewsCount = (artworkInfosDict[artworkRecord]?["Reviews"] as? [CKRecord])?.count ?? 0
+            let likesCount = (artworkInfosDict[artworkRecord]?["likes"] as? [CKRecord])?.count ?? 0
+            let reviewsCount = (artworkInfosDict[artworkRecord]?["reviews"] as? [CKRecord])?.count ?? 0
             let sharesCount = 0
             playViewCell.likesAndReviews.text = "❤️\(likesCount)   💬\(reviewsCount)   🔗\(sharesCount)"
+            
+            if let artist = artworkInfosDict[artworkRecord]?["artist"] as? CKRecord {
+                if let avatarImageAsset = artist["avatarImage"] as? CKAsset {
+                    playViewCell.avatarV.image = UIImage(contentsOfFile: avatarImageAsset.fileURL.path)
+                }
+                if let nickName = artist["nickName"] as? String {
+                    playViewCell.nickNameV.text = "@\(nickName)"
+                }
+            }
         }
     }
     
@@ -214,7 +223,7 @@ class FollowingVC: UITableViewController {
         queryLikesOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
 
-            self.artworkInfosDict[artworkRecord]?["Likes"] = likes
+            self.artworkInfosDict[artworkRecord]?["likes"] = likes
         }
         queryLikesOp.database = self.database
         self.operationQueue.addOperation(queryLikesOp)
@@ -228,7 +237,7 @@ class FollowingVC: UITableViewController {
         queryReviewsOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
 
-            self.artworkInfosDict[artworkRecord]?["Reviews"] = reviews
+            self.artworkInfosDict[artworkRecord]?["reviews"] = reviews
         }
         queryReviewsOp.database = self.database
         self.operationQueue.addOperation(queryReviewsOp)

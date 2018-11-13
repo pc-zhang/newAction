@@ -33,7 +33,7 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
         view.bringSubviewToFront(spinner)
         spinner.hidesWhenStopped = true
         spinner.color = .blue
-        spinner.startAnimating()
+//        spinner.startAnimating()
     }
     
     override func viewWillAppear(_ animated: Bool) {
