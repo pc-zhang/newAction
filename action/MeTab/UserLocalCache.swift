@@ -114,7 +114,7 @@ final class UserLocalCache: BaseLocalCache {
         self.performWriterBlock {
             self.artworkRecords = []
         }
-        let queryArtworksOp = CKQueryOperation(query: CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "artist = %@", recordID)))
+        let queryArtworksOp = CKQueryOperation(query: CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creatorUserRecordID = %@", recordID)))
         queryArtworksOp.desiredKeys = ["thumbnail"]
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
             if let ckasset = artworkRecord["video"] as? CKAsset {

@@ -926,7 +926,12 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <connections>
+                                    <outlet property="avatarV" destination="qvQ-iC-axo" id="d78-f2-UcQ"/>
+                                    <outlet property="createTimeV" destination="PfK-Ph-qNG" id="kde-3S-GLn"/>
+                                    <outlet property="likesAndReviews" destination="h0Y-L1-IZR" id="PdT-i8-V5B"/>
+                                    <outlet property="nickNameV" destination="Ysd-mb-DB3" id="4hA-Nq-NrZ"/>
                                     <outlet property="playerV" destination="M04-YI-qbz" id="taE-eF-4h4"/>
+                                    <outlet property="titleV" destination="Y4E-05-dUl" id="2Mn-HC-gr7"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="NextPageLoaderCell" id="NUA-Uz-E7i">

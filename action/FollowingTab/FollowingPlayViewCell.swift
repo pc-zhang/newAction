@@ -43,6 +43,11 @@ final class FollowingViewCell: UITableViewCell {
     static let reuseIdentifier = "FollowingViewCell"
     var player = AVPlayer()
     var url : URL?
-
+    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var nickNameV: UILabel!
+    @IBOutlet weak var titleV: UILabel!
+    @IBOutlet weak var likesAndReviews: UILabel!
+    @IBOutlet weak var createTimeV: UILabel!
+    
 }
 

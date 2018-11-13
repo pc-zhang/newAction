@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 import CloudKit
 
-class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
+class FollowingVC: UITableViewController {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -22,6 +22,8 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
     }()
     var cursor: CKQueryOperation.Cursor? = nil
     let refresh: UIRefreshControl = UIRefreshControl()
+    var isFetchingData: Bool = false
+    var artworkInfosDict: [CKRecord:[String:Any]] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,48 +38,49 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
     @objc open func fetchData()  {
         artworkRecords = []
         refresh.endRefreshing()
-//        hideNoResultsView()
-//        hideErrorView()
-//        hideNoResultsLoadingView()
-//        showNoResultsLoadingView()
         isFetchingData = true
         
-        CKContainer.default().fetchUserRecordID { (recordID, error) in
-            if let recordID = recordID {
-                let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "artist = %@", recordID))
-                let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
-                query.sortDescriptors = [byCreation]
-                let queryArtworksOp = CKQueryOperation(query: query)
-                
-                queryArtworksOp.desiredKeys = ["video"]
-                queryArtworksOp.resultsLimit = 1
-                queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-                    if let ckasset = artworkRecord["video"] as? CKAsset {
-                        let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-                        try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-                    }
-                    
-                    self.artworkRecords.append(artworkRecord)
-                }
-                queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-                    guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                    self.cursor = cursor
-                }
-                queryArtworksOp.database = self.database
-                self.operationQueue.addOperation(queryArtworksOp)
-                
-                DispatchQueue.global().async {
-                    self.operationQueue.waitUntilAllOperationsAreFinished()
-                    DispatchQueue.main.async {
-                        self.isFetchingData = false
-                        self.tableView.reloadData()
-                    }
-                }
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(value: true))
+        let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
+        query.sortDescriptors = [byCreation]
+        let queryArtworksOp = CKQueryOperation(query: query)
+    
+        queryArtworksOp.desiredKeys = ["video", "title"]
+        queryArtworksOp.resultsLimit = 3
+        queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
+            if let ckasset = artworkRecord["video"] as? CKAsset {
+                let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
+            }
+            
+            self.artworkRecords.append(artworkRecord)
+            
+            self.queryArtworkOtherInfo(artworkRecord: artworkRecord)
+        }
+        queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            self.cursor = cursor
+        }
+        queryArtworksOp.database = self.database
+        self.operationQueue.addOperation(queryArtworksOp)
+    
+        DispatchQueue.global().async {
+            self.operationQueue.waitUntilAllOperationsAreFinished()
+            DispatchQueue.main.async {
+                self.isFetchingData = false
+                self.tableView.reloadData()
             }
         }
+        
     }
     
     // MARK: - UITableViewDelegate
+    
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter
+    }()
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row >= artworkRecords.count {
@@ -90,6 +93,15 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
             let playerItem = AVPlayerItem(url: playViewCell.url!)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
+            if let date = artworkRecord.creationDate {
+                playViewCell.createTimeV.text = dateFormatter.string(from: date)
+            }
+            playViewCell.titleV.text = artworkRecord["title"] as? String
+            
+            let likesCount = (artworkInfosDict[artworkRecord]?["Likes"] as? [CKRecord])?.count ?? 0
+            let reviewsCount = (artworkInfosDict[artworkRecord]?["Reviews"] as? [CKRecord])?.count ?? 0
+            let sharesCount = 0
+            playViewCell.likesAndReviews.text = "❤️\(likesCount)   💬\(reviewsCount)   🔗\(sharesCount)"
         }
     }
     
@@ -127,9 +139,6 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
                 let recordsCountBefore = self.artworkRecords.count
             
                 let queryArtworksOp = CKQueryOperation(cursor: cursor)
-            
-                queryArtworksOp.desiredKeys = ["video"]
-                queryArtworksOp.resultsLimit = 3
                 queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
                     if let ckasset = artworkRecord["video"] as? CKAsset {
                         let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
@@ -137,6 +146,8 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
                     }
                     
                     self.artworkRecords.append(artworkRecord)
+                    
+                    self.queryArtworkOtherInfo(artworkRecord: artworkRecord)
                 }
                 queryArtworksOp.queryCompletionBlock = { (cursor, error) in
                     guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
@@ -154,9 +165,14 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
                         
                         self.isFetchingData = false
                         if self.cursor == nil {
-                            self.tableView.deleteRows(at: [IndexPath(row: recordsCountBefore, section: 0)], with: .automatic)
+                            self.tableView.performBatchUpdates({
+                                self.tableView.deleteRows(at: [IndexPath(row: recordsCountBefore, section: 0)], with: .fade)
+                                self.tableView.insertRows(at: indexPaths, with: .fade)
+                            }, completion: nil)
+                        } else {
+                            self.tableView.insertRows(at: indexPaths, with: .fade)
                         }
-                        self.tableView.insertRows(at: indexPaths, with: .fade)
+                        
                     }
                 }
             }
@@ -168,97 +184,54 @@ class FollowingVC: UITableViewController, UITableViewDataSourcePrefetching {
             identifier = "NextPageLoaderCell"
         }
         
-        if identifier == FollowingViewCell.reuseIdentifier {
-            return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! FollowingViewCell
-        } else {
-            return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-        }
+        return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         
     }
     
-    // MARK: - UITableViewPrefetch
-    
-    var isFetchingData: Bool = false
-    
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        
-//        var fetchingIndexPaths : [IndexPath] = []
-//        for index in indexPaths {
-//            if artworkRecords[index] == nil {
-//                fetchingIndexPaths.append(index)
-//            }
-//        }
-//        for index in fetchingIndexPaths {
-//            artworkRecords[index] = CKRecord(recordType: "Artwork")
-//        }
-//
-//        if firstFetch {
-//            firstFetch = false
-//            CKContainer.default().fetchUserRecordID { (recordID, error) in
-//                if let recordID = recordID {
-//                    let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "artist = %@", recordID))
-//                    let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
-//                    query.sortDescriptors = [byCreation]
-//                    let queryArtworksOp = CKQueryOperation(query: query)
-//
-//                    queryArtworksOp.desiredKeys = ["video"]
-//                    queryArtworksOp.resultsLimit = fetchingIndexPaths.count
-//                    queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-//                        if let ckasset = artworkRecord["video"] as? CKAsset {
-//                            let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-//                            try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-//                        }
-//
-//                        if let indexPath = fetchingIndexPaths.first {
-//                            self.artworkRecords[indexPath] = artworkRecord
-//                            fetchingIndexPaths.removeFirst()
-//                        }
-//                    }
-//                    queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-//                        guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-//                        self.cursor = cursor
-//                    }
-//                    queryArtworksOp.database = self.database
-//                    self.operationQueue.addOperation(queryArtworksOp)
-//
-//                    DispatchQueue.global().async {
-//                        self.operationQueue.waitUntilAllOperationsAreFinished()
-//                        DispatchQueue.main.async {
-//                            self.tableView.reloadData()
-//                        }
-//                    }
-//                }
-//            }
-//
-//            return
-//        }
-//
-//
-//        if let cursor = cursor {
-//            let queryArtworksOp = CKQueryOperation(cursor: cursor)
-//
-//            queryArtworksOp.desiredKeys = ["video"]
-//            queryArtworksOp.resultsLimit = fetchingIndexPaths.count
-//            queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-//                if let ckasset = artworkRecord["video"] as? CKAsset {
-//                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-//                    try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-//                }
-//
-//                if let indexPath = fetchingIndexPaths.first {
-//                    self.artworkRecords[indexPath] = artworkRecord
-//                    fetchingIndexPaths.removeFirst()
-//                }
-//            }
-//            queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-//                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-//                self.cursor = cursor
-//            }
-//            queryArtworksOp.database = self.database
-//            self.operationQueue.addOperation(queryArtworksOp)
-//
-//        }
-        
+    func queryArtworkOtherInfo(artworkRecord: CKRecord)
+    {
+        artworkInfosDict[artworkRecord] = [:]
+        var likes: [CKRecord] = []
+        var reviews: [CKRecord] = []
+        if let artistID = artworkRecord.creatorUserRecordID {
+            let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [artistID])
+            fetchArtistOp.desiredKeys = ["avatarImage", "nickName"]
+            fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                
+                self.artworkInfosDict[artworkRecord]?["artist"] = recordsByRecordID?[artistID]
+            }
+            fetchArtistOp.database = self.database
+            self.operationQueue.addOperation(fetchArtistOp)
+        }
+
+        let query = CKQuery(recordType: "Like", predicate: NSPredicate(format: "artwork = %@", artworkRecord.recordID))
+        let queryLikesOp = CKQueryOperation(query: query)
+        queryLikesOp.resultsLimit = 10
+        queryLikesOp.recordFetchedBlock = { (likeRecord) in
+            likes.append(likeRecord)
+        }
+        queryLikesOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+
+            self.artworkInfosDict[artworkRecord]?["Likes"] = likes
+        }
+        queryLikesOp.database = self.database
+        self.operationQueue.addOperation(queryLikesOp)
+
+        let reviewQuery = CKQuery(recordType: "Review", predicate: NSPredicate(format: "artwork = %@", artworkRecord.recordID))
+        let queryReviewsOp = CKQueryOperation(query: reviewQuery)
+        queryReviewsOp.resultsLimit = 10
+        queryReviewsOp.recordFetchedBlock = { (reviewRecord) in
+            reviews.append(reviewRecord)
+        }
+        queryReviewsOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+
+            self.artworkInfosDict[artworkRecord]?["Reviews"] = reviews
+        }
+        queryReviewsOp.database = self.database
+        self.operationQueue.addOperation(queryReviewsOp)
     }
     
 }
