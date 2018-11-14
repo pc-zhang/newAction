@@ -8,10 +8,6 @@ The `UICollectionViewCell` used to represent data in the collection view.
 import UIKit
 import AVFoundation
 
-protocol MainViewCellDelegate: NSObjectProtocol {
-    func chorus(url: URL)
-}
-
 final class MainViewCell: UITableViewCell {
     
     override func awakeFromNib() {
@@ -37,13 +33,6 @@ final class MainViewCell: UITableViewCell {
         }
         
     }
-
-    @IBAction func clickChorus(_ button: UIButton) {
-        chorus.isHidden = true
-        player.pause()
-        delegate?.chorus(url: url!)
-    }
-    
     
     // MARK: Properties
     @IBOutlet weak var playerView: PlayerView!
@@ -52,8 +41,5 @@ final class MainViewCell: UITableViewCell {
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()
     var url : URL?
-    
-    var delegate: MainViewCellDelegate?
-    
 }
 

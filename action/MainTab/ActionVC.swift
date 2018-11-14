@@ -1,9 +1,9 @@
 //
-//  TCVodPlayViewController.swift
-//  TXXiaoShiPinDemo
+//  actionVC.swift
+//  action
 //
-//  Created by zpc on 2018/9/24.
-//  Copyright © 2018年 tencent. All rights reserved.
+//  Created by zpc on 2018/11/14.
+//  Copyright © 2018 zpc. All rights reserved.
 //
 
 import UIKit
@@ -12,36 +12,23 @@ import AVFoundation
 import CoreServices
 import CloudKit
 
-let kTCLivePlayError: String = "kTCLivePlayError"
-
-class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching, RosyWriterCapturePipelineDelegate, UITextFieldDelegate, UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, TCPlayViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, URLSessionDownloadDelegate {
+class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // MARK: - UI Controls
     
+    @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var exportButton: UIButton!
-    @IBOutlet weak var tableView: UITableView!
-    
     @IBOutlet weak var middleLine: UIView!
-    
-    @IBOutlet weak var backgroundTimelineView: UICollectionView! {
+    @IBOutlet weak var timelineV: UICollectionView! {
         didSet {
-            backgroundTimelineView.contentOffset = CGPoint(x:-backgroundTimelineView.frame.width / 2, y:0)
-            backgroundTimelineView.contentInset = UIEdgeInsets(top: 0, left: backgroundTimelineView.frame.width/2, bottom: 0, right: backgroundTimelineView.frame.width/2)
-            backgroundTimelineView.panGestureRecognizer.addTarget(self, action: #selector(TCVodPlayViewController.pan))
+            timelineV.contentOffset = CGPoint(x:-timelineV.frame.width / 2, y:0)
+            timelineV.contentInset = UIEdgeInsets(top: 0, left: timelineV.frame.width/2, bottom: 0, right: timelineV.frame.width/2)
+            timelineV.panGestureRecognizer.addTarget(self, action: #selector(type(of: self).pan))
         }
     }
-    
-    
+
     //MARK: - UI Actions
-    
-    @IBAction func localMovie(_ sender: Any) {
-        let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
-        picker.mediaTypes = [kUTTypeMovie as String]
-        picker.delegate = self
-        picker.allowsEditing = false
-        present(picker, animated: true)
-    }
     
     func generateThumbnail() -> CKAsset? {
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
@@ -117,12 +104,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)){
                         UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path, self, #selector(self.video), nil)
                         
-                        guard let userRecordID = self.userRecordID else {
-                            return
-                        }
-                        
                         let artworkRecord = CKRecord(recordType: "Artwork")
-                        artworkRecord["artist"] = CKRecord.Reference(recordID: userRecordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
                         if let thumbnail = thumbnail {
                             artworkRecord["thumbnail"] = thumbnail
@@ -135,7 +117,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                             }
                             // Insert successfully saved record code
                         }
-
+                        
                     }
                 } else {
                     _ = 1
@@ -194,50 +176,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - View lifecycle
     
-    @objc func applicationDidEnterBackground() {
-        // Avoid using the GPU in the background
-        _allowedToUseGPU = false
-        _capturePipeline?.renderingEnabled = false
-        
-        _capturePipeline?.stopRecording() // a no-op if we aren't recording
-        
-        // We reset the OpenGLPixelBufferView to ensure all resources have been cleared when going to the background.
-        _previewView?.reset()
-    }
-    
-    @objc func applicationWillEnterForeground() {
-        _allowedToUseGPU = true
-        _capturePipeline?.renderingEnabled = true
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        CKContainer.default().fetchUserRecordID { (recordID, error) in
-            self.userRecordID = recordID
-        }
-        
-        let date = NSDate(timeInterval: -60.0 * 120000, since: Date())
-        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creationDate > %@", date))
-        CKContainer.default().publicCloudDatabase.perform(query, inZoneWith: nil) { (records, error) in
-            if (error != nil) {
-                // Error handling for failed fetch from public database
-            }
-            else {
-                self.artWorks = []
-                
-                for record in records ?? [] {
-                    let ckasset = record["video"] as! CKAsset
-                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-                    try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-                    self.artWorks.append(savedURL)
-                }
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-        }
         
         if composition==nil {
             composition = AVMutableComposition()
@@ -248,12 +188,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             
             _ = composition!.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         }
-        
-        tableView.rowHeight = tableView.bounds.height - 2
-        tableView.contentSize.width = tableView.bounds.width
-        tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 1, right: 0)
-        tableView.contentOffset = CGPoint(x: 0, y: -1)
-        tableView.decelerationRate = UIScrollView.DecelerationRate(rawValue: UIScrollView.DecelerationRate.fast.rawValue / 1000.0)
         
         downloadProgressLayer = CAShapeLayer()
         downloadProgressLayer!.frame = playerV.bounds
@@ -278,113 +212,50 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         // Keep track of changes to the device orientation so we can update the capture pipeline
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         
-        _addedObservers = true
-        
         // the willEnterForeground and didEnterBackground notifications are subsequently used to update _allowedToUseGPU
         _allowedToUseGPU = (UIApplication.shared.applicationState != .background)
         _capturePipeline.renderingEnabled = _allowedToUseGPU
         
+        if let url = url {
+            addClip(url)
+        } else {
+            let picker = UIImagePickerController()
+            picker.sourceType = .savedPhotosAlbum
+            picker.mediaTypes = [kUTTypeMovie as String]
+            picker.delegate = self
+            picker.allowsEditing = false
+            present(picker, animated: true)
+        }
     }
-
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if _addedObservers {
-            NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: UIApplication.shared)
-            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: UIApplication.shared)
-            NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
-            UIDevice.current.endGeneratingDeviceOrientationNotifications()
-        }
-        
-        _labelTimer?.invalidate()
-        _labelTimer = nil
+        player.pause()
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: UIApplication.shared)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: UIApplication.shared)
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: UIDevice.current)
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
         
         _capturePipeline.stopRunning()
     }
     
-    // MARK: - UITableViewDelegate
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let playViewCell = cell as! TCPlayViewCell
+    
+    @objc func applicationDidEnterBackground() {
+        // Avoid using the GPU in the background
+        _allowedToUseGPU = false
+        _capturePipeline?.renderingEnabled = false
         
-        if indexPath.row < artWorks.count {
-            playViewCell.url = artWorks[indexPath.row]
-            let playerItem = AVPlayerItem(url: playViewCell.url!)
-            playViewCell.player.replaceCurrentItem(with: playerItem)
-            playViewCell.player.seek(to: .zero)
-        }
-    }
-
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let playViewCell = cell as! TCPlayViewCell
+        _capturePipeline?.stopRecording() // a no-op if we aren't recording
         
-        playViewCell.player.pause()
-        playViewCell.player.replaceCurrentItem(with: nil)
+        // We reset the OpenGLPixelBufferView to ensure all resources have been cleared when going to the background.
+        _previewView?.reset()
     }
     
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if let tableView = scrollView as? UITableView {
-            var targetY : CGFloat
-            if velocity.y > 0 {
-                targetY = scrollView.contentOffset.y + min(velocity.y * 500, tableView.bounds.height)
-            } else {
-                targetY = scrollView.contentOffset.y + max(velocity.y * 500, -tableView.bounds.height)
-            }
-            let indexPath = IndexPath(row: Int((targetY + tableView.rowHeight/2) / tableView.rowHeight), section: 0)
-            targetContentOffset.pointee.y = CGFloat(indexPath.row) * tableView.rowHeight - 1
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if let tableView = scrollView as? UITableView {
-            let indexPath = IndexPath(row: Int((self.tableView.contentOffset.y + tableView.rowHeight/2) / tableView.rowHeight), section: 0)
-            
-            if let playViewCell = tableView.cellForRow(at: indexPath) as? TCPlayViewCell {
-                playViewCell.player.play()
-            }
-            if let prevPlayViewCell = tableView.cellForRow(at: IndexPath(row: indexPath.row - 1, section: 0)) as? TCPlayViewCell {
-                prevPlayViewCell.player.pause()
-            }
-            if let nextPlayViewCell = tableView.cellForRow(at: IndexPath(row: indexPath.row + 1, section: 0)) as? TCPlayViewCell {
-                nextPlayViewCell.player.pause()
-            }
-        }
-    }
-    
-    // MARK: - UITableViewDataSource
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return artWorks.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TCPlayViewCell.reuseIdentifier, for: indexPath) as? TCPlayViewCell else {
-            fatalError("Expected `\(TCPlayViewCell.self)` type for reuseIdentifier \(TCPlayViewCell.reuseIdentifier). Check the configuration in Main.storyboard.")
-        }
-        
-        cell.delegate = self
-        
-        return cell
-    }
-    
-    // MARK: - UITableViewDataSourcePrefetching
-    
-    /// - Tag: Prefetching
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        // Begin asynchronously fetching data for the requested index paths.
-    }
-    
-    /// - Tag: CancelPrefetching
-    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-        // Cancel any in-flight requests for data for the specified index paths.
-        
+    @objc func applicationWillEnterForeground() {
+        _allowedToUseGPU = true
+        _capturePipeline?.renderingEnabled = true
     }
     
     // MARK: - UICollectionViewDelegate
@@ -405,7 +276,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
         let segment = compositionVideoTrack.segments[indexPath.item]
-        self.backgroundTimelineView.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(self.visibleTimeRange)*Double(self.backgroundTimelineView.frame.width)) - self.backgroundTimelineView.frame.size.width/2
+        self.timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(self.visibleTimeRange)*Double(self.timelineV.frame.width)) - self.timelineV.frame.size.width/2
         
         recordTimeRange = segment.timeMapping.target
         isRecording = true
@@ -417,6 +288,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     // MARK: - UICollectionViewDataSource
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -438,7 +313,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
         
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
-        imageGenerator.maximumSize = CGSize(width: self.backgroundTimelineView.bounds.height * 2, height: self.backgroundTimelineView.bounds.height * 2)
+        imageGenerator.maximumSize = CGSize(width: self.timelineV.bounds.height * 2, height: self.timelineV.bounds.height * 2)
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.videoComposition = videoComposition
         
@@ -448,7 +323,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             let timerange = (compositionVideoTrack.segments[indexPath.item].timeMapping.target)
             
             // Generate an image at time zero.
-            let incrementTime = CMTime(seconds: Double(backgroundTimelineView.frame.height /  scaledDurationToWidth), preferredTimescale: 600)
+            let incrementTime = CMTime(seconds: Double(timelineV.frame.height /  scaledDurationToWidth), preferredTimescale: 600)
             
             var iterTime = timerange.start
             
@@ -462,7 +337,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 if (image != nil) {
                     DispatchQueue.main.async {
                         let nextX = CGFloat(CMTimeGetSeconds(requestedTime - timerange.start)) * self.scaledDurationToWidth
-                        let nextView = UIImageView.init(frame: CGRect(x: nextX, y: 0.0, width: self.backgroundTimelineView.bounds.height, height: self.backgroundTimelineView.bounds.height))
+                        let nextView = UIImageView.init(frame: CGRect(x: nextX, y: 0.0, width: self.timelineV.bounds.height, height: self.timelineV.bounds.height))
                         nextView.contentMode = .scaleAspectFill
                         nextView.clipsToBounds = true
                         nextView.image = UIImage.init(cgImage: image!)
@@ -487,29 +362,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
         
-        return CGSize(width: CGFloat(CMTimeGetSeconds((compositionVideoTrack.segments[indexPath.row].timeMapping.target.duration))) * scaledDurationToWidth, height: backgroundTimelineView.frame.height)
+        return CGSize(width: CGFloat(CMTimeGetSeconds((compositionVideoTrack.segments[indexPath.row].timeMapping.target.duration))) * scaledDurationToWidth, height: timelineV.frame.height)
     }
-    
-    //MARK: - TCPlayViewCellDelegate
-    
-    func funcIsRecording() -> Bool {
-        return isRecording
-    }
-    
-    var player = AVPlayer()
-    
-    func chorus(url: URL) {
-        DispatchQueue.main.async {
-            self.tableView.isScrollEnabled = false
-            self.downloadProcess = 0.5
-        }
-        
-        addClip(url)
-        
-//        let backgroundTask = urlSession.downloadTask(with: url)
-//        backgroundTask.resume()
-    }
-    
     
     @IBAction func tapPlayView(_ sender: Any) {
         if player.rate == 0 {
@@ -525,7 +379,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
             if #available(iOS 10.0, *) {
                 seekTimer?.invalidate()
                 seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
-                    self.backgroundTimelineView.contentOffset.x = CGFloat(self.currentTime/Double(self.visibleTimeRange)*Double(self.backgroundTimelineView.frame.width)) - self.backgroundTimelineView.frame.size.width/2
+                    self.timelineV.contentOffset.x = CGFloat(self.currentTime/Double(self.visibleTimeRange)*Double(self.timelineV.frame.width)) - self.timelineV.frame.size.width/2
                 })
             } else {
                 // Fallback on earlier versions
@@ -580,7 +434,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         
         self.recordingStopped()
         capturePipeline.stopRunning()
-
+        
         let newAsset = AVAsset(url: capturePipeline._recordingURL)
         
         /*
@@ -588,7 +442,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
          main UI thread) whilst I/O happens to populate the properties. It's
          prudent to defer our work until the properties we need have been loaded.
          */
-        newAsset.loadValuesAsynchronously(forKeys: TCVodPlayViewController.assetKeysRequiredToPlay) {
+        newAsset.loadValuesAsynchronously(forKeys: type(of: self).assetKeysRequiredToPlay) {
             /*
              The asset invokes its completion handler on an arbitrary queue.
              To avoid multiple threads using our internal state at the same time
@@ -601,7 +455,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                  Test whether the values of each of the keys we need have been
                  successfully loaded.
                  */
-                for key in TCVodPlayViewController.assetKeysRequiredToPlay {
+                for key in type(of: self).assetKeysRequiredToPlay {
                     var error: NSError?
                     
                     if newAsset.statusOfValue(forKey: key, error: &error) == .failed {
@@ -660,7 +514,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     //MARK: - Utilities
-
+    
     
     func addClip(_ movieURL: URL) {
         let newAsset = AVURLAsset(url: movieURL, options: nil)
@@ -670,7 +524,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
          main UI thread) whilst I/O happens to populate the properties. It's
          prudent to defer our work until the properties we need have been loaded.
          */
-        newAsset.loadValuesAsynchronously(forKeys: TCVodPlayViewController.assetKeysRequiredToPlay) {
+        newAsset.loadValuesAsynchronously(forKeys: type(of: self).assetKeysRequiredToPlay) {
             /*
              The asset invokes its completion handler on an arbitrary queue.
              To avoid multiple threads using our internal state at the same time
@@ -683,7 +537,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                  Test whether the values of each of the keys we need have been
                  successfully loaded.
                  */
-                for key in TCVodPlayViewController.assetKeysRequiredToPlay {
+                for key in type(of: self).assetKeysRequiredToPlay {
                     var error: NSError?
                     
                     if newAsset.statusOfValue(forKey: key, error: &error) == .failed {
@@ -730,11 +584,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                 }
                 
-                self.backgroundTimelineView.isHidden = false
-                self.middleLine.isHidden = false
-                self.exportButton.isHidden = false
-                
-                self.tableView.isHidden = true
                 self.playerV.player = self.player
                 self.playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 
@@ -744,14 +593,14 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                 DispatchQueue.global(qos: .background).async {
                     var videoTrackOutput : AVAssetReaderTrackOutput?
                     var avAssetReader = try?AVAssetReader(asset: self.composition!)
-
+                    
                     if let videoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first {
                         videoTrackOutput = AVAssetReaderTrackOutput.init(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange])
                         avAssetReader?.add(videoTrackOutput!)
                     }
-
+                    
                     avAssetReader?.startReading()
-
+                    
                     while avAssetReader?.status == .reading {
                         //视频
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
@@ -759,18 +608,18 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                             DispatchQueue.main.async {
                                 self.downloadProcess = 0.5 + CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)/2
                             }
-
+                            
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
                             {
-
+                                
                                 var buffer = vImage_Buffer()
                                 buffer.data = CVPixelBufferGetBaseAddress(pixelBuffer)
                                 buffer.rowBytes = CVPixelBufferGetBytesPerRow(pixelBuffer)
                                 buffer.width = vImagePixelCount(CVPixelBufferGetWidth(pixelBuffer))
                                 buffer.height = vImagePixelCount(CVPixelBufferGetHeight(pixelBuffer))
-
+                                
                                 let bitmapInfo = CGBitmapInfo(rawValue: CGImageByteOrderInfo.orderMask.rawValue | CGImageAlphaInfo.last.rawValue)
-
+                                
                                 var cgFormat = vImage_CGImageFormat(bitsPerComponent: 8,
                                                                     bitsPerPixel: 32,
                                                                     colorSpace: nil,
@@ -778,14 +627,14 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                                                                     version: 0,
                                                                     decode: nil,
                                                                     renderingIntent: .defaultIntent)
-
-
+                                
+                                
                                 var error = vImageBuffer_InitWithCVPixelBuffer(&buffer, &cgFormat, pixelBuffer, nil, nil, vImage_Flags(kvImageNoFlags))
                                 assert(kvImageNoError == error)
                                 defer {
                                     free(buffer.data)
                                 }
-
+                                
                                 let histogramBins = (0...3).map { _ in
                                     return [vImagePixelCount](repeating: 0, count: 256)
                                 }
@@ -796,31 +645,31 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
                                                                             &mutableHistogram,
                                                                             vImage_Flags(kvImageNoFlags))
                                 assert(kvImageNoError == error)
-
-
+                                
+                                
                                 if let last_split_time = self.histograms.last?.time, let last_histogramBins = self.histograms.last?.histogram {
-
+                                    
                                     if self.costheta(histogramBins, last_histogramBins) < 0.9995, CMTimeSubtract(sampleBufferTime, last_split_time).seconds > 1 {
-
+                                        
                                         self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
-
+                                        
                                         DispatchQueue.main.async {
                                             let firstVideoTrack = self.composition!.tracks(withMediaType: .video).first!
-
+                                            
                                             if let segment = firstVideoTrack.segment(forTrackTime: sampleBufferTime), segment.timeMapping.target.containsTime(sampleBufferTime) {
                                                 try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
                                                 firstVideoTrack.removeTimeRange(CMTimeRange(start:sampleBufferTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
-
+                                                
                                                 if let audioTrack = self.composition!.tracks(withMediaType: .audio).first {
                                                     try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
                                                     audioTrack.removeTimeRange(CMTimeRange(start:sampleBufferTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
                                                 }
                                             }
-
-                                            self.backgroundTimelineView.reloadData()
-
+                                            
+                                            self.timelineV.reloadData()
+                                            
                                         }
-
+                                        
                                     }
                                 } else {
                                     self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
@@ -907,7 +756,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         
         player.replaceCurrentItem(with: playerItem)
         
-        self.backgroundTimelineView.reloadData()
+        self.timelineV.reloadData()
     }
     
     private func recordingStopped() {
@@ -929,8 +778,8 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         let currentInterfaceOrientation = UIApplication.shared.statusBarOrientation
         _previewView!.transform = _capturePipeline.transformFromVideoBufferOrientationToOrientation(AVCaptureVideoOrientation(rawValue: currentInterfaceOrientation.rawValue)!, withAutoMirroring: true) // Front camera preview should be mirrored
         
-        self.view.insertSubview(_previewView!, at: 0)
-        _previewView!.frame = tableView.frame
+        view.insertSubview(_previewView!, at: 0)
+        _previewView!.frame = view.frame
     }
     
     @objc func deviceOrientationDidChange() {
@@ -958,62 +807,10 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    // #MARK: - URLSessionDownloadDelegate
-    
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        DispatchQueue.main.async {
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-                let backgroundCompletionHandler =
-                appDelegate.backgroundCompletionHandler else {
-                    return
-            }
-            backgroundCompletionHandler()
-        }
-    }
-    
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
-                    didFinishDownloadingTo location: URL) {
-        guard let httpResponse = downloadTask.response as? HTTPURLResponse,
-            (200...299).contains(httpResponse.statusCode) else {
-                print ("server error")
-                return
-        }
-        do {
-            let documentsURL = try
-                FileManager.default.url(for: .documentDirectory,
-                                        in: .userDomainMask,
-                                        appropriateFor: nil,
-                                        create: false)
-            let savedURL = documentsURL.appendingPathComponent(
-                location.lastPathComponent).appendingPathExtension("mp4")
-            try FileManager.default.moveItem(at: location, to: savedURL)
-            
-            DispatchQueue.main.async {
-                self.downloadProcess = 0.5
-            }
-            
-            addClip(savedURL)
-
-        } catch {
-            print ("file error: \(error)")
-        }
-    }
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        // println("download task did write data")
-        
-        let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-        
-        DispatchQueue.main.async {
-            self.downloadProcess = CGFloat(sqrt(progress)/2)
-        }
-    }
-    
     // MARK: - layout
     override func viewDidLayoutSubviews() {
         let safeArea = view.bounds.inset(by: view.safeAreaInsets)
-        if funcIsRecording() {
+        if isRecording {
             playerV.frame = CGRect(x: 0, y: 0, width: safeArea.width/3, height: safeArea.height/3)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
@@ -1028,25 +825,17 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    
     // MARK: - Models
     
-    private lazy var urlSession: URLSession = {
-        let config = URLSessionConfiguration.background(withIdentifier: "MySession")
-        config.isDiscretionary = true
-        config.sessionSendsLaunchEvents = true
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()
+    
+    var url: URL?
+    
+    var player = AVPlayer()
     
     var recordTimeRange = CMTimeRange.zero
     
-    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.portrait
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
     }
     
     var _currentIdx = 0
@@ -1059,19 +848,12 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    var isLoading: Bool = false
-    
-    private var _addedObservers: Bool = false
     private var _recording: Bool = false
     private var _backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier(rawValue: 0)
     private var _allowedToUseGPU: Bool = false
     
-    private var _labelTimer: Timer?
     private var _previewView: OpenGLPixelBufferView?
     private var _capturePipeline: RosyWriterCapturePipeline!
-    
-    @IBOutlet weak var recordButton: UIButton!
-    @IBOutlet weak var playerV: PlayerView!
     
     var histograms = [(time: CMTime, histogram: [[vImagePixelCount]])]()
     
@@ -1079,7 +861,7 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
     var recordTimer: Timer? = nil
     var visibleTimeRange: CGFloat = 15
     var scaledDurationToWidth: CGFloat {
-        return backgroundTimelineView.frame.width / visibleTimeRange
+        return timelineV.frame.width / visibleTimeRange
     }
     
     
@@ -1115,11 +897,6 @@ class TCVodPlayViewController: UIViewController, UITableViewDelegate, UITableVie
      A token obtained from calling `player`'s `addPeriodicTimeObserverForInterval(_:queue:usingBlock:)`
      method.
      */
-    
-    private var playerItem: AVPlayerItem? = nil
-    
-    var artWorks : [URL] = []
-    var userRecordID : CKRecord.ID?
     
     var downloadProgressLayer: CAShapeLayer?
     var downloadProcess: CGFloat = 0 {

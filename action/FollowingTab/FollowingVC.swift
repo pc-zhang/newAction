@@ -35,6 +35,14 @@ class FollowingVC: UITableViewController {
         fetchData()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        for cell in tableView.visibleCells {
+            (cell as? FollowingViewCell)?.player.pause()
+        }
+    }
+    
     @objc open func fetchData()  {
         artworkRecords = []
         refresh.endRefreshing()
