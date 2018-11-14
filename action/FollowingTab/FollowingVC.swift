@@ -46,7 +46,7 @@ class FollowingVC: UITableViewController {
         let queryArtworksOp = CKQueryOperation(query: query)
     
         queryArtworksOp.desiredKeys = ["video", "title"]
-        queryArtworksOp.resultsLimit = 3
+        queryArtworksOp.resultsLimit = 1
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
             if let ckasset = artworkRecord["video"] as? CKAsset {
                 let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
@@ -129,25 +129,21 @@ class FollowingVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if cursor != nil || artworkRecords.count == 0 {
-            return artworkRecords.count + 1
-        } else {
-            return artworkRecords.count
-        }
+        return artworkRecords.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var identifier: String
+        let surplus = artworkRecords.count - (indexPath.row + 1)
         
-        if indexPath.row == artworkRecords.count, let cursor = cursor {
-            identifier = "NextPageLoaderCell"
+        if 2 - surplus > 0, let cursor = cursor {
             if !isFetchingData {
                 isFetchingData = true
                 
                 let recordsCountBefore = self.artworkRecords.count
             
                 let queryArtworksOp = CKQueryOperation(cursor: cursor)
+                queryArtworksOp.resultsLimit = 2 - surplus
                 queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
                     if let ckasset = artworkRecord["video"] as? CKAsset {
                         let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
@@ -173,27 +169,14 @@ class FollowingVC: UITableViewController {
                         }
                         
                         self.isFetchingData = false
-                        if self.cursor == nil {
-                            self.tableView.performBatchUpdates({
-                                self.tableView.deleteRows(at: [IndexPath(row: recordsCountBefore, section: 0)], with: .fade)
-                                self.tableView.insertRows(at: indexPaths, with: .fade)
-                            }, completion: nil)
-                        } else {
-                            self.tableView.insertRows(at: indexPaths, with: .fade)
-                        }
+                        self.tableView.insertRows(at: indexPaths, with: .bottom)
                         
                     }
                 }
             }
-        } else {
-            identifier = FollowingViewCell.reuseIdentifier
         }
         
-        if artworkRecords.count == 0 {
-            identifier = "NextPageLoaderCell"
-        }
-        
-        return tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        return tableView.dequeueReusableCell(withIdentifier: FollowingViewCell.reuseIdentifier, for: indexPath)
         
     }
     
