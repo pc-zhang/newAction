@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 import CloudKit
 
-class FollowingVC: UITableViewController {
+class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -24,6 +24,7 @@ class FollowingVC: UITableViewController {
     let refresh: UIRefreshControl = UIRefreshControl()
     var isFetchingData: Bool = false
     var artworkInfosDict: [CKRecord:[String:Any]] = [:]
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +91,7 @@ class FollowingVC: UITableViewController {
         return dateFormatter
     }()
     
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row >= artworkRecords.count {
             return
         }
@@ -122,7 +123,7 @@ class FollowingVC: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let playViewCell = cell as? FollowingViewCell {
             playViewCell.player.pause()
             playViewCell.player.replaceCurrentItem(with: nil)
@@ -132,15 +133,15 @@ class FollowingVC: UITableViewController {
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return artworkRecords.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
         

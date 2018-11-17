@@ -10,7 +10,7 @@ import UIKit
 import CloudKit
 import AVFoundation
 
-class MainVC: UITableViewController {
+class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -20,10 +20,11 @@ class MainVC: UITableViewController {
         return OperationQueue()
     }()
     var cursor: CKQueryOperation.Cursor? = nil
-    let refresh: UIRefreshControl = UIRefreshControl()
     var isFetchingData: Bool = false
     var isFirstFetched: Bool = false
     var artworkInfosDict: [CKRecord:[String:Any]] = [:]
+    var refreshControl = UIRefreshControl()
+    @IBOutlet weak var tableView: UITableView!
     
     func queryArtworkOtherInfo(artworkRecord: CKRecord)
     {
@@ -71,9 +72,8 @@ class MainVC: UITableViewController {
         self.operationQueue.addOperation(queryReviewsOp)
     }
     
-    @objc open func fetchData()  {
+    @IBAction func fetchData(_ sender: Any) {
         artworkRecords = []
-        refresh.endRefreshing()
         isFetchingData = true
         
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(value: true))
@@ -114,10 +114,12 @@ class MainVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.rowHeight = tableView.bounds.inset(by: view.safeAreaInsets).height
-        refresh.addTarget(self, action: #selector(fetchData), for: .valueChanged)
-        tableView.addSubview(refresh)
-        fetchData()
+        tableView.rowHeight = tableView.bounds.height
+        
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(fetchData(_:)), for: UIControl.Event.valueChanged)
+        tableView.addSubview(refreshControl)
+        fetchData(0)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -136,29 +138,49 @@ class MainVC: UITableViewController {
 
     // MARK: - UITableViewDelegate
     
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let playViewCell = cell as! MainViewCell
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if indexPath.row < artworkRecords.count {
-            playViewCell.url = (artworkRecords[indexPath.row]["video"] as? CKAsset)?.fileURL.appendingPathExtension("mp4")
-            let playerItem = AVPlayerItem(url: playViewCell.url!)
-            playViewCell.player.replaceCurrentItem(with: playerItem)
-            playViewCell.player.seek(to: .zero)
-            if isFirstFetched {
-                playViewCell.player.play()
-                isFirstFetched = false
+        let playViewCell = cell as! MainViewCell
+        let artworkRecord = artworkRecords[indexPath.row]
+        
+        if indexPath.row >= artworkRecords.count {
+            return
+        }
+        
+        let likesCount = (artworkInfosDict[artworkRecord]?["likes"] as? [CKRecord])?.count ?? 0
+        let reviewsCount = (artworkInfosDict[artworkRecord]?["reviews"] as? [CKRecord])?.count ?? 0
+        let sharesCount = 0
+        
+        playViewCell.likesLabel.text = "\(likesCount)"
+        playViewCell.reviewsLabel.text = "\(reviewsCount)"
+        
+        if let artist = artworkInfosDict[artworkRecord]?["artist"] as? CKRecord {
+            if let avatarImageAsset = artist["avatarImage"] as? CKAsset {
+                playViewCell.avatarV.image = UIImage(contentsOfFile: avatarImageAsset.fileURL.path)
             }
+            if let nickName = artist["nickName"] as? String {
+                playViewCell.nickNameV.text = "@\(nickName)"
+            }
+        }
+        
+        playViewCell.url = (artworkRecords[indexPath.row]["video"] as? CKAsset)?.fileURL.appendingPathExtension("mp4")
+        let playerItem = AVPlayerItem(url: playViewCell.url!)
+        playViewCell.player.replaceCurrentItem(with: playerItem)
+        playViewCell.player.seek(to: .zero)
+        if isFirstFetched {
+            playViewCell.player.play()
+            isFirstFetched = false
         }
     }
 
-    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let playViewCell = cell as! MainViewCell
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
     }
     
-    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if let tableView = scrollView as? UITableView {
             if let playViewCell = tableView.visibleCells.first as? MainViewCell {
                 playViewCell.player.play()
@@ -168,17 +190,17 @@ class MainVC: UITableViewController {
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return artworkRecords.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
         
@@ -234,6 +256,10 @@ class MainVC: UITableViewController {
                 currentCell.player.pause()
             }
         }
+    }
+    
+    @IBAction func cancel(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
     }
     
 }

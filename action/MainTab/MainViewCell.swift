@@ -37,6 +37,11 @@ final class MainViewCell: UITableViewCell {
     // MARK: Properties
     @IBOutlet weak var playerView: PlayerView!
     @IBOutlet weak var chorus: UIButton!
+    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var nickNameV: UILabel!
+    @IBOutlet weak var titleV: UILabel!
+    @IBOutlet weak var likesLabel: UILabel!
+    @IBOutlet weak var reviewsLabel: UILabel!
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()

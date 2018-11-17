@@ -69,6 +69,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         return nil
     }
     
+    @IBAction func cancel(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
+    }
+    
     @IBAction func export(_ sender: Any) {
         let thumbnail = generateThumbnail()
         // Create the export session with the composition and set the preset to the highest quality.
@@ -192,7 +196,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         downloadProgressLayer = CAShapeLayer()
         downloadProgressLayer!.frame = playerV.bounds
         downloadProgressLayer!.position = CGPoint(x:playerV.bounds.width/2, y:playerV.bounds.height/2)
-        playerV.layer.addSublayer(downloadProgressLayer!)
+//        playerV.layer.addSublayer(downloadProgressLayer!)
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
@@ -811,7 +815,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     override func viewDidLayoutSubviews() {
         let safeArea = view.bounds.inset(by: view.safeAreaInsets)
         if isRecording {
-            playerV.frame = CGRect(x: 0, y: 0, width: safeArea.width/3, height: safeArea.height/3)
+            playerV.frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: safeArea.width/3, height: safeArea.height/3)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
                 let scale = safeArea.width / width

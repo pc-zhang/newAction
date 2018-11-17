@@ -10,7 +10,7 @@ import Foundation
 import CloudKit
 import UIKit
 
-class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     lazy var spinner: UIActivityIndicatorView = {
         return UIActivityIndicatorView(style: .gray)
@@ -19,6 +19,7 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
 
     var userRecordID: CKRecord.ID?
     
+    @IBOutlet weak var collectionView: UICollectionView!
     
     private var userCacheOrNil: UserLocalCache? {
         return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
@@ -60,7 +61,11 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
         }
     }
     
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    @IBAction func cancel(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
             var imagePath: String?
@@ -89,7 +94,7 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
         return headerV
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         var artworksCount = 0
         userCacheOrNil?.performReaderBlockAndWait {
             artworksCount = userCacheOrNil!.artworkThumbnails.count
@@ -97,12 +102,12 @@ class UserInfoVC : UICollectionViewController, UICollectionViewDelegateFlowLayou
         return artworksCount
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GifViewCell", for: indexPath)
         return cell
     }
     
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         var artworkGifs : [CKAsset]? = nil
         userCacheOrNil?.performReaderBlockAndWait {
             artworkGifs = userCacheOrNil!.artworkThumbnails
