@@ -573,13 +573,13 @@
         <!--首页-->
         <scene sceneID="bis-Yv-L5e">
             <objects>
-                <viewController hidesBottomBarWhenPushed="YES" id="sbm-qe-tO6" customClass="MainVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="sbm-qe-tO6" customClass="MainVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="46c-dB-KeK">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="729" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lg0-AK-bRK">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TCPlayViewCell" id="fiF-C1-WSd" customClass="MainViewCell" customModule="action" customModuleProvider="target">
@@ -811,7 +811,7 @@
                             <constraint firstItem="sRI-Kp-Xw2" firstAttribute="leading" secondItem="wJj-1P-PeX" secondAttribute="leading" id="akL-vZ-vVC"/>
                             <constraint firstItem="sRI-Kp-Xw2" firstAttribute="trailing" secondItem="wJj-1P-PeX" secondAttribute="trailing" id="anG-ba-Za4"/>
                             <constraint firstItem="wJj-1P-PeX" firstAttribute="trailing" secondItem="Lg0-AK-bRK" secondAttribute="trailing" id="cn9-XA-o5M"/>
-                            <constraint firstItem="Lg0-AK-bRK" firstAttribute="leading" secondItem="46c-dB-KeK" secondAttribute="leading" id="hEr-sY-LYD"/>
+                            <constraint firstItem="Lg0-AK-bRK" firstAttribute="leading" secondItem="wJj-1P-PeX" secondAttribute="leading" id="hEr-sY-LYD"/>
                             <constraint firstItem="wJj-1P-PeX" firstAttribute="bottom" secondItem="Lg0-AK-bRK" secondAttribute="bottom" id="zPg-mU-dSi"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="wJj-1P-PeX"/>
@@ -819,7 +819,6 @@
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <tabBarItem key="tabBarItem" title="首页" id="4CL-zx-BIe"/>
                     <navigationItem key="navigationItem" id="1do-8P-wMv"/>
-                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="Lg0-AK-bRK" id="h5g-F4-UC0"/>
                     </connections>
@@ -1213,7 +1212,7 @@
         <image name="export" width="58" height="58"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8U0-dU-CZ9"/>
+        <segue reference="FKq-yC-dQs"/>
         <segue reference="TFS-tO-vIX"/>
     </inferredMetricsTieBreakers>
 </document>

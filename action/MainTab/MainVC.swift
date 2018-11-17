@@ -114,11 +114,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.rowHeight = tableView.bounds.height
-        
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(fetchData(_:)), for: UIControl.Event.valueChanged)
         tableView.addSubview(refreshControl)
+        
         fetchData(0)
     }
     
@@ -126,6 +125,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         super.viewWillAppear(animated)
         
         (tableView.visibleCells.first as? MainViewCell)?.player.play()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        tableView.rowHeight = tableView.bounds.height
     }
     
     override func viewDidDisappear(_ animated: Bool) {
