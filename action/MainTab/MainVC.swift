@@ -10,7 +10,7 @@ import UIKit
 import CloudKit
 import AVFoundation
 
-struct ArtWorkInfo {
+fileprivate struct ArtWorkInfo {
     var isPrefetched: Bool = false
     var isFullArtwork: Bool = false
     var artist: CKRecord? = nil
@@ -24,7 +24,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var userRecord: CKRecord?
-    var artworkRecords: [ArtWorkInfo] = []
+    private var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
@@ -132,6 +132,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     @IBAction func fetchData(_ sender: Any) {
         artworkRecords = []
         isFetchingData = true
+        var tmpArtworkRecords:[ArtWorkInfo] = []
         
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(value: true))
         let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
@@ -144,7 +145,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             var artWorkInfo = ArtWorkInfo()
             artWorkInfo.artwork = artworkRecord
             DispatchQueue.main.async {
-                self.artworkRecords.append(artWorkInfo)
+                tmpArtworkRecords.append(artWorkInfo)
             }
         }
         queryArtworksOp.queryCompletionBlock = { (cursor, error) in
@@ -157,6 +158,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         DispatchQueue.global().async {
             self.operationQueue.waitUntilAllOperationsAreFinished()
             DispatchQueue.main.async {
+                self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
                 self.tableView.reloadData()
             }

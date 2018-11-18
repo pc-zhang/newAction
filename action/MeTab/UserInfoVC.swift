@@ -10,20 +10,40 @@ import Foundation
 import CloudKit
 import UIKit
 
-class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+fileprivate struct UserPageArtWorkInfo {
+    var isPrefetched: Bool = false
+    var artwork: CKRecord? = nil
+}
+
+class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
+    
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            queryArtworkOtherInfo(indexPath.item)
+        }
+    }
+    
     
     lazy var spinner: UIActivityIndicatorView = {
         return UIActivityIndicatorView(style: .gray)
     }()
-    
-
-    var userRecordID: CKRecord.ID?
     
     @IBOutlet weak var collectionView: UICollectionView!
     
     private var userCacheOrNil: UserLocalCache? {
         return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
     }
+    
+    let container: CKContainer = CKContainer.default()
+    let database: CKDatabase = CKContainer.default().publicCloudDatabase
+    var userID: CKRecord.ID?
+    private var artworkRecords: [UserPageArtWorkInfo] = []
+    lazy var operationQueue: OperationQueue = {
+        return OperationQueue()
+    }()
+    var cursor: CKQueryOperation.Cursor? = nil
+    var isFetchingData: Bool = false
+    var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +55,13 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         spinner.hidesWhenStopped = true
         spinner.color = .blue
 //        spinner.startAnimating()
+        if userID == nil {
+            CKContainer.default().fetchUserRecordID { (recordID, error) in
+                if let recordID = recordID {
+                    self.updateWithRecordID(recordID)
+                }
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,7 +79,41 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         
         self.collectionView.reloadData()
         
-        spinner.stopAnimating()
+//        spinner.stopAnimating()
+    }
+    
+    func updateWithRecordID(_ recordID: CKRecord.ID) {
+        artworkRecords = []
+        isFetchingData = true
+        var tmpArtworkRecords:[UserPageArtWorkInfo] = []
+        
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creatorUserRecordID = %@", recordID))
+        let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
+        query.sortDescriptors = [byCreation]
+        let queryArtworksOp = CKQueryOperation(query: query)
+        
+        queryArtworksOp.desiredKeys = []
+        queryArtworksOp.resultsLimit = 6
+        queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
+            var artWorkInfo = UserPageArtWorkInfo()
+            artWorkInfo.artwork = artworkRecord
+            tmpArtworkRecords.append(artWorkInfo)
+        }
+        queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            self.cursor = cursor
+        }
+        queryArtworksOp.database = self.database
+        self.operationQueue.addOperation(queryArtworksOp)
+        
+        DispatchQueue.global().async {
+            self.operationQueue.waitUntilAllOperationsAreFinished()
+            DispatchQueue.main.async {
+                self.artworkRecords.append(contentsOf: tmpArtworkRecords)
+                self.isFetchingData = false
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     @IBAction func done(bySegue: UIStoryboardSegue) {
@@ -64,6 +125,38 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     @IBAction func cancel(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
+    
+    func queryArtworkOtherInfo(_ row: Int)
+    {
+        guard let artworkRecord = artworkRecords[row].artwork else {
+            return
+        }
+        
+        if artworkRecords[row].isPrefetched == true {
+            return
+        }
+        artworkRecords[row].isPrefetched = true
+        
+        
+        let fetchArtworkOp = CKFetchRecordsOperation(recordIDs: [artworkRecord.recordID])
+        fetchArtworkOp.desiredKeys = ["thumbnail"]
+        fetchArtworkOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            if let artworkRecord = recordsByRecordID?[artworkRecord.recordID] {
+                DispatchQueue.main.async {
+                    self.artworkRecords[row].artwork = artworkRecord
+                    if self.collectionView.indexPathsForVisibleItems.contains(IndexPath(item: row, section: 0)) {
+                        self.collectionView.reloadItems(at: [IndexPath(item: row, section: 0)])
+                    }
+                }
+            }
+            
+        }
+        fetchArtworkOp.database = self.database
+        self.operationQueue.addOperation(fetchArtworkOp)
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
@@ -95,11 +188,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var artworksCount = 0
-        userCacheOrNil?.performReaderBlockAndWait {
-            artworksCount = userCacheOrNil!.artworkThumbnails.count
-        }
-        return artworksCount
+        return artworkRecords.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -108,12 +197,56 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        var artworkGifs : [CKAsset]? = nil
-        userCacheOrNil?.performReaderBlockAndWait {
-            artworkGifs = userCacheOrNil!.artworkThumbnails
-        }
-        if let artworkGifs = artworkGifs, let imageData = try? Data(contentsOf: artworkGifs[indexPath.row].fileURL), let cell = cell as? GifViewCell {
+        queryArtworkOtherInfo(indexPath.item)
+        if let thumbnail = artworkRecords[indexPath.item].artwork?["thumbnail"] as? CKAsset, let imageData = try? Data(contentsOf: thumbnail.fileURL), let cell = cell as? GifViewCell {
             cell.imageV.image = UIImage.gifImageWithData(imageData)
+            
+            if true {
+                let surplus = artworkRecords.count - (indexPath.row + 1)
+                
+                if let cursor = cursor, !isFetchingData, surplus < 6 {
+                    isFetchingData = true
+                    
+                    let recordsCountBefore = artworkRecords.count
+                    var tmpArtworkRecords:[UserPageArtWorkInfo] = []
+                    
+                    let queryArtworksOp = CKQueryOperation(cursor: cursor)
+                    queryArtworksOp.desiredKeys = []
+                    queryArtworksOp.resultsLimit = 6 - surplus
+                    queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
+                        var artWorkInfo = UserPageArtWorkInfo()
+                        artWorkInfo.artwork = artworkRecord
+                        DispatchQueue.main.async {
+                            tmpArtworkRecords.append(artWorkInfo)
+                        }
+                    }
+                    queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+                        guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                        self.cursor = cursor
+                    }
+                    queryArtworksOp.database = self.database
+                    self.operationQueue.addOperation(queryArtworksOp)
+                    
+                    DispatchQueue.global().async {
+                        self.operationQueue.waitUntilAllOperationsAreFinished()
+                        DispatchQueue.main.async {
+                            self.artworkRecords.append(contentsOf: tmpArtworkRecords)
+                            let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
+                                IndexPath(item: $0, section: 0)
+                            }
+                            
+                            self.isFetchingData = false
+                            self.collectionView.insertItems(at: indexPaths)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let cell = cell as? GifViewCell {
+            cell.imageV.image = nil
         }
     }
     

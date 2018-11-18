@@ -31,22 +31,6 @@ final class UserLocalCache: BaseLocalCache {
     let container: CKContainer
     let database: CKDatabase
     var userRecord: CKRecord?
-    var artworkRecords: [CKRecord] = []
-    
-//    var artworkURLs: [URL] {
-//        return artworkRecords.map {
-//            if let ckasset = $0["video"] as? CKAsset {
-//                return ckasset.fileURL.appendingPathExtension("mp4")
-//            }
-//            return URL(fileURLWithPath: "")
-//        }
-//    }
-    
-    var artworkThumbnails: [CKAsset] {
-        return artworkRecords.compactMap {
-            return $0["thumbnail"] as? CKAsset
-        }
-    }
     
     var avatarImage : CKAsset? {
         guard let userRecord = userRecord else {
@@ -110,26 +94,6 @@ final class UserLocalCache: BaseLocalCache {
         }
         fetchRecordsOp.database = database
         operationQueue.addOperation(fetchRecordsOp)
-        
-        self.performWriterBlock {
-            self.artworkRecords = []
-        }
-        let queryArtworksOp = CKQueryOperation(query: CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creatorUserRecordID = %@", recordID)))
-        queryArtworksOp.desiredKeys = ["thumbnail"]
-        queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-            if let ckasset = artworkRecord["video"] as? CKAsset {
-                let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-                try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-            }
-            self.performWriterBlock {
-                self.artworkRecords.append(artworkRecord)
-            }
-        }
-        queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: [recordID]) == nil else { return }
-        }
-        queryArtworksOp.database = database
-        operationQueue.addOperation(queryArtworksOp)
         postWhenOperationQueueClear(name: .userCacheDidChange)
         
     }
