@@ -10,34 +10,62 @@ import UIKit
 import CloudKit
 import AVFoundation
 
-class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
+struct ArtWorkInfo {
+    var isPrefetched: Bool = false
+    var isFullArtwork: Bool = false
+    var artist: CKRecord? = nil
+    var artwork: CKRecord? = nil
+    var likes: [CKRecord]? = nil
+    var reviews: [CKRecord]? = nil
+}
+
+class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var userRecord: CKRecord?
-    var artworkRecords: [CKRecord] = []
+    var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
     var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
-    var isFirstFetched: Bool = false
-    var artworkInfosDict: [CKRecord:[String:Any]] = [:]
     var refreshControl = UIRefreshControl()
     @IBOutlet weak var tableView: UITableView!
     
-    func queryArtworkOtherInfo(artworkRecord: CKRecord)
+    func reloadVisibleRow(_ row: Int) {
+        let indexPath = IndexPath(row: row, section: 0)
+        if artworkRecords[row].artist != nil && artworkRecords[row].isFullArtwork && artworkRecords[row].likes != nil && artworkRecords[row].reviews != nil {
+                if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+                    tableView.reloadRows(at: [indexPath], with: .fade)
+            }
+        }
+    }
+    
+    func queryArtworkOtherInfo(_ row: Int)
     {
-        artworkInfosDict[artworkRecord] = [:]
+        guard let artworkRecord = artworkRecords[row].artwork else {
+            return
+        }
+
+        if artworkRecords[row].isPrefetched == true {
+            return
+        }
+        artworkRecords[row].isPrefetched = true
+        
         var likes: [CKRecord] = []
         var reviews: [CKRecord] = []
+
         if let artistID = artworkRecord.creatorUserRecordID {
             let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [artistID])
             fetchArtistOp.desiredKeys = ["avatarImage", "nickName"]
             fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
                 guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
                 
-                self.artworkInfosDict[artworkRecord]?["artist"] = recordsByRecordID?[artistID]
+                DispatchQueue.main.async {
+                    self.artworkRecords[row].artist = recordsByRecordID?[artistID]
+                    self.reloadVisibleRow(row)
+                }
             }
             fetchArtistOp.database = self.database
             self.operationQueue.addOperation(fetchArtistOp)
@@ -45,6 +73,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         let query = CKQuery(recordType: "Like", predicate: NSPredicate(format: "artwork = %@", artworkRecord.recordID))
         let queryLikesOp = CKQueryOperation(query: query)
+        queryLikesOp.desiredKeys = []
         queryLikesOp.resultsLimit = 10
         queryLikesOp.recordFetchedBlock = { (likeRecord) in
             likes.append(likeRecord)
@@ -52,7 +81,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         queryLikesOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
-            self.artworkInfosDict[artworkRecord]?["likes"] = likes
+            DispatchQueue.main.async {
+                self.artworkRecords[row].likes = likes
+                self.reloadVisibleRow(row)
+            }
         }
         queryLikesOp.database = self.database
         self.operationQueue.addOperation(queryLikesOp)
@@ -66,10 +98,35 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         queryReviewsOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
-            self.artworkInfosDict[artworkRecord]?["reviews"] = reviews
+            DispatchQueue.main.async {
+                self.artworkRecords[row].reviews = reviews
+                self.reloadVisibleRow(row)
+            }
         }
         queryReviewsOp.database = self.database
         self.operationQueue.addOperation(queryReviewsOp)
+        
+        let fetchArtworkOp = CKFetchRecordsOperation(recordIDs: [artworkRecord.recordID])
+        fetchArtworkOp.desiredKeys = ["title", "video"]
+        fetchArtworkOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            if let artworkRecord = recordsByRecordID?[artworkRecord.recordID] {
+                
+                if let ckasset = artworkRecord["video"] as? CKAsset {
+                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                    try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
+                    DispatchQueue.main.async {
+                        self.artworkRecords[row].artwork = artworkRecord
+                        self.artworkRecords[row].isFullArtwork = true
+                        self.reloadVisibleRow(row)
+                    }
+                }
+            }
+            
+        }
+        fetchArtworkOp.database = self.database
+        self.operationQueue.addOperation(fetchArtworkOp)
     }
     
     @IBAction func fetchData(_ sender: Any) {
@@ -81,17 +138,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         query.sortDescriptors = [byCreation]
         let queryArtworksOp = CKQueryOperation(query: query)
         
-        queryArtworksOp.desiredKeys = ["video", "title"]
+        queryArtworksOp.desiredKeys = []
         queryArtworksOp.resultsLimit = 1
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-            if let ckasset = artworkRecord["video"] as? CKAsset {
-                let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-                try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
+            var artWorkInfo = ArtWorkInfo()
+            artWorkInfo.artwork = artworkRecord
+            DispatchQueue.main.async {
+                self.artworkRecords.append(artWorkInfo)
             }
-            
-            self.artworkRecords.append(artworkRecord)
-            
-            self.queryArtworkOtherInfo(artworkRecord: artworkRecord)
         }
         queryArtworksOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
@@ -104,7 +158,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             self.operationQueue.waitUntilAllOperationsAreFinished()
             DispatchQueue.main.async {
                 self.isFetchingData = false
-                self.isFirstFetched = true
                 self.tableView.reloadData()
             }
         }
@@ -143,41 +196,84 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        queryArtworkOtherInfo(indexPath.row)
+        
         let playViewCell = cell as! MainViewCell
-        let artworkRecord = artworkRecords[indexPath.row]
         
-        if indexPath.row >= artworkRecords.count {
-            return
-        }
+        playViewCell.likesLabel.text = "\(artworkRecords[indexPath.row].likes?.count ?? 0)"
+        playViewCell.reviewsLabel.text = "\(artworkRecords[indexPath.row].reviews?.count ?? 0)"
+        playViewCell.titleLabel.text = "\(artworkRecords[indexPath.row].artwork?["title"] ?? "")"
         
-        let likesCount = (artworkInfosDict[artworkRecord]?["likes"] as? [CKRecord])?.count ?? 0
-        let reviewsCount = (artworkInfosDict[artworkRecord]?["reviews"] as? [CKRecord])?.count ?? 0
-        let sharesCount = 0
-        
-        playViewCell.likesLabel.text = "\(likesCount)"
-        playViewCell.reviewsLabel.text = "\(reviewsCount)"
-        
-        if let artist = artworkInfosDict[artworkRecord]?["artist"] as? CKRecord {
+        if let artist = artworkRecords[indexPath.row].artist {
             if let avatarImageAsset = artist["avatarImage"] as? CKAsset {
                 playViewCell.avatarV.image = UIImage(contentsOfFile: avatarImageAsset.fileURL.path)
             }
             if let nickName = artist["nickName"] as? String {
-                playViewCell.nickNameV.text = "@\(nickName)"
+                playViewCell.nickNameLabel.text = "@\(nickName)"
+            }
+            
+            if true {
+                let surplus = artworkRecords.count - (indexPath.row + 1)
+                
+                if let cursor = cursor, !isFetchingData, surplus < 1 {
+                    isFetchingData = true
+                    
+                    let recordsCountBefore = artworkRecords.count
+                    var tmpArtworkRecords:[ArtWorkInfo] = []
+                    
+                    let queryArtworksOp = CKQueryOperation(cursor: cursor)
+                    queryArtworksOp.desiredKeys = []
+                    queryArtworksOp.resultsLimit = 1 - surplus
+                    queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
+                        var artWorkInfo = ArtWorkInfo()
+                        artWorkInfo.artwork = artworkRecord
+                        DispatchQueue.main.async {
+                            tmpArtworkRecords.append(artWorkInfo)
+                        }
+                    }
+                    queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+                        guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                        self.cursor = cursor
+                    }
+                    queryArtworksOp.database = self.database
+                    self.operationQueue.addOperation(queryArtworksOp)
+                    
+                    DispatchQueue.global().async {
+                        self.operationQueue.waitUntilAllOperationsAreFinished()
+                        DispatchQueue.main.async {
+                            self.artworkRecords.append(contentsOf: tmpArtworkRecords)
+                            let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
+                                IndexPath(row: $0, section: 0)
+                            }
+                            
+                            self.isFetchingData = false
+                            self.tableView.insertRows(at: indexPaths, with: .fade)
+                            
+                        }
+                    }
+                }
             }
         }
         
-        playViewCell.url = (artworkRecords[indexPath.row]["video"] as? CKAsset)?.fileURL.appendingPathExtension("mp4")
-        let playerItem = AVPlayerItem(url: playViewCell.url!)
-        playViewCell.player.replaceCurrentItem(with: playerItem)
-        playViewCell.player.seek(to: .zero)
-        if isFirstFetched {
+        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL.appendingPathExtension("mp4")
+        if let url = playViewCell.url {
+            let playerItem = AVPlayerItem(url: url)
+            playViewCell.player.replaceCurrentItem(with: playerItem)
+            playViewCell.player.seek(to: .zero)
             playViewCell.player.play()
-            isFirstFetched = false
         }
+        
     }
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let playViewCell = cell as! MainViewCell
+        
+        playViewCell.likesLabel.text = ""
+        playViewCell.reviewsLabel.text = ""
+        playViewCell.titleLabel.text = ""
+        playViewCell.nickNameLabel.text = "@代古拉"
+        playViewCell.avatarV.image = #imageLiteral(resourceName: "avatar")
+        playViewCell.url = nil
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
@@ -188,6 +284,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             if let playViewCell = tableView.visibleCells.first as? MainViewCell {
                 playViewCell.player.play()
             }
+        }
+    }
+    
+    // MARK: - UITableViewPrefetching
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            queryArtworkOtherInfo(indexPath.row)
         }
     }
     
@@ -204,46 +308,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let surplus = artworkRecords.count - (indexPath.row + 1)
-        
-        if let cursor = cursor, !isFetchingData, surplus < 2 {
-            isFetchingData = true
-            
-            let recordsCountBefore = artworkRecords.count
-            
-            let queryArtworksOp = CKQueryOperation(cursor: cursor)
-            queryArtworksOp.resultsLimit = 2 - surplus
-            queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-                if let ckasset = artworkRecord["video"] as? CKAsset {
-                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
-                    try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
-                }
-                
-                self.artworkRecords.append(artworkRecord)
-                
-                self.queryArtworkOtherInfo(artworkRecord: artworkRecord)
-            }
-            queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                self.cursor = cursor
-            }
-            queryArtworksOp.database = self.database
-            self.operationQueue.addOperation(queryArtworksOp)
-            
-            DispatchQueue.global().async {
-                self.operationQueue.waitUntilAllOperationsAreFinished()
-                DispatchQueue.main.async {
-                    let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
-                        IndexPath(row: $0, section: 0)
-                    }
-                    
-                    self.isFetchingData = false
-                    self.tableView.insertRows(at: indexPaths, with: .fade)
-                    
-                }
-            }
-        }
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainViewCell.reuseIdentifier, for: indexPath) as? MainViewCell else {
             fatalError("Expected `\(MainViewCell.self)` type for reuseIdentifier \(MainViewCell.reuseIdentifier). Check the configuration in Main.storyboard.")

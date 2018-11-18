@@ -593,7 +593,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="7Wz-ZD-Sr7">
-                                                            <rect key="frame" x="307.33333333333331" y="417" width="59.666666666666686" height="292"/>
+                                                            <rect key="frame" x="317" y="417" width="50" height="292"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1i6-ze-LWf">
                                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="58"/>
@@ -707,6 +707,9 @@
                                                                     </subviews>
                                                                 </stackView>
                                                             </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="50" id="MSZ-j2-7vK"/>
+                                                            </constraints>
                                                         </stackView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="UbK-AS-cOU">
                                                             <rect key="frame" x="20" y="599" width="40" height="40"/>
@@ -725,7 +728,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="在这个隆重的节日里，我想问问你们都是凭什么本事单身的呢？😀#光棍节惊喜请收下" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="99H-1s-13C">
-                                                            <rect key="frame" x="20" y="649" width="257.33333333333331" height="60"/>
+                                                            <rect key="frame" x="20" y="649" width="267" height="60"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="60" id="RiC-2i-Ami"/>
                                                             </constraints>
@@ -774,16 +777,17 @@
                                             <outlet property="avatarV" destination="UbK-AS-cOU" id="Pzl-aR-q2Z"/>
                                             <outlet property="chorus" destination="gtK-eZ-yRD" id="K9m-JM-wyj"/>
                                             <outlet property="likesLabel" destination="aZS-yj-A1f" id="Ab4-6U-bya"/>
-                                            <outlet property="nickNameV" destination="FXI-o7-Bkf" id="6be-p6-Igk"/>
+                                            <outlet property="nickNameLabel" destination="FXI-o7-Bkf" id="6be-p6-Igk"/>
                                             <outlet property="playerView" destination="AXy-c3-PSp" id="YZj-dN-lDy"/>
                                             <outlet property="reviewsLabel" destination="A2Y-aU-DgI" id="fYX-Ni-QSj"/>
-                                            <outlet property="titleV" destination="99H-1s-13C" id="XSd-Y5-WDj"/>
+                                            <outlet property="titleLabel" destination="99H-1s-13C" id="XSd-Y5-WDj"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="sbm-qe-tO6" id="Dpk-Rb-HCV"/>
                                     <outlet property="delegate" destination="sbm-qe-tO6" id="Zic-FF-mxe"/>
+                                    <outlet property="prefetchDataSource" destination="sbm-qe-tO6" id="ohB-hJ-5zG"/>
                                 </connections>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sRI-Kp-Xw2">
