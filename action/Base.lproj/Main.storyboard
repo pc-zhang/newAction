@@ -410,7 +410,7 @@
                                         <size key="customSize" width="138" height="188"/>
                                         <connections>
                                             <outlet property="imageV" destination="SL6-tq-GLT" id="CnK-yl-BuN"/>
-                                            <segue destination="sbm-qe-tO6" kind="show" id="8U0-dU-CZ9"/>
+                                            <segue destination="sbm-qe-tO6" kind="show" identifier="artworks segue" id="8U0-dU-CZ9"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -612,7 +612,7 @@
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>
-                                                                                <segue destination="GMQ-DF-KZ3" kind="show" identifier="action segue" animates="NO" id="YMX-aQ-4Vn"/>
+                                                                                <segue destination="GMQ-DF-KZ3" kind="show" identifier="action segue" id="YMX-aQ-4Vn"/>
                                                                             </connections>
                                                                         </button>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="入戏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qtp-jc-LyY">
@@ -742,7 +742,7 @@
                                                             <rect key="frame" x="20.000000000000007" y="599" width="100.66666666666669" height="40"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <connections>
-                                                                <segue destination="HVg-Ei-wGV" kind="show" id="TFS-tO-vIX"/>
+                                                                <segue destination="HVg-Ei-wGV" kind="show" identifier="artist segue" id="TFS-tO-vIX"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>

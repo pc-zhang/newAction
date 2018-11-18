@@ -55,9 +55,12 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         spinner.hidesWhenStopped = true
         spinner.color = .blue
 //        spinner.startAnimating()
-        if userID == nil {
+        if let userID = userID {
+            self.updateWithRecordID(userID)
+        } else {
             CKContainer.default().fetchUserRecordID { (recordID, error) in
                 if let recordID = recordID {
+                    self.userID = recordID
                     self.updateWithRecordID(recordID)
                 }
             }
@@ -255,6 +258,14 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         return CGSize(width: cellWidth, height: cellWidth / 3.0 * 4)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "artworks segue" {
+            if let artworksVC = segue.destination as? MainVC, let selectedItem = collectionView.indexPathsForSelectedItems?.first?.item {
+                artworksVC.userID = userID
+                artworksVC.selectedRow = selectedItem
+            }
+        }
+    }
 }
 
 

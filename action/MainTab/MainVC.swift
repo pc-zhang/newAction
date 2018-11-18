@@ -21,9 +21,10 @@ fileprivate struct ArtWorkInfo {
 
 class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching {
     
+    var userID: CKRecord.ID? = nil
+    var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
-    var userRecord: CKRecord?
     private var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
@@ -134,19 +135,22 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         isFetchingData = true
         var tmpArtworkRecords:[ArtWorkInfo] = []
         
-        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(value: true))
+        var query: CKQuery
+        if let userID = userID {
+            query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
+        } else {
+            query = CKQuery(recordType: "Artwork", predicate: NSPredicate(value: true))
+        }
         let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
         query.sortDescriptors = [byCreation]
         let queryArtworksOp = CKQueryOperation(query: query)
         
         queryArtworksOp.desiredKeys = []
-        queryArtworksOp.resultsLimit = 1
+        queryArtworksOp.resultsLimit = (selectedRow ?? 0) + 1
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
             var artWorkInfo = ArtWorkInfo()
             artWorkInfo.artwork = artworkRecord
-            DispatchQueue.main.async {
-                tmpArtworkRecords.append(artWorkInfo)
-            }
+            tmpArtworkRecords.append(artWorkInfo)
         }
         queryArtworksOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
@@ -161,6 +165,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
                 self.tableView.reloadData()
+                self.tableView.scrollToRow(at: IndexPath(row: self.selectedRow ?? 0, section: 0), at: .middle, animated: false)
             }
         }
         
@@ -324,7 +329,24 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 actionVC.url = currentCell.url
                 currentCell.player.pause()
             }
+        } else if segue.identifier == "artist segue" {
+            if let userInfoVC = segue.destination as? UserInfoVC, let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+                userInfoVC.userID = artworkRecords[row].artwork?.creatorUserRecordID
+            }
         }
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == "artist segue" {
+            if let row = self.tableView.indexPathsForVisibleRows?.first?.row, let userID = userID, let creatorUserRecordID = artworkRecords[row].artwork?.creatorUserRecordID, creatorUserRecordID == userID {
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                return false
+            }
+        }
+        
+        return true
     }
     
     @IBAction func cancel(_ sender: Any) {
