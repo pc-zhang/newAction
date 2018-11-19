@@ -39,6 +39,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         if artworkRecords[row].artist != nil && artworkRecords[row].isFullArtwork && artworkRecords[row].likes != nil && artworkRecords[row].reviews != nil {
                 if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
                     tableView.reloadRows(at: [indexPath], with: .fade)
+                    (tableView.visibleCells.first as? MainViewCell)?.player.play()
             }
         }
     }
@@ -270,7 +271,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             let playerItem = AVPlayerItem(url: url)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
-            playViewCell.player.play()
         }
         
     }
