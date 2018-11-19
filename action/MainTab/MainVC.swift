@@ -336,6 +336,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             if let userInfoVC = segue.destination as? UserInfoVC, let row = self.tableView.indexPathsForVisibleRows?.first?.row {
                 userInfoVC.userID = artworkRecords[row].artwork?.creatorUserRecordID
             }
+        } else if segue.identifier == "reviews segue", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+            if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {
+                reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
+            }
         }
     }
     
