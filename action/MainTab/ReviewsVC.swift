@@ -15,6 +15,9 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         

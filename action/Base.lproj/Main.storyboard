@@ -654,7 +654,7 @@
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>
-                                                                                <segue destination="Rbp-GA-i0m" kind="presentation" id="bHc-Bw-6y1"/>
+                                                                                <segue destination="gDY-HM-455" kind="presentation" id="bHc-Bw-6y1"/>
                                                                             </connections>
                                                                         </button>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2Y-aU-DgI">
@@ -1040,7 +1040,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n8A-ST-qtQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Lvw-Rg-DHo" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="127" y="1567"/>
+            <point key="canvasLocation" x="1068" y="1566.5024630541873"/>
         </scene>
         <!--action-->
         <scene sceneID="sr6-jO-E4r">
@@ -1191,6 +1191,12 @@
                                                     <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9qc-Fn-9kx">
+                                                    <rect key="frame" x="21" y="30" width="46" height="30"/>
+                                                    <connections>
+                                                        <segue destination="HVg-Ei-wGV" kind="show" id="mXV-vf-QgJ"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
@@ -1200,13 +1206,17 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="xtd-Lm-MtH" secondAttribute="trailing" id="A3d-2M-G6Q"/>
                                                 <constraint firstItem="VtO-pC-euI" firstAttribute="top" secondItem="lTQ-PB-UBU" secondAttribute="top" constant="10" id="N1I-cQ-7wB"/>
                                                 <constraint firstAttribute="bottom" secondItem="VtO-pC-euI" secondAttribute="bottom" constant="10" id="Pno-7Y-zG3"/>
+                                                <constraint firstItem="9qc-Fn-9kx" firstAttribute="width" secondItem="VtO-pC-euI" secondAttribute="width" id="aPo-NW-P2n"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="Jsm-6o-lxv" secondAttribute="trailing" id="eI1-S1-hvC"/>
                                                 <constraint firstItem="xtd-Lm-MtH" firstAttribute="height" secondItem="VtO-pC-euI" secondAttribute="height" multiplier="1:2" id="iId-h2-cli"/>
                                                 <constraint firstItem="xtd-Lm-MtH" firstAttribute="leading" secondItem="VtO-pC-euI" secondAttribute="trailing" constant="10" id="iw4-h5-0ns"/>
+                                                <constraint firstItem="9qc-Fn-9kx" firstAttribute="centerX" secondItem="VtO-pC-euI" secondAttribute="centerX" id="nMs-nQ-F8D"/>
+                                                <constraint firstItem="9qc-Fn-9kx" firstAttribute="height" secondItem="VtO-pC-euI" secondAttribute="height" id="pRu-uB-idD"/>
                                                 <constraint firstItem="Jsm-6o-lxv" firstAttribute="height" secondItem="VtO-pC-euI" secondAttribute="height" multiplier="1:2" id="pvY-y4-cE5"/>
                                                 <constraint firstItem="VtO-pC-euI" firstAttribute="leading" secondItem="lTQ-PB-UBU" secondAttribute="leadingMargin" id="tho-iD-EFq"/>
                                                 <constraint firstItem="DcZ-cg-BaS" firstAttribute="leading" secondItem="VtO-pC-euI" secondAttribute="trailing" constant="10" id="tui-hw-xBf"/>
                                                 <constraint firstItem="xtd-Lm-MtH" firstAttribute="bottom" secondItem="VtO-pC-euI" secondAttribute="bottom" id="uli-Fn-uAG"/>
+                                                <constraint firstItem="9qc-Fn-9kx" firstAttribute="centerY" secondItem="VtO-pC-euI" secondAttribute="centerY" id="xtp-yl-uxl"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1219,7 +1229,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v6l-eo-irh">
-                                <rect key="frame" x="0.0" y="43.999999999999986" width="375" height="192.66666666666663"/>
+                                <rect key="frame" x="0.0" y="87.999999999999986" width="375" height="148.66666666666663"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -1241,6 +1251,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2SZ-P8-VEB"/>
                     </view>
+                    <navigationItem key="navigationItem" id="81O-ZX-z5n"/>
                     <connections>
                         <outlet property="tableView" destination="bPP-n8-uhK" id="gN1-O6-QmD"/>
                     </connections>
@@ -1252,14 +1263,36 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-1356" y="1567"/>
+            <point key="canvasLocation" x="-413.60000000000002" y="1566.5024630541873"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="pAq-Sb-Ozy">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="overFullScreen" id="gDY-HM-455" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="L0d-gc-R1Z">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Rbp-GA-i0m" kind="relationship" relationship="rootViewController" id="PrA-zN-Q3S"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="huR-lB-gK8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1356" y="1566.5024630541873"/>
         </scene>
     </scenes>
     <resources>
         <image name="avatar" width="450" height="476.25"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="PrA-zN-Q3S"/>
         <segue reference="8U0-dU-CZ9"/>
-        <segue reference="TFS-tO-vIX"/>
+        <segue reference="mXV-vf-QgJ"/>
     </inferredMetricsTieBreakers>
 </document>
