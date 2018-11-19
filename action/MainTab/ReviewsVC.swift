@@ -36,10 +36,32 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let text = textField.text {
+            sendReview(text)
+        }
+        
         reviewTextFieldBottomHeight.constant = 0
         reviewTextField.text = nil
         reviewTextField.resignFirstResponder()
         return true
+    }
+    
+    func sendReview(_ text: String) {
+        guard let artworkID = artworkID else {
+            return
+        }
+        let reviewRecord = CKRecord(recordType: "Review")
+        let artworkReference = CKRecord.Reference(recordID: artworkID, action: .none)
+        reviewRecord["artwork"] = artworkReference
+        reviewRecord["text"] = text
+        
+        database.save(reviewRecord) { (record, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.async {
+                self.fetchData(0)
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -57,6 +79,41 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
+    func reloadVisibleRow(_ row: Int) {
+        let indexPath = IndexPath(row: row, section: 0)
+        if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+            tableView.reloadRows(at: [indexPath], with: .fade)
+        }
+    }
+    
+    func queryReviewOtherInfo(_ row: Int)
+    {
+        guard let reviewRecord = reviewInfos[row].review else {
+            return
+        }
+        
+        if reviewInfos[row].isPrefetched == true {
+            return
+        }
+        reviewInfos[row].isPrefetched = true
+        
+        if let artistID = reviewRecord.creatorUserRecordID {
+            let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [artistID])
+            fetchArtistOp.desiredKeys = ["avatarImage", "nickName"]
+            fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                
+                DispatchQueue.main.async {
+                    self.reviewInfos[row].artist = recordsByRecordID?[artistID]
+                    self.reloadVisibleRow(row)
+                }
+            }
+            fetchArtistOp.database = self.database
+            self.operationQueue.addOperation(fetchArtistOp)
+        }
+        
+    }
+    
     @IBAction func fetchData(_ sender: Any) {
         guard let artworkID = artworkID else {
             return
@@ -72,7 +129,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         query.sortDescriptors = [byCreation]
         let queryReviewsOp = CKQueryOperation(query: query)
         
-        queryReviewsOp.desiredKeys = []
+        queryReviewsOp.desiredKeys = ["text"]
         queryReviewsOp.resultsLimit = 6
         queryReviewsOp.recordFetchedBlock = { (reviewRecord) in
             var reviewInfo = ReviewInfo()
@@ -115,6 +172,37 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         return cell
     }
     
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter
+    }()
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? ReviewCell {
+            cell.avatarV.image = nil
+            cell.nickNameLabel.text = nil
+            cell.reviewLabel.text = nil
+            cell.createTimeLabel.text = nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        queryReviewOtherInfo(indexPath.row)
+        
+        if let cell = cell as? ReviewCell {
+            if let path = (reviewInfos[indexPath.row].artist?["avatarImage"] as? CKAsset)?.fileURL.path {
+                cell.avatarV.image = UIImage(contentsOfFile: path)
+            }
+            cell.nickNameLabel.text = reviewInfos[indexPath.row].artist?["nickName"] as? String
+            cell.reviewLabel.text = reviewInfos[indexPath.row].review?["text"] as? String
+            if let date = reviewInfos[indexPath.row].review?.creationDate {
+                cell.createTimeLabel.text = dateFormatter.string(from: date)
+            }
+        }
+        
+    }
+    
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         
     }
@@ -123,14 +211,25 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         super.dismiss(animated: true)
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.cellForRow(at: indexPath)?.setSelected(false, animated: false)
     }
-    */
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "review to artist segue" {
+//            if let userVC = segue.destination as? UserInfoVC, let currentCell = self.tableView.visibleCells.first as? MainViewCell {
+//                userVC.url = currentCell.url
+//                currentCell.player.pause()
+//            }
+        }
+    }
 
+}
+
+class ReviewCell: UITableViewCell {
+    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var nickNameLabel: UILabel!
+    @IBOutlet weak var reviewLabel: UILabel!
+    @IBOutlet weak var createTimeLabel: UILabel!
+    
 }
