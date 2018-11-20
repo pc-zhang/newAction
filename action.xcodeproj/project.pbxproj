@@ -14,6 +14,7 @@
 		F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA42199264400A28B35 /* MessagesVC.swift */; };
 		F02ADDA8219BF4EB00A28B35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA6219BE62D00A28B35 /* ActionVC.swift */; };
 		F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */; };
+		F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA121A40499008FB7BE /* DialogVC.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
@@ -59,6 +60,7 @@
 		F02ADDA6219BE62D00A28B35 /* ActionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionVC.swift; sourceTree = "<group>"; };
 		F02ADDCE219D3BA300A28B35 /* test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsVC.swift; sourceTree = "<group>"; };
+		F030FFA121A40499008FB7BE /* DialogVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogVC.swift; sourceTree = "<group>"; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401D2217C50AD003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 		F02ADD9F2196F39C00A28B35 /* MessagesTab */ = {
 			isa = PBXGroup;
 			children = (
+				F030FFA121A40499008FB7BE /* DialogVC.swift */,
 				F02ADDA42199264400A28B35 /* MessagesVC.swift */,
 			);
 			path = MessagesTab;
@@ -416,6 +419,7 @@
 				F0A40257217D9287003ACC53 /* CKContainer+CloudShares.swift in Sources */,
 				F0A40252217D9287003ACC53 /* Database.swift in Sources */,
 				F02ADDA321991F4200A28B35 /* FollowingPlayViewCell.swift in Sources */,
+				F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */,
 				F0A40254217D9287003ACC53 /* CKDatabase+CloudShares.swift in Sources */,
 				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
 				F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */,
