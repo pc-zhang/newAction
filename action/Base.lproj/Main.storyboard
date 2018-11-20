@@ -546,12 +546,16 @@
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="UGc-4P-H9Y" secondAttribute="trailing" id="0Ed-aC-DbK"/>
                             <constraint firstAttribute="bottom" secondItem="UGc-4P-H9Y" secondAttribute="bottom" id="BAL-90-IlA"/>
                             <constraint firstItem="UGc-4P-H9Y" firstAttribute="top" secondItem="mLI-QQ-fiD" secondAttribute="top" id="bNP-L4-264"/>
                             <constraint firstItem="UGc-4P-H9Y" firstAttribute="leading" secondItem="mLI-QQ-fiD" secondAttribute="leading" id="j1d-fA-reD"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="SiB-gb-kB2" appends="YES" id="0Na-vR-Ned"/>
+                        </connections>
                     </view>
                     <tabBarItem key="tabBarItem" title="我的" id="rOY-BE-P8x"/>
                     <navigationItem key="navigationItem" title="我的" id="OfJ-Xn-YtM"/>
@@ -561,6 +565,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ptJ-Av-JTk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="SiB-gb-kB2">
+                    <connections>
+                        <action selector="swipeRight:" destination="HVg-Ei-wGV" id="ZCU-FS-cUG"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="125.59999999999999" y="804.67980295566508"/>
         </scene>
@@ -590,6 +599,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="729" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lg0-AK-bRK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TCPlayViewCell" id="fiF-C1-WSd" customClass="MainViewCell" customModule="action" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="1" width="375" height="729"/>
@@ -757,6 +767,7 @@
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstItem="FXI-o7-Bkf" firstAttribute="centerY" secondItem="UbK-AS-cOU" secondAttribute="centerY" id="4BV-dU-ENP"/>
                                                         <constraint firstItem="99H-1s-13C" firstAttribute="leading" secondItem="AXy-c3-PSp" secondAttribute="leading" constant="20" id="5d2-Jl-mEq"/>
@@ -800,6 +811,8 @@
                                     <outlet property="dataSource" destination="sbm-qe-tO6" id="Dpk-Rb-HCV"/>
                                     <outlet property="delegate" destination="sbm-qe-tO6" id="Zic-FF-mxe"/>
                                     <outlet property="prefetchDataSource" destination="sbm-qe-tO6" id="ohB-hJ-5zG"/>
+                                    <outletCollection property="gestureRecognizers" destination="nAH-ki-OVh" appends="YES" id="bAI-xC-qWh"/>
+                                    <outletCollection property="gestureRecognizers" destination="Gqa-Us-6yZ" appends="YES" id="eLc-Ah-cBa"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -821,10 +834,20 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7F8-Zb-amT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="left" id="nAH-ki-OVh">
+                    <connections>
+                        <segue destination="HVg-Ei-wGV" kind="show" identifier="artist segue" id="KNK-Ag-qr5"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="Gqa-Us-6yZ">
+                    <connections>
+                        <action selector="swipeRight:" destination="sbm-qe-tO6" id="de9-nY-jiZ"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2116" y="804.67980295566508"/>
         </scene>
-        <!--Title-->
+        <!--dialog-->
         <scene sceneID="0l1-km-xA9">
             <objects>
                 <tableViewController id="ouE-Mq-IM3" customClass="DialogVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
@@ -920,7 +943,7 @@
                             <outlet property="delegate" destination="ouE-Mq-IM3" id="WpS-kK-Dvc"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Title" id="CJL-nl-8bh"/>
+                    <navigationItem key="navigationItem" title="dialog" id="CJL-nl-8bh"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JUR-Xc-r86" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1440,6 +1463,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="8U0-dU-CZ9"/>
-        <segue reference="mXV-vf-QgJ"/>
+        <segue reference="TFS-tO-vIX"/>
     </inferredMetricsTieBreakers>
 </document>

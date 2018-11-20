@@ -34,6 +34,11 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     var refreshControl = UIRefreshControl()
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func swipeRight(_ sender: Any) {
+        cancel(sender)
+    }
+    
+    
     func reloadVisibleRow(_ row: Int) {
         let indexPath = IndexPath(row: row, section: 0)
         if artworkRecords[row].artist != nil && artworkRecords[row].isFullArtwork && artworkRecords[row].likes != nil && artworkRecords[row].reviews != nil {

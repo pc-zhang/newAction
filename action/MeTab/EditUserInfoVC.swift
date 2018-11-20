@@ -95,7 +95,7 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     @IBOutlet weak var textVCharCountLabel: UILabel!
     
     @IBOutlet weak var sexLabel: UILabel!
-    
+    ç
     @IBOutlet weak var avatarWrapperV: UIView! {
         didSet {
             avatarWrapperV.layer.cornerRadius = avatarWrapperV.bounds.width / 10

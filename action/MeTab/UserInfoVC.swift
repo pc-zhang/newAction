@@ -45,6 +45,11 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     var isFetchingData: Bool = false
     var refreshControl = UIRefreshControl()
     
+    @IBAction func swipeRight(_ sender: Any) {
+        cancel(0)
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(
