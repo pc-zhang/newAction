@@ -15,19 +15,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-    var ubiquityIdentityToken: (NSCoding & NSCopying & NSObjectProtocol)?
     var userCacheOrNil: UserLocalCache?
-    
-    // Keep the share we accepted so that we can select the zone when the share comes in.
-    //
-    private var shareMetadataToOpen: CKShare.Metadata?
-    
-    // Use CKContainer(identifier: <your custom container ID>) if not the default container.
-    // Note that:
-    // 1. iCloud container ID starts with "iCloud.".
-    // 2. This will error out if iCloud / CloudKit entitlement is not well set up.
-    //
     let container = CKContainer.default()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -51,10 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
         
         application.applicationIconBadgeNumber = 0
-        
-        // Save the current user token for user-switching check later.
-        //
-        ubiquityIdentityToken = FileManager.default.ubiquityIdentityToken
         
         // Checking account availability. Create local cache objects if the accountStatus is available.
         // .zoneCacheDidChange will be posted after the zone cache is built, which triggers the creation
@@ -122,20 +106,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("!!! didFailToRegisterForRemoteNotificationsWithError: \(error)")
     }
     
-    // To be able to accept a share, add a CKSharingSupported entry in the info.plist and set it to true.
-    // This is mentioned in the WWDC 2016 session 226 “What’s New with CloudKit”.
-    //
-    func application(_ application: UIApplication,
-                     userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
-        
-        shareMetadataToOpen = cloudKitShareMetadata
-        
-        let acceptSharesOperation = CKAcceptSharesOperation(shareMetadatas: [cloudKitShareMetadata])
-        acceptSharesOperation.acceptSharesCompletionBlock = { error in
-            guard handleCloudKitError(error, operation: .acceptShare, alert: true) == nil else { return }
-        }
-        container.add(acceptSharesOperation)
-    }
     
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,

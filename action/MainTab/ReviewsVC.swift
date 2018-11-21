@@ -28,7 +28,6 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
     var artworkID: CKRecord.ID? = nil
-    @IBOutlet weak var reviewTextField: UITextField!
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -41,8 +40,8 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         }
         
         reviewTextFieldBottomHeight.constant = 0
-        reviewTextField.text = nil
-        reviewTextField.resignFirstResponder()
+        textField.text = nil
+        textField.resignFirstResponder()
         return true
     }
     

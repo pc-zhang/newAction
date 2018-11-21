@@ -169,21 +169,21 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
-            var imagePath: String?
+            var imageURL: URL?
             var nickName: String?
             var sex: String?
             var location: String?
             var sign: String?
             
             userCacheOrNil?.performReaderBlockAndWait {
-                imagePath = userCacheOrNil!.avatarImage?.fileURL.path
-                nickName = userCacheOrNil!.nickName
-                sex = userCacheOrNil!.sex
-                location = userCacheOrNil!.location
-                sign = userCacheOrNil!.sign
+                imageURL = (userCacheOrNil!.userRecord?["avatarImage"] as? CKAsset)?.fileURL
+                nickName = userCacheOrNil!.userRecord?["nickName"] as? String
+                sex = userCacheOrNil!.userRecord?["sex"] as? String
+                location = userCacheOrNil!.userRecord?["location"] as? String
+                sign = userCacheOrNil!.userRecord?["sign"] as? String
             }
             
-            if let imagePath = imagePath {
+            if let imagePath = imageURL?.path {
                 let advTimeGif = UIImage(contentsOfFile: imagePath)
                 headerV.avatarV.image = advTimeGif
             }

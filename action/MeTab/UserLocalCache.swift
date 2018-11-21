@@ -32,37 +32,6 @@ final class UserLocalCache: BaseLocalCache {
     let database: CKDatabase
     var userRecord: CKRecord?
     
-    var avatarImage : CKAsset? {
-        guard let userRecord = userRecord else {
-            return nil
-        }
-        return userRecord["avatarImage"] as? CKAsset
-    }
-    var nickName : String? {
-        guard let userRecord = userRecord else {
-            return nil
-        }
-        return userRecord["nickName"]
-    }
-    var sex : String? {
-        guard let userRecord = userRecord else {
-            return nil
-        }
-        return userRecord["sex"]
-    }
-    var location : String? {
-        guard let userRecord = userRecord else {
-            return nil
-        }
-        return userRecord["location"]
-    }
-    var sign : String? {
-        guard let userRecord = userRecord else {
-            return nil
-        }
-        return userRecord["sign"]
-    }
-    
     override init() {
         self.container = CKContainer.default()
         self.database = container.publicCloudDatabase
