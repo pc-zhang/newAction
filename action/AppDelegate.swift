@@ -93,7 +93,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         guard let subscriptionID = notification.subscriptionID else { return }
         
-        if notification.notificationType == .database {
+        if notification.notificationType == .query {
+            let queryNotification = CKQueryNotification(fromRemoteNotificationDictionary: userInfo)
+            if let dialogID = queryNotification.recordFields?["dialog"] as? CKRecord.FieldKey {
+                let notificationObject = NewMessage(payload: NewMessageInfo(dialogID: CKRecord.ID(recordName: dialogID)))
+                NotificationCenter.default.post(name: .newMessage, object: notificationObject)
+            }
         }
         
     }

@@ -11,6 +11,7 @@ import CloudKit
 
 extension Notification.Name {
     static let userCacheDidChange = Notification.Name("userCacheDidChange")
+    static let newMessage = Notification.Name("newMessage")
 }
 
 // Type and type alias for notification payload.
@@ -18,6 +19,10 @@ extension Notification.Name {
 struct UserCacheChanges {
     private(set) var recordIDsDeleted: [CKRecord.ID]
     private(set) var recordsChanged: [CKRecord]
+}
+
+struct NewMessageInfo {
+    private(set) var dialogID: CKRecord.ID
 }
 
 // We need to capture the object and change the payload in CloudKit operation callbacks,
@@ -32,6 +37,7 @@ class NotificationObject<T> {
 }
 
 typealias UserCacheDidChange = NotificationObject<UserCacheChanges>
+typealias NewMessage = NotificationObject<NewMessageInfo>
 
 // BaseLocalCache and subclasses follow these rules to be thread-safe:
 // 1. Public methods access mutable properties via "perform...".

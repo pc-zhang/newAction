@@ -40,10 +40,34 @@ final class UserLocalCache: BaseLocalCache {
         
         CKContainer.default().fetchUserRecordID { (recordID, error) in
             if let recordID = recordID {
+                self.subscripts(recordID)
                 self.updateWithRecordID(recordID)
             }
         }
         
+    }
+    
+    func subscripts(_ myID: CKRecord.ID) {
+//        let predicate = NSPredicate(format: "receiver = %@", myID)
+        let predicate = NSPredicate(value: true)
+
+        let subscriptionID = "new message to me"
+        let subscription = CKQuerySubscription(recordType: "Message", predicate: predicate, subscriptionID: subscriptionID, options: CKQuerySubscription.Options.firesOnRecordCreation)
+        
+        let notificationInfo = CKSubscription.NotificationInfo()
+        notificationInfo.shouldBadge = true
+        notificationInfo.alertLocalizationKey = "New message!"
+        notificationInfo.desiredKeys = ["dialog", "text"]
+        subscription.notificationInfo = notificationInfo
+        
+        let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
+        
+        operation.modifySubscriptionsCompletionBlock = { _, _, error in
+            guard handleCloudKitError(error, operation: .modifySubscriptions) == nil else { return }
+        }
+        
+        operation.database = database
+        operationQueue.addOperation(operation)
     }
     
     

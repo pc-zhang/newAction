@@ -45,21 +45,35 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     }
     
     func sendMessage(_ text: String) {
-        guard let dialogID = dialogID else {
+        var myID: CKRecord.ID?
+        userCacheOrNil?.performReaderBlockAndWait {
+            myID = userCacheOrNil!.userRecord?.recordID
+        }
+        
+        guard let dialogID = dialogID, myID != nil else {
             return
         }
-//        let messageRecord = CKRecord(recordType: "Message")
-//        let senderReference = CKRecord.Reference(recordID: artworkID, action: .none)
-//        messageRecord["artwork"] = senderReference
-//        messageRecord["text"] = text
-//
-//        database.save(reviewRecord) { (record, error) in
-//            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else { return }
-//
-//            DispatchQueue.main.async {
-//                self.fetchData(0)
-//            }
-//        }
+        
+        let messageRecord = CKRecord(recordType: "Message")
+        messageRecord["sender"] = CKRecord.Reference(recordID: myID!, action: .none)
+        messageRecord["receiver"] = CKRecord.Reference(recordID: yourRecord!.recordID, action: .none)
+        messageRecord["text"] = text
+        messageRecord["dialog"] = CKRecord.Reference(recordID: dialogID, action: .none)
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [messageRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [messageRecord.recordID], alert: true) == nil,
+                let newRecord = records?[0] else { return }
+                DispatchQueue.main.async {
+                    self.messages.append(newRecord)
+                    self.isFetchingData = false
+                    self.tableView.reloadData()
+                    self.tableView.scrollToRow(at: IndexPath(row: self.messages.count-1, section: 0), at: .bottom, animated: false)
+                }
+        }
+        operation.database = database
+        operationQueue.addOperation(operation)
     }
     
     override func viewDidLoad() {
@@ -69,7 +83,21 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         
         fetchData(0)
     }
+    
+    override func awakeFromNib() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).newMessage(_:)),
+            name: .newMessage, object: nil)
+    }
 
+    @objc func newMessage(_ notification: Notification) {
+        fetchData(0)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - Table view data source
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -124,11 +152,20 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         }
     }
     
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? MessageCell {
+            cell.messageTextLabel.text = nil
+            cell.avatarImageV.image = nil
+        }
+    }
+    
     
     @IBAction func fetchData(_ sender: Any) {
         guard let dialogID = dialogID else {
             return
         }
+        
+        messages = []
         
         isFetchingData = true
         var tmpMessages:[CKRecord] = []
@@ -140,7 +177,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         let queryMessagesOp = CKQueryOperation(query: query)
         
         queryMessagesOp.desiredKeys = ["text", "sender"]
-        queryMessagesOp.resultsLimit = 10
+        queryMessagesOp.resultsLimit = 1000
         queryMessagesOp.recordFetchedBlock = { (messageRecord) in
             tmpMessages.append(messageRecord)
         }
@@ -154,9 +191,10 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         DispatchQueue.global().async {
             self.operationQueue.waitUntilAllOperationsAreFinished()
             DispatchQueue.main.async {
-                self.messages.append(contentsOf: tmpMessages)
+                self.messages = tmpMessages
                 self.isFetchingData = false
                 self.tableView.reloadData()
+                self.tableView.scrollToRow(at: IndexPath(row: self.messages.count-1, section: 0), at: .bottom, animated: false)
             }
         }
     }

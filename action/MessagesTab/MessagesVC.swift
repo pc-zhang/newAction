@@ -37,11 +37,20 @@ class MessagesVC: UITableViewController {
                 self.fetchData(0)
             }
         }
-        
     }
     
     override func awakeFromNib() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).newMessage(_:)),
+            name: .newMessage, object: nil)
+    }
+    
+    @objc func newMessage(_ notification: Notification) {
         tabBarItem.badgeValue = "1"
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Table view data source
