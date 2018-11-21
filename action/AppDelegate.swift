@@ -109,6 +109,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         guard let subscriptionID = notification.subscriptionID else { return }
         
+        if notification.notificationType == .database {
+        }
+        
     }
     
     // Report the error when failed to register the notifications.

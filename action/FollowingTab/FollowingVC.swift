@@ -26,6 +26,10 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
     var artworkInfosDict: [CKRecord:[String:Any]] = [:]
     @IBOutlet weak var tableView: UITableView!
     
+    override func awakeFromNib() {
+        tabBarItem.badgeValue = "3"
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,6 +38,10 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         refresh.addTarget(self, action: #selector(fetchData), for: .valueChanged)
         tableView.addSubview(refresh)
         fetchData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

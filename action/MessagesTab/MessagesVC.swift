@@ -39,6 +39,10 @@ class MessagesVC: UITableViewController {
         }
         
     }
+    
+    override func awakeFromNib() {
+        tabBarItem.badgeValue = "1"
+    }
 
     // MARK: - Table view data source
 
