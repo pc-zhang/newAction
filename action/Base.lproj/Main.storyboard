@@ -1231,26 +1231,8 @@
                         <subviews>
                             <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cl7-RL-W8f" customClass="PlayerView" customModule="action" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
-                                <subviews>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B3d-lg-LgM">
-                                        <rect key="frame" x="137.66666666666666" y="339.66666666666669" width="100" height="50"/>
-                                        <color key="backgroundColor" red="1" green="0.4082706156" blue="0.4243272387" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="100" id="SAV-MW-5cB"/>
-                                            <constraint firstAttribute="height" constant="50" id="aK0-O8-thM"/>
-                                        </constraints>
-                                        <state key="normal" title="Record"/>
-                                        <connections>
-                                            <action selector="toggleRecording:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="zmx-YD-fgO"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstItem="B3d-lg-LgM" firstAttribute="centerX" secondItem="cl7-RL-W8f" secondAttribute="centerX" id="GIR-lr-qpw"/>
-                                    <constraint firstItem="B3d-lg-LgM" firstAttribute="centerY" secondItem="cl7-RL-W8f" secondAttribute="centerY" id="sRf-xX-jIr"/>
-                                </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="UlO-se-VjB" appends="YES" id="RJL-Nc-haW"/>
                                 </connections>
@@ -1313,6 +1295,14 @@
                                     <action selector="split:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="UMr-RU-4UH"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B3d-lg-LgM">
+                                <rect key="frame" x="163" y="349.66666666666669" width="49" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.4082706156" blue="0.4243272387" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Record"/>
+                                <connections>
+                                    <action selector="toggleRecording:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="zmx-YD-fgO"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
@@ -1322,6 +1312,8 @@
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" id="5Ee-L9-wqv"/>
                             <constraint firstAttribute="trailing" secondItem="bag-Bh-uVi" secondAttribute="trailing" id="7OA-eU-Clu"/>
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="7nl-wq-N7T"/>
+                            <constraint firstItem="B3d-lg-LgM" firstAttribute="centerY" secondItem="1lz-Rq-gsq" secondAttribute="centerY" id="CuX-U5-rM2"/>
+                            <constraint firstItem="B3d-lg-LgM" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="E3a-1N-nBC"/>
                             <constraint firstItem="KOe-d1-oaB" firstAttribute="centerX" secondItem="bag-Bh-uVi" secondAttribute="centerX" id="GS8-BY-YeK"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="150" id="Gdo-a2-CN7"/>
                             <constraint firstAttribute="bottom" secondItem="cl7-RL-W8f" secondAttribute="bottom" id="PXk-e6-u8x"/>

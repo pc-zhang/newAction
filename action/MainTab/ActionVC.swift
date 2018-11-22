@@ -289,19 +289,21 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         viewDidLayoutSubviews()
     }
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let compositionVideoTrack = composition!.tracks(withMediaType: AVMediaType.video).first!
-//        let segment = compositionVideoTrack.segments[indexPath.item]
-//        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(visibleTimeRange)*Double(timelineV.frame.width)) - timelineV.frame.size.width/2
-//
-//        recordTimeRange = segment.timeMapping.target
-//        isRecording = true
-//        viewDidLayoutSubviews()
-//
-//        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
-//            _capturePipeline.startRunning()
-//        }
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return
+        }
+        let segment = firstVideoTrack.segments[indexPath.section]
+        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(visibleTimeRange)*Double(timelineV.frame.width)) - timelineV.frame.size.width/2
+
+        recordTimeRange = segment.timeMapping.target
+        isRecording = true
+        viewDidLayoutSubviews()
+
+        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
+            _capturePipeline.startRunning()
+        }
+    }
     
     // MARK: - UICollectionViewDataSource
     
