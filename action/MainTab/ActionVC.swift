@@ -73,6 +73,28 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         navigationController?.popViewController(animated: true)
     }
     
+    func split(at splitTime: CMTime) {
+        guard let firstVideoTrack = self.composition?.tracks(withMediaType: .video).first else {
+            return
+        }
+        
+        if let segment = firstVideoTrack.segment(forTrackTime: splitTime), segment.timeMapping.target.containsTime(splitTime) {
+            try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
+            firstVideoTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            
+            if let audioTrack = self.composition?.tracks(withMediaType: .audio).first {
+                try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
+                audioTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            }
+        }
+        
+        timelineV.reloadData()
+    }
+    
+    @IBAction func split(_ sender: Any) {
+        split(at: CMTime(seconds: 1, preferredTimescale: 600))
+    }
+    
     @IBAction func export(_ sender: Any) {
         let thumbnail = generateThumbnail()
         // Create the export session with the composition and set the preset to the highest quality.
@@ -85,7 +107,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         exporter.shouldOptimizeForNetworkUse = true
         exporter.videoComposition = videoComposition
         exporter.audioMix = audioMix
-        let firstVideoTrack = self.composition!.tracks(withMediaType: .video).first!
+        let firstVideoTrack = composition!.tracks(withMediaType: .video).first!
         exporter.timeRange = firstVideoTrack.timeRange
         // Asynchronously export the composition to a video file and save this file to the camera roll once export completes.
         
@@ -162,15 +184,15 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 _backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: {})
             }
             
-            self.recordButton.isEnabled = false; // re-enabled once recording has finished starting
-            self.recordButton.setTitle("Stop", for: .normal)
+            recordButton.isEnabled = false; // re-enabled once recording has finished starting
+            recordButton.setTitle("Stop", for: .normal)
             
             _capturePipeline.startRecording()
             
             _recording = true
             
             tapPlayView(0)
-            Timer.scheduledTimer(withTimeInterval: self.recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
+            Timer.scheduledTimer(withTimeInterval: recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
                 self._capturePipeline.stopRecording()
                 self.tapPlayView(0)
             })
@@ -182,16 +204,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if composition==nil {
-            composition = AVMutableComposition()
-            // Add two video tracks and two audio tracks.
-            _ = composition!.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-            
-            _ = composition!.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-            
-            _ = composition!.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
-        }
         
         downloadProgressLayer = CAShapeLayer()
         downloadProgressLayer!.frame = playerV.bounds
@@ -274,99 +286,102 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         player.pause()
         seekTimer?.invalidate()
         isRecording = false
-        self.viewDidLayoutSubviews()
+        viewDidLayoutSubviews()
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
-        let segment = compositionVideoTrack.segments[indexPath.item]
-        self.timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(self.visibleTimeRange)*Double(self.timelineV.frame.width)) - self.timelineV.frame.size.width/2
-        
-        recordTimeRange = segment.timeMapping.target
-        isRecording = true
-        self.viewDidLayoutSubviews()
-        
-        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
-            _capturePipeline.startRunning()
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let compositionVideoTrack = composition!.tracks(withMediaType: AVMediaType.video).first!
+//        let segment = compositionVideoTrack.segments[indexPath.item]
+//        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(visibleTimeRange)*Double(timelineV.frame.width)) - timelineV.frame.size.width/2
+//
+//        recordTimeRange = segment.timeMapping.target
+//        isRecording = true
+//        viewDidLayoutSubviews()
+//
+//        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
+//            _capturePipeline.startRunning()
+//        }
+//    }
     
     // MARK: - UICollectionViewDataSource
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return 0
+        }
+        
+        return firstVideoTrack.segments.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return 0
+        }
         
-        assert(self.composition!.tracks(withMediaType: AVMediaType.video).count == 2)
+        let interval = Double(timelineV.frame.height / scaledDurationToWidth)
         
-        return compositionVideoTrack.segments.count
+        return Int(ceil(firstVideoTrack.segments[section].timeMapping.target.duration.seconds / interval))
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let segmentView = collectionView.dequeueReusableCell(withReuseIdentifier: "segment", for: indexPath)
-        segmentView.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0)
-        for view in segmentView.subviews {
-            view.removeFromSuperview()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "thumbnail cell", for: indexPath)
+        
+        if let thumbnailCell = cell as? ThumbnailCell {
+            thumbnailCell.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0)
+            thumbnailCell.imageV.clipsToBounds = true
+            thumbnailCell.imageV.contentMode = .scaleAspectFill
         }
         
-        let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let thumbnailCell = cell as? ThumbnailCell, let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return
+        }
+        
+        let bias = CMTime(seconds: Double(timelineV.frame.height / scaledDurationToWidth) * Double(indexPath.item), preferredTimescale: 600)
+        let thumbnailTime = firstVideoTrack.segments[indexPath.section].timeMapping.target.start + bias
         
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
-        imageGenerator.maximumSize = CGSize(width: self.timelineV.bounds.height * 2, height: self.timelineV.bounds.height * 2)
+        imageGenerator.maximumSize = CGSize(width: timelineV.bounds.height * 2, height: timelineV.bounds.height * 2)
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.videoComposition = videoComposition
         
-        if true {
-            var times = [NSValue]()
-            
-            let timerange = (compositionVideoTrack.segments[indexPath.item].timeMapping.target)
-            
-            // Generate an image at time zero.
-            let incrementTime = CMTime(seconds: Double(timelineV.frame.height /  scaledDurationToWidth), preferredTimescale: 600)
-            
-            var iterTime = timerange.start
-            
-            while iterTime <= timerange.end {
-                times.append(iterTime as NSValue)
-                iterTime = CMTimeAdd(iterTime, incrementTime);
-            }
-            
-            // Set a videoComposition on the ImageGenerator if the underlying movie has more than 1 video track.
-            imageGenerator.generateCGImagesAsynchronously(forTimes: times as [NSValue]) { (requestedTime, image, actualTime, result, error) in
-                if (image != nil) {
-                    DispatchQueue.main.async {
-                        let nextX = CGFloat(CMTimeGetSeconds(requestedTime - timerange.start)) * self.scaledDurationToWidth
-                        let nextView = UIImageView.init(frame: CGRect(x: nextX, y: 0.0, width: self.timelineV.bounds.height, height: self.timelineV.bounds.height))
-                        nextView.contentMode = .scaleAspectFill
-                        nextView.clipsToBounds = true
-                        nextView.image = UIImage.init(cgImage: image!)
-                        segmentView.addSubview(nextView)
-                        
-                        if nextX == 0 {
-                            let whiteline = UIView(frame: CGRect(x:0,y:0,width:1,height:segmentView.bounds.height))
-                            whiteline.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                            segmentView.addSubview(whiteline)
-                        }
-                    }
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [thumbnailTime as NSValue]) { (requestedTime, image, actualTime, result, error) in
+            if (image != nil) {
+                DispatchQueue.main.async {
+                    thumbnailCell.imageV.image = UIImage.init(cgImage: image!)
                 }
             }
         }
         
-        return segmentView
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let compositionVideoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first!
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return .zero
+        }
         
-        return CGSize(width: CGFloat(CMTimeGetSeconds((compositionVideoTrack.segments[indexPath.row].timeMapping.target.duration))) * scaledDurationToWidth, height: timelineV.frame.height)
+        let duration = firstVideoTrack.segments[indexPath.section].timeMapping.target.duration.seconds
+        let interval = Double(timelineV.frame.height / scaledDurationToWidth)
+        
+        let cellTimeDuration = duration - interval * Double(indexPath.item)
+        if cellTimeDuration < interval {
+            let width = CGFloat(cellTimeDuration) * scaledDurationToWidth
+            return CGSize(width: width, height: timelineV.bounds.height)
+        }
+        
+        return CGSize(width: timelineV.bounds.height, height: timelineV.bounds.height)
     }
     
     @IBAction func tapPlayView(_ sender: Any) {
@@ -399,9 +414,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     //MARK: - RosyWriterCapturePipelineDelegate
     
     func capturePipeline(_ capturePipeline: RosyWriterCapturePipeline, didStopRunningWithError error: Error) {
-        self.showError(error)
+        showError(error)
         
-        self.recordButton.isEnabled = false
+        recordButton.isEnabled = false
     }
     
     // Preview
@@ -410,7 +425,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             return
         }
         if _previewView == nil {
-            self.setupPreviewView()
+            setupPreviewView()
         }
         
         _previewView!.displayPixelBuffer(previewPixelBuffer)
@@ -424,19 +439,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     // Recording
     func capturePipelineRecordingDidStart(_ capturePipeline: RosyWriterCapturePipeline) {
-        self.recordButton.isEnabled = true
-        self.recordButton.setTitle("Stop", for: .normal)
+        recordButton.isEnabled = true
+        recordButton.setTitle("Stop", for: .normal)
     }
     
     func capturePipelineRecordingWillStop(_ capturePipeline: RosyWriterCapturePipeline) {
         // Disable record button until we are ready to start another recording
-        self.recordButton.isEnabled = false
-        self.recordButton.setTitle("Record", for: .normal)
+        recordButton.isEnabled = false
+        recordButton.setTitle("Record", for: .normal)
     }
     
     func capturePipelineRecordingDidStop(_ capturePipeline: RosyWriterCapturePipeline) {
         
-        self.recordingStopped()
+        recordingStopped()
         capturePipeline.stopRunning()
         
         let newAsset = AVAsset(url: capturePipeline._recordingURL)
@@ -499,8 +514,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     func capturePipeline(_ capturePipeline: RosyWriterCapturePipeline, recordingDidFailWithError error: Error) {
-        self.recordingStopped()
-        self.showError(error)
+        recordingStopped()
+        showError(error)
     }
     
     // MARK: UIImagePickerControllerDelegate, UINavigationControllerDelegate
@@ -597,14 +612,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 DispatchQueue.global(qos: .background).async {
                     var videoTrackOutput : AVAssetReaderTrackOutput?
                     var avAssetReader = try?AVAssetReader(asset: self.composition!)
-                    
+
                     if let videoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first {
                         videoTrackOutput = AVAssetReaderTrackOutput.init(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange])
                         avAssetReader?.add(videoTrackOutput!)
                     }
-                    
+
                     avAssetReader?.startReading()
-                    
+
                     while avAssetReader?.status == .reading {
                         //视频
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
@@ -612,18 +627,18 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                             DispatchQueue.main.async {
                                 self.downloadProcess = 0.5 + CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)/2
                             }
-                            
+
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
                             {
-                                
+
                                 var buffer = vImage_Buffer()
                                 buffer.data = CVPixelBufferGetBaseAddress(pixelBuffer)
                                 buffer.rowBytes = CVPixelBufferGetBytesPerRow(pixelBuffer)
                                 buffer.width = vImagePixelCount(CVPixelBufferGetWidth(pixelBuffer))
                                 buffer.height = vImagePixelCount(CVPixelBufferGetHeight(pixelBuffer))
-                                
+
                                 let bitmapInfo = CGBitmapInfo(rawValue: CGImageByteOrderInfo.orderMask.rawValue | CGImageAlphaInfo.last.rawValue)
-                                
+
                                 var cgFormat = vImage_CGImageFormat(bitsPerComponent: 8,
                                                                     bitsPerPixel: 32,
                                                                     colorSpace: nil,
@@ -631,14 +646,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                                                                     version: 0,
                                                                     decode: nil,
                                                                     renderingIntent: .defaultIntent)
-                                
-                                
+
+
                                 var error = vImageBuffer_InitWithCVPixelBuffer(&buffer, &cgFormat, pixelBuffer, nil, nil, vImage_Flags(kvImageNoFlags))
                                 assert(kvImageNoError == error)
                                 defer {
                                     free(buffer.data)
                                 }
-                                
+
                                 let histogramBins = (0...3).map { _ in
                                     return [vImagePixelCount](repeating: 0, count: 256)
                                 }
@@ -649,31 +664,18 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                                                                             &mutableHistogram,
                                                                             vImage_Flags(kvImageNoFlags))
                                 assert(kvImageNoError == error)
-                                
-                                
+
+
                                 if let last_split_time = self.histograms.last?.time, let last_histogramBins = self.histograms.last?.histogram {
-                                    
+
                                     if self.costheta(histogramBins, last_histogramBins) < 0.9995, CMTimeSubtract(sampleBufferTime, last_split_time).seconds > 1 {
-                                        
+
                                         self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
-                                        
+
                                         DispatchQueue.main.async {
-                                            let firstVideoTrack = self.composition!.tracks(withMediaType: .video).first!
-                                            
-                                            if let segment = firstVideoTrack.segment(forTrackTime: sampleBufferTime), segment.timeMapping.target.containsTime(sampleBufferTime) {
-                                                try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
-                                                firstVideoTrack.removeTimeRange(CMTimeRange(start:sampleBufferTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
-                                                
-                                                if let audioTrack = self.composition!.tracks(withMediaType: .audio).first {
-                                                    try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
-                                                    audioTrack.removeTimeRange(CMTimeRange(start:sampleBufferTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
-                                                }
-                                            }
-                                            
-                                            self.timelineV.reloadData()
-                                            
+                                            self.split(at: sampleBufferTime)
                                         }
-                                        
+
                                     }
                                 } else {
                                     self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
@@ -704,17 +706,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     
     func updatePlayer() {
-        if self.composition == nil {
+        guard composition != nil else {
             return
         }
         
-        let firstVideoTrack = self.composition!.tracks(withMediaType: .video)[0]
-        let secondVideoTrack = self.composition!.tracks(withMediaType: .video)[1]
+        let firstVideoTrack = composition!.tracks(withMediaType: .video)[0]
+        let secondVideoTrack = composition!.tracks(withMediaType: .video)[1]
         
-        self.videoComposition = AVMutableVideoComposition()
+        videoComposition = AVMutableVideoComposition()
         let renderSize = firstVideoTrack.naturalSize.applying(firstVideoTrack.preferredTransform)
-        self.videoComposition!.renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.height))
-        self.videoComposition!.frameDuration = CMTimeMake(value: 1, timescale: 30)
+        videoComposition!.renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.height))
+        videoComposition!.frameDuration = CMTimeMake(value: 1, timescale: 30)
         
         for segment in firstVideoTrack.segments {
             let instruction = AVMutableVideoCompositionInstruction()
@@ -734,17 +736,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 instruction.layerInstructions = [transformer1]
             }
             
-            if let lastInstruction = self.videoComposition!.instructions.last {
+            if let lastInstruction = videoComposition!.instructions.last {
                 assert(lastInstruction.timeRange.end == instruction.timeRange.start)
             }
-            self.videoComposition!.instructions.append(instruction)
+            videoComposition!.instructions.append(instruction)
         }
         
-        if let lastInstruction = self.videoComposition!.instructions.last {
+        if let lastInstruction = videoComposition!.instructions.last {
             assert(lastInstruction.timeRange.end == firstVideoTrack.timeRange.end)
         }
         
-        if let audioTrack = self.composition!.tracks(withMediaType: .audio).first {
+        if let audioTrack = composition!.tracks(withMediaType: .audio).first {
             audioMix = AVMutableAudioMix()
             // Create the audio mix input parameters object.
             let mixParameters = AVMutableAudioMixInputParameters(track: audioTrack)
@@ -754,19 +756,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             audioMix?.inputParameters = [mixParameters]
         }
         
-        let playerItem = AVPlayerItem(asset: self.composition!)
+        let playerItem = AVPlayerItem(asset: composition!)
         playerItem.videoComposition = videoComposition
         playerItem.audioMix = audioMix
         
         player.replaceCurrentItem(with: playerItem)
         
-        self.timelineV.reloadData()
+        timelineV.reloadData()
     }
     
     private func recordingStopped() {
         _recording = false
-        self.recordButton.isEnabled = true
-        //        self.recordButton.title = "Record"
+        recordButton.isEnabled = true
+        //        recordButton.title = "Record"
         
         UIApplication.shared.isIdleTimerDisabled = false
         
@@ -801,7 +803,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         if #available(iOS 8.0, *) {
             let alert = UIAlertController(title: error.localizedDescription, message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         } else {
             let alertView = UIAlertView(title: error.localizedDescription,
                                         message: message,
@@ -848,7 +850,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var isRecording: Bool = false {
         didSet {
-            self.recordButton.isHidden = !isRecording
+            recordButton.isHidden = !isRecording
         }
     }
     
@@ -906,16 +908,20 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     var downloadProcess: CGFloat = 0 {
         didSet {
             if downloadProcess != 0 {
-                self.downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                self.downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
-                self.downloadProgressLayer?.borderWidth = 0
-                self.downloadProgressLayer?.lineWidth = 10
-                self.downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                self.downloadProgressLayer?.strokeStart = 0
-                self.downloadProgressLayer?.strokeEnd = downloadProcess
+                downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
+                downloadProgressLayer?.borderWidth = 0
+                downloadProgressLayer?.lineWidth = 10
+                downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                downloadProgressLayer?.strokeStart = 0
+                downloadProgressLayer?.strokeEnd = downloadProcess
             } else {
-                self.downloadProgressLayer?.path = nil
+                downloadProgressLayer?.path = nil
             }
         }
     }
+}
+
+class ThumbnailCell: UICollectionViewCell {
+    @IBOutlet weak var imageV: UIImageView!
 }
