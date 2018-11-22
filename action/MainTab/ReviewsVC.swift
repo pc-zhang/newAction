@@ -30,6 +30,10 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     var artworkID: CKRecord.ID? = nil
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
+    private var userCacheOrNil: UserLocalCache? {
+        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
+    }
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         reviewTextFieldBottomHeight.constant = 500
     }
@@ -50,15 +54,21 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
             return
         }
         let reviewRecord = CKRecord(recordType: "Review")
-        let artworkReference = CKRecord.Reference(recordID: artworkID, action: .none)
-        reviewRecord["artwork"] = artworkReference
+        reviewRecord["artwork"] = CKRecord.Reference(recordID: artworkID, action: .deleteSelf)
         reviewRecord["text"] = text
         
         database.save(reviewRecord) { (record, error) in
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else { return }
             
             DispatchQueue.main.async {
-                self.fetchData(0)
+                var artistRecord: CKRecord?
+                
+                self.userCacheOrNil?.performReaderBlockAndWait {
+                    artistRecord = self.userCacheOrNil!.userRecord
+                }
+                let reviewInfo = ReviewInfo(isPrefetched: true, artist: artistRecord, likes: [], review: record)
+                self.reviewInfos.insert(reviewInfo, at: 0)
+                self.tableView.reloadData()
             }
         }
     }

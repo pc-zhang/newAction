@@ -226,19 +226,19 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jlj-fs-57m">
-                                            <rect key="frame" x="16" y="11" width="330" height="110"/>
+                                            <rect key="frame" x="16" y="11" width="343" height="110"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="b5J-k8-2NR">
-                                                    <rect key="frame" x="0.0" y="25" width="82.666666666666671" height="60"/>
+                                                    <rect key="frame" x="0.0" y="25" width="85.666666666666671" height="60"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍝" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PQ0-1L-ckI">
-                                                            <rect key="frame" x="0.0" y="0.0" width="82.666666666666671" height="43"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
                                                             <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="粉丝" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vdj-cY-a6K">
-                                                            <rect key="frame" x="0.0" y="43" width="82.666666666666671" height="17"/>
+                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -246,16 +246,16 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="b3T-RW-fcc">
-                                                    <rect key="frame" x="82.666666666666686" y="25" width="82.333333333333314" height="60"/>
+                                                    <rect key="frame" x="85.666666666666686" y="25" width="86" height="60"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💬" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jB7-O3-OHl">
-                                                            <rect key="frame" x="0.0" y="0.0" width="82.333333333333329" height="43"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="86" height="43"/>
                                                             <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="评论" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GEx-S8-qyj">
-                                                            <rect key="frame" x="0.0" y="43" width="82.333333333333329" height="17"/>
+                                                            <rect key="frame" x="0.0" y="43" width="86" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -263,16 +263,16 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="SR7-Gc-UWn">
-                                                    <rect key="frame" x="165" y="25" width="82.666666666666686" height="60"/>
+                                                    <rect key="frame" x="171.66666666666666" y="25" width="85.666666666666657" height="60"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="❤️" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nQM-6s-16m">
-                                                            <rect key="frame" x="0.0" y="0.0" width="82.666666666666671" height="43"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
                                                             <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="赞" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="roE-kA-U6c">
-                                                            <rect key="frame" x="0.0" y="43" width="82.666666666666671" height="17"/>
+                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -280,16 +280,16 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ovx-5z-3i8">
-                                                    <rect key="frame" x="247.66666666666671" y="25" width="82.333333333333343" height="60"/>
+                                                    <rect key="frame" x="257.33333333333331" y="25" width="85.666666666666686" height="60"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🔗" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="caC-RP-LDW">
-                                                            <rect key="frame" x="0.0" y="0.0" width="82.333333333333329" height="43"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
                                                             <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
                                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="分享" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4DW-ZA-R6P">
-                                                            <rect key="frame" x="0.0" y="43" width="82.333333333333329" height="17"/>
+                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -297,9 +297,6 @@
                                                     </subviews>
                                                 </stackView>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="jlj-fs-57m" secondAttribute="height" multiplier="3:1" id="z5y-dh-Rdj"/>
-                                            </constraints>
                                         </stackView>
                                     </subviews>
                                     <constraints>
@@ -1434,7 +1431,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="send" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
-                                    <outlet property="delegate" destination="Rbp-GA-i0m" id="51X-zN-RTl"/>
+                                    <outlet property="delegate" destination="Rbp-GA-i0m" id="K5a-4R-CDo"/>
                                 </connections>
                             </textField>
                         </subviews>
@@ -1457,7 +1454,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="81O-ZX-z5n"/>
                     <connections>
-                        <outlet property="reviewTextField" destination="lRi-XD-4Pi" id="gki-aM-bgR"/>
                         <outlet property="reviewTextFieldBottomHeight" destination="pAv-Ja-2Op" id="wOi-dG-jMs"/>
                         <outlet property="tableView" destination="bPP-n8-uhK" id="gN1-O6-QmD"/>
                     </connections>

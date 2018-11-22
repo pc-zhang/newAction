@@ -48,8 +48,8 @@ final class UserLocalCache: BaseLocalCache {
     }
     
     func subscripts(_ myID: CKRecord.ID) {
-//        let predicate = NSPredicate(format: "receiver = %@", myID)
-        let predicate = NSPredicate(value: true)
+        let predicate = NSPredicate(format: "receiver = %@", myID)
+//        let predicate = NSPredicate(value: true)
 
         let subscriptionID = "new message to me"
         let subscription = CKQuerySubscription(recordType: "Message", predicate: predicate, subscriptionID: subscriptionID, options: CKQuerySubscription.Options.firesOnRecordCreation)

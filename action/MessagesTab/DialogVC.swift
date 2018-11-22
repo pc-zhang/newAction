@@ -55,8 +55,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         }
         
         let messageRecord = CKRecord(recordType: "Message")
-        messageRecord["sender"] = CKRecord.Reference(recordID: myID!, action: .none)
-        messageRecord["receiver"] = CKRecord.Reference(recordID: yourRecord!.recordID, action: .none)
+        messageRecord["receiver"] = CKRecord.Reference(recordID: yourRecord!.recordID, action: .deleteSelf)
         messageRecord["text"] = text
         messageRecord["dialog"] = CKRecord.Reference(recordID: dialogID, action: .none)
         
@@ -84,6 +83,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         fetchData(0)
     }
     
+    
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(type(of:self).newMessage(_:)),
@@ -91,7 +91,9 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     }
 
     @objc func newMessage(_ notification: Notification) {
-        fetchData(0)
+        if let dialogID = dialogID, (notification.object as? NewMessage)?.payload?.dialogID == dialogID {
+            fetchData(0)
+        }
     }
     
     deinit {
@@ -113,9 +115,9 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         userCacheOrNil?.performReaderBlockAndWait {
             myID = userCacheOrNil!.userRecord?.recordID
         }
-        var identifier = "your message"
-        if (messages[indexPath.row]["sender"] as? CKRecord.Reference)?.recordID == myID {
-            identifier = "my message"
+        var identifier = "my message"
+        if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
+            identifier = "your message"
         }
 
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
@@ -138,12 +140,12 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
                 imageURL = (userCacheOrNil!.userRecord?["avatarImage"] as? CKAsset)?.fileURL
             }
             
-            if (messages[indexPath.row]["sender"] as? CKRecord.Reference)?.recordID == myID {
-                if let path = imageURL?.path {
+            if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
+                if let path = (yourRecord?["avatarImage"] as? CKAsset)?.fileURL.path {
                     cell.avatarImageV.image = UIImage(contentsOfFile: path)
                 }
             } else {
-                if let path = (yourRecord?["avatarImage"] as? CKAsset)?.fileURL.path {
+                if let path = imageURL?.path {
                     cell.avatarImageV.image = UIImage(contentsOfFile: path)
                 }
             }
@@ -176,7 +178,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         query.sortDescriptors = [byCreation]
         let queryMessagesOp = CKQueryOperation(query: query)
         
-        queryMessagesOp.desiredKeys = ["text", "sender"]
+        queryMessagesOp.desiredKeys = ["text", "receiver"]
         queryMessagesOp.resultsLimit = 1000
         queryMessagesOp.recordFetchedBlock = { (messageRecord) in
             tmpMessages.append(messageRecord)
