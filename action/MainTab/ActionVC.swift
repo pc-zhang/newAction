@@ -12,21 +12,13 @@ import AVFoundation
 import CoreServices
 import CloudKit
 
-class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     
     // MARK: - UI Controls
     
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var playerV: PlayerView!
-    @IBOutlet weak var exportButton: UIButton!
-    @IBOutlet weak var middleLine: UIView!
-    @IBOutlet weak var timelineV: UICollectionView! {
-        didSet {
-            timelineV.contentOffset = CGPoint(x:-timelineV.frame.width / 2, y:0)
-            timelineV.contentInset = UIEdgeInsets(top: 0, left: timelineV.frame.width/2, bottom: 0, right: timelineV.frame.width/2)
-            timelineV.panGestureRecognizer.addTarget(self, action: #selector(type(of: self).pan))
-        }
-    }
+    @IBOutlet weak var timelineV: UICollectionView!
 
     //MARK: - UI Actions
     
@@ -79,6 +71,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         if let segment = firstVideoTrack.segment(forTrackTime: splitTime), segment.timeMapping.target.containsTime(splitTime) {
+            let section = firstVideoTrack.segments.firstIndex(of: segment)
             try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
             firstVideoTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
             
@@ -86,9 +79,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
                 audioTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
             }
+            
+            timelineV.performBatchUpdates({
+                timelineV.insertSections(IndexSet(integer: section!+1))
+                timelineV.reloadSections(IndexSet(integer: section!))
+            }, completion: nil)
         }
         
-        timelineV.reloadData()
     }
     
     @IBAction func split(_ sender: Any) {
@@ -205,6 +202,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        timelineV.contentInset = UIEdgeInsets(top: 0, left: view.bounds.width/2, bottom: 0, right: view.bounds.width/2)
+        timelineV.panGestureRecognizer.addTarget(self, action: #selector(type(of: self).pan))
+        
         downloadProgressLayer = CAShapeLayer()
         downloadProgressLayer!.frame = playerV.bounds
         downloadProgressLayer!.position = CGPoint(x:playerV.bounds.width/2, y:playerV.bounds.height/2)
@@ -278,7 +278,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if let _timelineView = scrollView as? UICollectionView, player.rate == 0 {
-            currentTime = Double((_timelineView.contentOffset.x + _timelineView.frame.width/2) / (_timelineView.frame.width / visibleTimeRange))
+            currentTime = Double((_timelineView.contentOffset.x + _timelineView.bounds.width/2) / _timelineView.bounds.height) * interval
         }
     }
     
@@ -289,12 +289,41 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         viewDidLayoutSubviews()
     }
     
+    func different(_ prevVisibleTimeRange: Double, _ visibleTimeRange: Double) {
+
+    }
+    
+    @IBAction func pinch(_ pinchRecognizer: UIPinchGestureRecognizer) {
+        let prevInterval = interval
+        interval = tmpInterval / Double(pinchRecognizer.scale)
+        if interval < 0.04 {
+            interval = 0.04
+        }
+        if interval > composition!.duration.seconds / 5 {
+            interval = composition!.duration.seconds / 5
+        }
+        
+        different(prevInterval, interval)
+
+        timelineV.collectionViewLayout.invalidateLayout()
+        timelineV.reloadData()
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let pinch = gestureRecognizer as? UIPinchGestureRecognizer {
+            tmpInterval = interval
+        }
+        return true
+    }
+    
+    var tmpInterval: Double = 0
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
             return
         }
         let segment = firstVideoTrack.segments[indexPath.section]
-        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds/Double(visibleTimeRange)*Double(timelineV.frame.width)) - timelineV.frame.size.width/2
+        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds / interval) * timelineV.bounds.height - timelineV.bounds.width/2
 
         recordTimeRange = segment.timeMapping.target
         isRecording = true
@@ -306,10 +335,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     // MARK: - UICollectionViewDataSource
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
-    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
@@ -324,8 +349,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
             return 0
         }
-        
-        let interval = Double(timelineV.frame.height / scaledDurationToWidth)
         
         return Int(ceil(firstVideoTrack.segments[section].timeMapping.target.duration.seconds / interval))
     }
@@ -348,7 +371,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             return
         }
         
-        let bias = CMTime(seconds: Double(timelineV.frame.height / scaledDurationToWidth) * Double(indexPath.item), preferredTimescale: 600)
+        let bias = CMTime(seconds: interval * Double(indexPath.item), preferredTimescale: 600)
         let thumbnailTime = firstVideoTrack.segments[indexPath.section].timeMapping.target.start + bias
         
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
@@ -363,7 +386,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 }
             }
         }
-        
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout
@@ -375,11 +397,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         let duration = firstVideoTrack.segments[indexPath.section].timeMapping.target.duration.seconds
-        let interval = Double(timelineV.frame.height / scaledDurationToWidth)
         
         let cellTimeDuration = duration - interval * Double(indexPath.item)
         if cellTimeDuration < interval {
-            let width = CGFloat(cellTimeDuration) * scaledDurationToWidth
+            let width = CGFloat(cellTimeDuration / interval) * timelineV.bounds.height
             return CGSize(width: width, height: timelineV.bounds.height)
         }
         
@@ -389,7 +410,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBAction func tapPlayView(_ sender: Any) {
         if player.rate == 0 {
             // Not playing forward, so play.
-            if currentTime == duration {
+            if currentTime == player.currentItem!.duration.seconds {
                 // At end, so got back to begining.
                 currentTime = 0.0
             }
@@ -400,7 +421,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             if #available(iOS 10.0, *) {
                 seekTimer?.invalidate()
                 seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
-                    self.timelineV.contentOffset.x = CGFloat(self.currentTime/Double(self.visibleTimeRange)*Double(self.timelineV.frame.width)) - self.timelineV.frame.size.width/2
+                    self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
                 })
             } else {
                 // Fallback on earlier versions
@@ -608,6 +629,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 self.playerV.player = self.player
                 self.playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 
+                self.interval = self.composition!.duration.seconds / 5
                 // update timeline
                 self.updatePlayer()
                 
@@ -867,11 +889,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var seekTimer: Timer? = nil
     var recordTimer: Timer? = nil
-    var visibleTimeRange: CGFloat = 15
-    var scaledDurationToWidth: CGFloat {
-        return timelineV.frame.width / visibleTimeRange
-    }
-    
+    var interval: Double = 0
     
     // Attempt load and test these asset keys before playing.
     static let assetKeysRequiredToPlay = [
@@ -880,21 +898,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     ]
     var currentTime: Double {
         get {
-            return CMTimeGetSeconds(player.currentTime())
+            return player.currentTime().seconds
         }
         set {
             let newTime = CMTimeMakeWithSeconds(newValue, preferredTimescale: 600)
             //todo: more tolerance
             player.seek(to: newTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
         }
-    }
-    
-    var duration: Double {
-        if let currentItem = player.currentItem {
-            return CMTimeGetSeconds(currentItem.duration)
-        }
-        
-        return 0.0
     }
     
     var composition: AVMutableComposition? = nil

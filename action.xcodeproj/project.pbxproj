@@ -15,6 +15,7 @@
 		F02ADDA8219BF4EB00A28B35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA6219BE62D00A28B35 /* ActionVC.swift */; };
 		F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */; };
 		F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA121A40499008FB7BE /* DialogVC.swift */; };
+		F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
@@ -61,6 +62,7 @@
 		F02ADDCE219D3BA300A28B35 /* test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsVC.swift; sourceTree = "<group>"; };
 		F030FFA121A40499008FB7BE /* DialogVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogVC.swift; sourceTree = "<group>"; };
+		F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401D2217C50AD003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		F0A401E2217C511B003ACC53 /* MainTab */ = {
 			isa = PBXGroup;
 			children = (
+				F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */,
 				F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */,
 				F0A401E4217C511B003ACC53 /* MainViewCell.swift */,
 				F0A401E3217C511B003ACC53 /* PreviewView.swift */,
@@ -441,6 +444,7 @@
 				F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */,
 				F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */,
 				F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */,
+				F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */,
 				F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */,
 				F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */,
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
