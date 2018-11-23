@@ -503,6 +503,17 @@
                                             <color key="textColor" red="0.72549019609999998" green="0.72156862749999995" blue="0.75686274509999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1VK-Tv-nAb">
+                                            <rect key="frame" x="295" y="168" width="72" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <state key="normal" title="上传">
+                                                <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <connections>
+                                                <segue destination="GMQ-DF-KZ3" kind="show" animates="NO" id="voU-2e-4sJ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="14O-Je-ieB" firstAttribute="top" secondItem="DBL-hw-wXp" secondAttribute="bottom" constant="30" id="1jq-1Y-oaM"/>
@@ -571,21 +582,6 @@
                 </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="125.59999999999999" y="804.67980295566508"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="ULa-A4-AiQ">
-            <objects>
-                <viewController id="VFF-56-Usp" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="BtQ-rV-Jlg">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="3TO-30-mdy"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1zt-AV-xng" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1068" y="805"/>
         </scene>
         <!--首页-->
         <scene sceneID="bis-Yv-L5e">
@@ -1220,7 +1216,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n8A-ST-qtQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Lvw-Rg-DHo" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2247" y="1567"/>
+            <point key="canvasLocation" x="1161" y="1567"/>
         </scene>
         <!--action-->
         <scene sceneID="sr6-jO-E4r">
@@ -1551,7 +1547,8 @@
         <image name="export" width="58" height="58"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FKq-yC-dQs"/>
+        <segue reference="voU-2e-4sJ"/>
+        <segue reference="8U0-dU-CZ9"/>
         <segue reference="sZd-PD-FQU"/>
     </inferredMetricsTieBreakers>
 </document>

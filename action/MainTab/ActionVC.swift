@@ -240,7 +240,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             picker.mediaTypes = [kUTTypeMovie as String]
             picker.delegate = self
             picker.allowsEditing = false
-            present(picker, animated: true)
+            present(picker, animated: false)
         }
     }
     
@@ -554,7 +554,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     // MARK: UIImagePickerControllerDelegate, UINavigationControllerDelegate
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.presentingViewController?.dismiss(animated: true, completion: nil)
+//        picker.presentingViewController?.dismiss(animated: true, completion: nil)
+        cancel(0)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
