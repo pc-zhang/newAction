@@ -121,7 +121,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             if let artworkRecord = recordsByRecordID?[artworkRecord.recordID] {
                 
                 if let ckasset = artworkRecord["video"] as? CKAsset {
-                    let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                    let savedURL = ckasset.fileURL.appendingPathExtension("mov")
                     try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
                     DispatchQueue.main.async {
                         self.artworkRecords[row].artwork = artworkRecord
@@ -271,7 +271,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             }
         }
         
-        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL.appendingPathExtension("mp4")
+        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL.appendingPathExtension("mov")
         if let url = playViewCell.url {
             let playerItem = AVPlayerItem(url: url)
             playViewCell.player.replaceCurrentItem(with: playerItem)

@@ -66,7 +66,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         queryArtworksOp.resultsLimit = 1
         queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
             if let ckasset = artworkRecord["video"] as? CKAsset {
-                let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                let savedURL = ckasset.fileURL.appendingPathExtension("mov")
                 try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
             }
             
@@ -106,7 +106,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         
         let artworkRecord = artworkRecords[indexPath.row]
         if let playViewCell = cell as? FollowingViewCell, let ckasset = artworkRecord["video"] as? CKAsset {
-            playViewCell.url = ckasset.fileURL.appendingPathExtension("mp4")
+            playViewCell.url = ckasset.fileURL.appendingPathExtension("mov")
             let playerItem = AVPlayerItem(url: playViewCell.url!)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
@@ -163,7 +163,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
                 queryArtworksOp.resultsLimit = 2 - surplus
                 queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
                     if let ckasset = artworkRecord["video"] as? CKAsset {
-                        let savedURL = ckasset.fileURL.appendingPathExtension("mp4")
+                        let savedURL = ckasset.fileURL.appendingPathExtension("mov")
                         try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
                     }
                     

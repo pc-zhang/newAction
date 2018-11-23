@@ -98,7 +98,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let compatiblePresets = AVAssetExportSession.exportPresets(compatibleWith: composition!)
         let exporter = AVAssetExportSession(asset: composition!, presetName: AVAssetExportPreset960x540)!
         // Set the desired output URL for the file created by the export process.
-        exporter.outputURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(UUID().uuidString).appendingPathExtension("mov")
+        exporter.outputURL = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(UUID().uuidString).appendingPathExtension("mov")
         // Set the output file type to be a QuickTime movie.
         exporter.outputFileType = AVFileType.mov
         exporter.shouldOptimizeForNetworkUse = true
@@ -208,7 +208,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         downloadProgressLayer = CAShapeLayer()
         downloadProgressLayer!.frame = playerV.bounds
         downloadProgressLayer!.position = CGPoint(x:playerV.bounds.width/2, y:playerV.bounds.height/2)
-//        playerV.layer.addSublayer(downloadProgressLayer!)
+        playerV.layer.addSublayer(downloadProgressLayer!)
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
@@ -310,6 +310,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        player.pause()
+        seekTimer?.invalidate()
+        isRecording = false
+        viewDidLayoutSubviews()
         if let pinch = gestureRecognizer as? UIPinchGestureRecognizer {
             tmpInterval = interval
         }
@@ -388,6 +392,12 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "shot separator", for: indexPath)
+        
+        return cell
+    }
+    
     // MARK: - UICollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -399,9 +409,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let duration = firstVideoTrack.segments[indexPath.section].timeMapping.target.duration.seconds
         
         let cellTimeDuration = duration - interval * Double(indexPath.item)
-        if cellTimeDuration < interval {
+        if cellTimeDuration <= interval {
             let width = CGFloat(cellTimeDuration / interval) * timelineV.bounds.height
-            return CGSize(width: width, height: timelineV.bounds.height)
+            return CGSize(width: width-2, height: timelineV.bounds.height)
         }
         
         return CGSize(width: timelineV.bounds.height, height: timelineV.bounds.height)
@@ -649,7 +659,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
                             let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                             DispatchQueue.main.async {
-                                self.downloadProcess = 0.5 + CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)/2
+                                self.downloadProcess =  CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)
                             }
 
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
@@ -707,6 +717,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                             }
                         }
                     }
+                    
+                    DispatchQueue.main.async {
+                        self.downloadProcess = 1
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        self.downloadProcess = 0
+                    })
                 }
                 
             }
@@ -923,7 +941,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
                 downloadProgressLayer?.borderWidth = 0
-                downloadProgressLayer?.lineWidth = 10
+                downloadProgressLayer?.lineWidth = 8
                 downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
                 downloadProgressLayer?.strokeStart = 0
                 downloadProgressLayer?.strokeEnd = downloadProcess
