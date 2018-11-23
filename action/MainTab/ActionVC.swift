@@ -411,7 +411,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let cellTimeDuration = duration - interval * Double(indexPath.item)
         if cellTimeDuration <= interval {
             let width = CGFloat(cellTimeDuration / interval) * timelineV.bounds.height
-            return CGSize(width: width-2, height: timelineV.bounds.height)
+            return CGSize(width: max(width-2,0), height: timelineV.bounds.height)
         }
         
         return CGSize(width: timelineV.bounds.height, height: timelineV.bounds.height)
