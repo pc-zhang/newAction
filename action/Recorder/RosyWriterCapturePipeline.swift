@@ -103,6 +103,10 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     private var _sessionQueue: DispatchQueue
     private var _videoDataOutputQueue: DispatchQueue
     
+    var audioChannels: [AVCaptureAudioChannel]? {
+        return _audioConnection?.audioChannels
+    }
+    
     var _renderer: RosyWriterRenderer
     // When set to false the GPU will not be used after the setRenderingEnabled: call returns.
     private /*atomic*/ var _renderingEnabled: Bool = false

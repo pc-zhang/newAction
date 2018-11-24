@@ -20,6 +20,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var timelineV: UICollectionView!
     @IBOutlet weak var actionSegment: UISegmentedControl!
+    @IBOutlet weak var audioLevel: UIProgressView!
     
     //MARK: - UI Actions
     
@@ -90,7 +91,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func split(_ sender: Any) {
-        split(at: CMTime(seconds: 1, preferredTimescale: 600))
+        split(at: player.currentTime())
     }
     
     @IBAction func export(_ sender: Any) {
@@ -189,12 +190,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             _recording = true
             
+            player.pause()
             tapPlayView(0)
             Timer.scheduledTimer(withTimeInterval: recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
                 self._capturePipeline.stopRunning()
                 self.tapPlayView(0)
+                self.audioLevelTimer?.cancel()
             })
-            
         }
     }
     
@@ -255,6 +257,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
         
         _capturePipeline.stopRunning()
+        audioLevelTimer?.cancel()
     }
     
     
@@ -288,6 +291,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         seekTimer?.invalidate()
         isRecording = false
         _capturePipeline.stopRunning()
+        audioLevelTimer?.cancel()
         viewDidLayoutSubviews()
     }
     
@@ -337,6 +341,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
 
         if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
             _capturePipeline.startRunning()
+            audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
+                                                       queue: DispatchQueue.global())
+            audioLevelTimer?.schedule(deadline: .now(), repeating: .milliseconds(100))
+            audioLevelTimer?.setEventHandler {
+                DispatchQueue.main.async {
+                    if let audioChannel = self._capturePipeline.audioChannels?.first {
+                        self.audioLevel.progress = audioChannel.averagePowerLevel
+                    }
+                }
+            }
+            audioLevelTimer?.resume()
         }
     }
     
@@ -864,14 +879,33 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         if isRecording {
             downloadProgressLayer?.isHidden = true
             actionSegment.isHidden = true
-            playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
-            playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            audioLevel.isHidden = false
+            
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
                 let scale = safeArea.width / width
                 let offsetY = (safeArea.height - height * scale) / 2
                 _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
             }
+            
+            switch(actionSegment.selectedSegmentIndex) {
+            case 0:
+                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            
+            case 1:
+                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            
+            case 2:
+                playerV.frame = safeArea
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            
+            default:
+                _ = 1
+            }
+            
         } else {
+            audioLevel.isHidden = true
             downloadProgressLayer?.isHidden = false
             actionSegment.isHidden = false
             playerV.frame = safeArea
@@ -941,6 +975,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
      method.
      */
     
+    var audioLevelTimer: DispatchSourceTimer?
     var downloadProgressLayer: CAShapeLayer?
     var downloadProcess: CGFloat = 0 {
         didSet {
