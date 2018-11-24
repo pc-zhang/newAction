@@ -19,7 +19,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var timelineV: UICollectionView!
-
+    @IBOutlet weak var actionSegment: UISegmentedControl!
+    
     //MARK: - UI Actions
     
     func generateThumbnail() -> CKAsset? {
@@ -190,7 +191,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             tapPlayView(0)
             Timer.scheduledTimer(withTimeInterval: recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
-                self._capturePipeline.stopRecording()
+                self._capturePipeline.stopRunning()
                 self.tapPlayView(0)
             })
             
@@ -286,6 +287,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         player.pause()
         seekTimer?.invalidate()
         isRecording = false
+        _capturePipeline.stopRunning()
         viewDidLayoutSubviews()
     }
     
@@ -858,9 +860,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     // MARK: - layout
     override func viewDidLayoutSubviews() {
-        let safeArea = view.bounds.inset(by: view.safeAreaInsets)
+        let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
         if isRecording {
-            playerV.frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: safeArea.width/3, height: safeArea.height/3)
+            downloadProgressLayer?.isHidden = true
+            actionSegment.isHidden = true
+            playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
                 let scale = safeArea.width / width
@@ -868,9 +872,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
             }
         } else {
+            downloadProgressLayer?.isHidden = false
+            actionSegment.isHidden = false
             playerV.frame = safeArea
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            _previewView?.frame = safeArea
+//            _previewView?.frame = safeArea
         }
     }
     

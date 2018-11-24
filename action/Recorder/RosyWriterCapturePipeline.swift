@@ -156,9 +156,7 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     }
     
     deinit {
-        
         self.teardownCaptureSession()
-        
     }
     
     //MARK: Capture Session
