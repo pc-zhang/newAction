@@ -340,14 +340,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         viewDidLayoutSubviews()
 
         if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
-            _capturePipeline.startRunning()
+            _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
             audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
                                                        queue: DispatchQueue.global())
             audioLevelTimer?.schedule(deadline: .now(), repeating: .milliseconds(100))
             audioLevelTimer?.setEventHandler {
                 DispatchQueue.main.async {
                     if let audioChannel = self._capturePipeline.audioChannels?.first {
-                        self.audioLevel.progress = audioChannel.averagePowerLevel
+                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 100.0
                     }
                 }
             }
@@ -542,17 +542,28 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                  it our player's current item.
                  */
                 
-                let videoAssetTrack = newAsset.tracks(withMediaType: .video).first!
+                if let videoAssetTrack = newAsset.tracks(withMediaType: .video).first {
                 
-                let secondVideoTrack = self.composition!.tracks(withMediaType: .video)[1]
-                
-                secondVideoTrack.preferredTransform = videoAssetTrack.preferredTransform
-                
-                if let recordedSegment = secondVideoTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
-                    secondVideoTrack.removeTimeRange(self.recordTimeRange)
+                    let secondVideoTrack = self.composition!.tracks(withMediaType: .video)[1]
+                    
+                    secondVideoTrack.preferredTransform = videoAssetTrack.preferredTransform
+                    
+                    if let recordedSegment = secondVideoTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
+                        secondVideoTrack.removeTimeRange(self.recordTimeRange)
+                    }
+                    
+                    try! secondVideoTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: videoAssetTrack, at: self.recordTimeRange.start)
                 }
                 
-                try! secondVideoTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: videoAssetTrack, at: self.recordTimeRange.start)
+                if let audioAssetTrack = newAsset.tracks(withMediaType: .audio).first {
+                    let compositionAudioTrack = self.composition!.tracks(withMediaType: .audio).first!
+                    
+                    if let recordedSegment = compositionAudioTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
+                        compositionAudioTrack.removeTimeRange(self.recordTimeRange)
+                    }
+                    
+                    try! compositionAudioTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: audioAssetTrack, at:self.recordTimeRange.start)
+                }
                 
                 self.updatePlayer()
                 self.currentTime = self.recordTimeRange.start.seconds
@@ -937,7 +948,15 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
     }
     
-    private var _recording: Bool = false
+    private var _recording: Bool = false {
+        didSet {
+            if _recording && (actionSegment.selectedSegmentIndex == 1 || actionSegment.selectedSegmentIndex == 2) {
+                player.volume = 0
+            } else {
+                player.volume = 1
+            }
+        }
+    }
     private var _backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier(rawValue: 0)
     private var _allowedToUseGPU: Bool = false
     

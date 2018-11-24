@@ -103,6 +103,8 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     private var _sessionQueue: DispatchQueue
     private var _videoDataOutputQueue: DispatchQueue
     
+    private var selectedSegmentIndex: Int = 0
+    
     var audioChannels: [AVCaptureAudioChannel]? {
         return _audioConnection?.audioChannels
     }
@@ -166,8 +168,9 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     //MARK: Capture Session
     // These methods are synchronous
     
-    func startRunning() {
+    func startRunning(_ selectedSegmentIndex: Int) {
         _sessionQueue.sync {
+            self.selectedSegmentIndex = selectedSegmentIndex
             self.setupCaptureSession()
             
             if let captureSession = self._captureSession {
@@ -209,7 +212,7 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             self.applicationWillEnterForeground()
         }
         
-        #if RECORD_AUDIO
+        if selectedSegmentIndex == 1 || selectedSegmentIndex == 2 {
             /* Audio */
             let audioDevice = AVCaptureDevice.default(for: .audio)!
             let audioIn = try! AVCaptureDeviceInput(device: audioDevice)
@@ -226,80 +229,81 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
                 _captureSession!.addOutput(audioOut)
             }
             _audioConnection = audioOut.connection(with: AVMediaType.audio)
-        #endif // RECORD_AUDIO
+            
+            // Get the recommended compression settings after configuring the session/device.
+            _audioCompressionSettings = audioOut.recommendedAudioSettingsForAssetWriter(writingTo: AVFileType.mov) as! [String: Any]
+        } // RECORD_AUDIO
         
         /* Video */
-        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
-            fatalError("AVCaptureDevice of type AVMediaTypeVideo unavailable!")
-        }
-        do {
-            let videoIn = try AVCaptureDeviceInput(device: videoDevice)
-            if _captureSession!.canAddInput(videoIn) {
-                _captureSession!.addInput(videoIn)
-            } else {
-                throw PipelineError.cannotAddInputVideo
+        if selectedSegmentIndex == 0 || selectedSegmentIndex == 1 {
+            guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+                fatalError("AVCaptureDevice of type AVMediaTypeVideo unavailable!")
             }
-            _videoDevice = videoDevice
-        } catch let videoDeviceError {
-            self.handleNonRecoverableCaptureSessionRuntimeError(videoDeviceError)
-            return;
-        }
-        
-        let videoOut = AVCaptureVideoDataOutput()
-        videoOut.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: _renderer.inputPixelFormat]
-        videoOut.setSampleBufferDelegate(self, queue: _videoDataOutputQueue)
-        
-        // RosyWriter records videos and we prefer not to have any dropped frames in the video recording.
-        // By setting alwaysDiscardsLateVideoFrames to NO we ensure that minor fluctuations in system load or in our processing time for a given frame won't cause framedrops.
-        // We do however need to ensure that on average we can process frames in realtime.
-        // If we were doing preview only we would probably want to set alwaysDiscardsLateVideoFrames to YES.
-        videoOut.alwaysDiscardsLateVideoFrames = false
-        
-        if _captureSession!.canAddOutput(videoOut) {
-            _captureSession!.addOutput(videoOut)
-        }
-        _videoConnection = videoOut.connection(with: AVMediaType.video)
-        
-        var frameRate: Int32
-        var sessionPreset = AVCaptureSession.Preset.high
-        var frameDuration = CMTime.invalid
-        // For single core systems like iPhone 4 and iPod Touch 4th Generation we use a lower resolution and framerate to maintain real-time performance.
-        if ProcessInfo.processInfo.processorCount == 1 {
-            if _captureSession!.canSetSessionPreset(AVCaptureSession.Preset.vga640x480) {
-                sessionPreset = AVCaptureSession.Preset.vga640x480
-            }
-            frameRate = 15
-        } else {
-            #if !USE_OPENGL_RENDERER
-                // When using the CPU renderers or the CoreImage renderer we lower the resolution to 720p so that all devices can maintain real-time performance (this is primarily for A5 based devices like iPhone 4s and iPod Touch 5th Generation).
-                if _captureSession!.canSetSessionPreset(AVCaptureSession.Preset.hd1280x720) {
-                    sessionPreset = AVCaptureSession.Preset.hd1280x720
+            do {
+                let videoIn = try AVCaptureDeviceInput(device: videoDevice)
+                if _captureSession!.canAddInput(videoIn) {
+                    _captureSession!.addInput(videoIn)
+                } else {
+                    throw PipelineError.cannotAddInputVideo
                 }
-            #endif // !USE_OPENGL_RENDERER
+                _videoDevice = videoDevice
+            } catch let videoDeviceError {
+                self.handleNonRecoverableCaptureSessionRuntimeError(videoDeviceError)
+                return;
+            }
             
-            frameRate = 30
+            let videoOut = AVCaptureVideoDataOutput()
+            videoOut.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: _renderer.inputPixelFormat]
+            videoOut.setSampleBufferDelegate(self, queue: _videoDataOutputQueue)
+            
+            // RosyWriter records videos and we prefer not to have any dropped frames in the video recording.
+            // By setting alwaysDiscardsLateVideoFrames to NO we ensure that minor fluctuations in system load or in our processing time for a given frame won't cause framedrops.
+            // We do however need to ensure that on average we can process frames in realtime.
+            // If we were doing preview only we would probably want to set alwaysDiscardsLateVideoFrames to YES.
+            videoOut.alwaysDiscardsLateVideoFrames = false
+            
+            if _captureSession!.canAddOutput(videoOut) {
+                _captureSession!.addOutput(videoOut)
+            }
+            _videoConnection = videoOut.connection(with: AVMediaType.video)
+            
+            var frameRate: Int32
+            var sessionPreset = AVCaptureSession.Preset.high
+            var frameDuration = CMTime.invalid
+            // For single core systems like iPhone 4 and iPod Touch 4th Generation we use a lower resolution and framerate to maintain real-time performance.
+            if ProcessInfo.processInfo.processorCount == 1 {
+                if _captureSession!.canSetSessionPreset(AVCaptureSession.Preset.vga640x480) {
+                    sessionPreset = AVCaptureSession.Preset.vga640x480
+                }
+                frameRate = 15
+            } else {
+                #if !USE_OPENGL_RENDERER
+                    // When using the CPU renderers or the CoreImage renderer we lower the resolution to 720p so that all devices can maintain real-time performance (this is primarily for A5 based devices like iPhone 4s and iPod Touch 5th Generation).
+                    if _captureSession!.canSetSessionPreset(AVCaptureSession.Preset.hd1280x720) {
+                        sessionPreset = AVCaptureSession.Preset.hd1280x720
+                    }
+                #endif // !USE_OPENGL_RENDERER
+                
+                frameRate = 30
+            }
+            
+            _captureSession!.sessionPreset = sessionPreset
+            
+            frameDuration = CMTimeMake(value: 1, timescale: frameRate)
+            
+            do {
+                try videoDevice.lockForConfiguration()
+                videoDevice.activeVideoMaxFrameDuration = frameDuration
+                videoDevice.activeVideoMinFrameDuration = frameDuration
+                videoDevice.unlockForConfiguration()
+            } catch {
+                NSLog("videoDevice lockForConfiguration returned error \(error)")
+            }
+            
+            _videoCompressionSettings = videoOut.recommendedVideoSettingsForAssetWriter(writingTo: AVFileType.mov)!
+            
+            _videoBufferOrientation = _videoConnection!.videoOrientation
         }
-        
-        _captureSession!.sessionPreset = sessionPreset
-        
-        frameDuration = CMTimeMake(value: 1, timescale: frameRate)
-        
-        do {
-            try videoDevice.lockForConfiguration()
-            videoDevice.activeVideoMaxFrameDuration = frameDuration
-            videoDevice.activeVideoMinFrameDuration = frameDuration
-            videoDevice.unlockForConfiguration()
-        } catch {
-            NSLog("videoDevice lockForConfiguration returned error \(error)")
-        }
-        
-        // Get the recommended compression settings after configuring the session/device.
-        #if RECORD_AUDIO
-        _audioCompressionSettings = audioOut.recommendedAudioSettingsForAssetWriter(writingTo: AVFileType.mov) as! [String: Any]
-        #endif
-        _videoCompressionSettings = videoOut.recommendedVideoSettingsForAssetWriter(writingTo: AVFileType.mov)!
-        
-        _videoBufferOrientation = _videoConnection!.videoOrientation
         
         return
     }
@@ -575,14 +579,15 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
 
         let recorder = MovieRecorder(url: _recordingURL, delegate: self, callbackQueue: callbackQueue)
         
-        #if RECORD_AUDIO
+        if selectedSegmentIndex == 1 || selectedSegmentIndex == 2 {
             recorder.addAudioTrackWithSourceFormatDescription(self.outputAudioFormatDescription!, settings: _audioCompressionSettings)
-        #endif // RECORD_AUDIO
+        }// RECORD_AUDIO
         
-        // Front camera recording shouldn't be mirrored
-        let videoTransform = self.transformFromVideoBufferOrientationToOrientation(self.recordingOrientation, withAutoMirroring: true)
-        
+        if selectedSegmentIndex == 0 || selectedSegmentIndex == 1 {
+            // Front camera recording shouldn't be mirrored
+            let videoTransform = self.transformFromVideoBufferOrientationToOrientation(self.recordingOrientation, withAutoMirroring: true)
         recorder.addVideoTrackWithSourceFormatDescription(self.outputVideoFormatDescription!, transform: videoTransform, settings: _videoCompressionSettings)
+        }
         
         _recorder = recorder
         
