@@ -1226,6 +1226,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-4H-gbm">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="jQl-ye-4wv" appends="YES" id="nVz-Xy-Ayn"/>
+                                    <outletCollection property="gestureRecognizers" destination="kXW-U8-azR" appends="YES" id="sRN-Oy-BIg"/>
+                                </connections>
+                            </view>
                             <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cl7-RL-W8f" customClass="PlayerView" customModule="action" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1372,18 +1381,22 @@
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="7nl-wq-N7T"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerY" secondItem="bag-Bh-uVi" secondAttribute="centerY" id="9zf-qf-hdT"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="wqS-Et-ZjY" secondAttribute="bottom" constant="50" id="A32-Rh-Wgq"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="centerX" secondItem="cl7-RL-W8f" secondAttribute="centerX" id="CJx-h8-hVy"/>
                             <constraint firstItem="B3d-lg-LgM" firstAttribute="centerY" secondItem="1lz-Rq-gsq" secondAttribute="centerY" id="CuX-U5-rM2"/>
                             <constraint firstItem="B3d-lg-LgM" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="E3a-1N-nBC"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="150" id="Gdo-a2-CN7"/>
                             <constraint firstItem="Q3C-xP-8lJ" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="IdQ-3V-F3F"/>
                             <constraint firstItem="wqS-Et-ZjY" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" id="Ors-JL-yPB"/>
                             <constraint firstAttribute="bottom" secondItem="cl7-RL-W8f" secondAttribute="bottom" id="PXk-e6-u8x"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="centerY" secondItem="cl7-RL-W8f" secondAttribute="centerY" id="PvF-Fe-Uww"/>
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="top" secondItem="Q3C-xP-8lJ" secondAttribute="bottom" constant="100" id="Szf-Hk-XDI"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="height" secondItem="bag-Bh-uVi" secondAttribute="height" id="ZH3-pt-ZPv"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerX" secondItem="bag-Bh-uVi" secondAttribute="centerX" id="kqJ-k2-da8"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="height" secondItem="cl7-RL-W8f" secondAttribute="height" id="lXh-xI-Qqj"/>
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="q12-31-VF8"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="trailing" secondItem="wqS-Et-ZjY" secondAttribute="trailing" constant="16" id="tLK-TZ-dHj"/>
                             <constraint firstItem="0vb-2N-rV9" firstAttribute="top" secondItem="sJZ-Nn-Cs3" secondAttribute="top" constant="50" id="tcT-XD-nzC"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="width" secondItem="cl7-RL-W8f" secondAttribute="width" id="wb2-D5-gNb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sJZ-Nn-Cs3"/>
                     </view>
@@ -1397,6 +1410,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="_previewView" destination="F5p-4H-gbm" id="xJJ-K9-hlq"/>
                         <outlet property="actionSegment" destination="0vb-2N-rV9" id="2kD-5y-MXu"/>
                         <outlet property="audioLevel" destination="Q3C-xP-8lJ" id="Hm6-Vz-EXa"/>
                         <outlet property="playerV" destination="cl7-RL-W8f" id="qnY-gu-Kx1"/>
@@ -1417,6 +1431,16 @@
                         <outlet property="delegate" destination="GMQ-DF-KZ3" id="eOA-Tw-gxS"/>
                     </connections>
                 </pinchGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="jQl-ye-4wv">
+                    <connections>
+                        <action selector="swipeChangeFilter:" destination="GMQ-DF-KZ3" id="Jzi-6x-tcj"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="kXW-U8-azR">
+                    <connections>
+                        <action selector="swipeChangeFilter:" destination="GMQ-DF-KZ3" id="K50-NZ-bSP"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2116" y="1566.5024630541873"/>
         </scene>
