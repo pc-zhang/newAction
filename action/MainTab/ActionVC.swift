@@ -998,37 +998,43 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             actionSegment.isHidden = isRecording
             audioLevel.isHidden = !isRecording
             
-            let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
-            if isRecording {
-                if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
-                    let scale = safeArea.width / width
-                    let offsetY = (safeArea.height - height * scale) / 2
-                    _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
-                }
+            if !isRecording {
+                audioLevelTimer?.cancel()
+            }
+            
+            viewDidLayoutSubviews()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
+        if isRecording {
+            if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
+                let scale = safeArea.width / width
+                let offsetY = (safeArea.height - height * scale) / 2
+                _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
+            }
+            
+            switch(actionSegment.selectedSegmentIndex) {
+            case 0:
+                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 
-                switch(actionSegment.selectedSegmentIndex) {
-                case 0:
-                    playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
-                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                    
-                case 1:
-                    playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
-                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                    
-                case 2:
-                    playerV.frame = safeArea
-                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-                    
-                default:
-                    _ = 1
-                }
+            case 1:
+                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 
-            } else {
+            case 2:
                 playerV.frame = safeArea
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
                 
-                audioLevelTimer?.cancel()
+            default:
+                _ = 1
             }
+            
+        } else {
+            playerV.frame = safeArea
+            playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         }
     }
     
