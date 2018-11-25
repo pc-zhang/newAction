@@ -1354,7 +1354,7 @@
                                     <action selector="toggleRecording:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="zmx-YD-fgO"/>
                                 </connections>
                             </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Q3C-xP-8lJ">
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Q3C-xP-8lJ">
                                 <rect key="frame" x="112.66666666666669" y="402" width="150" height="2"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="Dsr-MB-Gpx"/>

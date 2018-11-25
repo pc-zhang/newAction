@@ -105,6 +105,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     @IBAction func split(_ sender: Any) {
         split(at: player.currentTime())
+        push()
     }
     
     @IBAction func merge(_ sender: Any) {
@@ -115,6 +116,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let time = player.currentTime()
         
         if let segment = firstVideoTrack.segment(forTrackTime: time), segment.timeMapping.target.containsTime(time), let section = firstVideoTrack.segments.firstIndex(of: segment), section < firstVideoTrack.segments.count - 1, segment.sourceURL! == firstVideoTrack.segments[section+1].sourceURL! {
+            
                 var tmpSegments = firstVideoTrack.segments!.map {$0}
                 tmpSegments.replaceSubrange(section...(section+1), with: [AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start, end: firstVideoTrack.segments[section+1].timeMapping.source.end), targetTimeRange: CMTimeRange(start: segment.timeMapping.target.start, end: firstVideoTrack.segments[section+1].timeMapping.target.end))])
                 try! firstVideoTrack.validateSegments(tmpSegments)
@@ -124,13 +126,47 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     timelineV.deleteSections(IndexSet(integer: section+1))
                     timelineV.reloadSections(IndexSet(integer: section))
                 }, completion: nil)
+            
+                push()
         }
     }
     
+    var stack: [AVMutableComposition] = []
+    var undoPos: Int = -1
+    
+    func push() {
+        let newComposition = composition!.mutableCopy() as! AVMutableComposition
+        
+        while undoPos < stack.count - 1 {
+            stack.removeLast()
+        }
+        
+        stack.append(newComposition)
+        undoPos = stack.count - 1
+    }
+    
     @IBAction func Undo(_ sender: Any) {
+        if undoPos < 0 {
+            return
+        }
+        
+        undoPos -= 1
+        composition = stack[undoPos].mutableCopy() as! AVMutableComposition
+        
+        updatePlayer()
+        timelineV.reloadData()
     }
     
     @IBAction func Redo(_ sender: Any) {
+        if undoPos == stack.count - 1 {
+            return
+        }
+        
+        undoPos += 1
+        composition = stack[undoPos].mutableCopy() as! AVMutableComposition
+        
+        updatePlayer()
+        timelineV.reloadData()
     }
     
     @IBAction func export(_ sender: Any) {
@@ -154,7 +190,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         timer.schedule(deadline: .now(), repeating: .milliseconds(250))
         timer.setEventHandler {
             DispatchQueue.main.async {
-                self.downloadProcess = CGFloat(exporter.progress)
+                self.downloadProgress = CGFloat(exporter.progress)
             }
         }
         timer.resume()
@@ -162,7 +198,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         exporter.exportAsynchronously {
             timer.cancel()
             DispatchQueue.main.async {
-                self.downloadProcess = CGFloat(exporter.progress)
+                self.downloadProgress = CGFloat(exporter.progress)
                 
                 if (exporter.status == .completed) {
                     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)){
@@ -328,10 +364,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBAction func pan(_ recognizer: UIPanGestureRecognizer) {
         player.pause()
         seekTimer?.invalidate()
-        isRecording = false
+        
+        if downloadProgress == 0 {
+            isRecording = false
+        }
         _capturePipeline.stopRunning()
-        audioLevelTimer?.cancel()
-        viewDidLayoutSubviews()
     }
     
     func different(_ prevVisibleTimeRange: Double, _ visibleTimeRange: Double) {
@@ -359,8 +396,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         player.pause()
         seekTimer?.invalidate()
-        isRecording = false
-        viewDidLayoutSubviews()
+        
+        if downloadProgress == 0 {
+            isRecording = false
+        }
+
         if let pinch = gestureRecognizer as? UIPinchGestureRecognizer {
             tmpInterval = interval
         }
@@ -378,7 +418,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
 
         recordTimeRange = segment.timeMapping.target
         isRecording = true
-        viewDidLayoutSubviews()
 
 //        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
             _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
@@ -608,11 +647,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     try! compositionAudioTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: audioAssetTrack, at:self.recordTimeRange.start)
                 }
                 
+                self.push()
                 self.updatePlayer()
                 self.currentTime = self.recordTimeRange.start.seconds
                 
                 self.isRecording = false
-                self.viewDidLayoutSubviews()
             }
         }
     }
@@ -713,6 +752,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 
                 self.interval = self.composition!.duration.seconds / 5
                 // update timeline
+                self.push()
                 self.updatePlayer()
                 
                 DispatchQueue.global(qos: .background).async {
@@ -731,7 +771,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
                             let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                             DispatchQueue.main.async {
-                                self.downloadProcess =  CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)
+                                self.downloadProgress =  CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)
                             }
 
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
@@ -791,11 +831,12 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     }
                     
                     DispatchQueue.main.async {
-                        self.downloadProcess = 1
+                        self.push()
+                        self.downloadProgress = 1
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                        self.downloadProcess = 0
+                        self.downloadProgress = 0
                     })
                 }
                 
@@ -927,49 +968,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
     }
     
-    // MARK: - layout
-    override func viewDidLayoutSubviews() {
-        let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
-        if isRecording {
-            tools.isHidden = true
-            downloadProgressLayer?.isHidden = true
-            actionSegment.isHidden = true
-            audioLevel.isHidden = false
-            
-            if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
-                let scale = safeArea.width / width
-                let offsetY = (safeArea.height - height * scale) / 2
-                _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
-            }
-            
-            switch(actionSegment.selectedSegmentIndex) {
-            case 0:
-                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
-                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            
-            case 1:
-                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
-                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            
-            case 2:
-                playerV.frame = safeArea
-                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            
-            default:
-                _ = 1
-            }
-            
-        } else {
-            tools.isHidden = false
-            audioLevel.isHidden = true
-            downloadProgressLayer?.isHidden = false
-            actionSegment.isHidden = false
-            playerV.frame = safeArea
-            playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-//            _previewView?.frame = safeArea
-        }
-    }
-    
     // MARK: - Models
     
     
@@ -990,6 +988,42 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     var isRecording: Bool = false {
         didSet {
             recordButton.isHidden = !isRecording
+            tools.isHidden = isRecording
+            downloadProgressLayer?.isHidden = isRecording
+            actionSegment.isHidden = isRecording
+            audioLevel.isHidden = !isRecording
+            
+            let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
+            if isRecording {
+                if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
+                    let scale = safeArea.width / width
+                    let offsetY = (safeArea.height - height * scale) / 2
+                    _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
+                }
+                
+                switch(actionSegment.selectedSegmentIndex) {
+                case 0:
+                    playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                    
+                case 1:
+                    playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                    
+                case 2:
+                    playerV.frame = safeArea
+                    playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+                    
+                default:
+                    _ = 1
+                }
+                
+            } else {
+                playerV.frame = safeArea
+                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+                
+                audioLevelTimer?.cancel()
+            }
         }
     }
     
@@ -1041,17 +1075,21 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var audioLevelTimer: DispatchSourceTimer?
     var downloadProgressLayer: CAShapeLayer?
-    var downloadProcess: CGFloat = 0 {
+    var downloadProgress: CGFloat = 0 {
         didSet {
-            if downloadProcess != 0 {
+            if downloadProgress != 0 {
+                timelineV.allowsSelection = false
+                tools.isHidden = true
                 downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
                 downloadProgressLayer?.borderWidth = 0
                 downloadProgressLayer?.lineWidth = 8
                 downloadProgressLayer?.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
                 downloadProgressLayer?.strokeStart = 0
-                downloadProgressLayer?.strokeEnd = downloadProcess
+                downloadProgressLayer?.strokeEnd = downloadProgress
             } else {
+                timelineV.allowsSelection = true
+                tools.isHidden = false
                 downloadProgressLayer?.path = nil
             }
         }
