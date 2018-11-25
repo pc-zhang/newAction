@@ -19,8 +19,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var timelineV: UICollectionView!
-    @IBOutlet weak var actionSegment: UISegmentedControl!
+    @IBOutlet weak var actionSegment: UISegmentedControl! {
+        didSet {
+            actionSegment.selectedSegmentIndex = 1
+        }
+    }
     @IBOutlet weak var audioLevel: UIProgressView!
+    @IBOutlet weak var tools: UIStackView!
+    
     
     //MARK: - UI Actions
     
@@ -92,6 +98,15 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     @IBAction func split(_ sender: Any) {
         split(at: player.currentTime())
+    }
+    
+    @IBAction func merge(_ sender: Any) {
+    }
+    
+    @IBAction func Undo(_ sender: Any) {
+    }
+    
+    @IBAction func Redo(_ sender: Any) {
     }
     
     @IBAction func export(_ sender: Any) {
@@ -347,7 +362,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             audioLevelTimer?.setEventHandler {
                 DispatchQueue.main.async {
                     if let audioChannel = self._capturePipeline.audioChannels?.first {
-                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 100.0
+                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 50.0
+                    } else {
+                        self.audioLevel.progress = 0
                     }
                 }
             }
@@ -888,6 +905,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     override func viewDidLayoutSubviews() {
         let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
         if isRecording {
+            tools.isHidden = true
             downloadProgressLayer?.isHidden = true
             actionSegment.isHidden = true
             audioLevel.isHidden = false
@@ -916,6 +934,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             }
             
         } else {
+            tools.isHidden = false
             audioLevel.isHidden = true
             downloadProgressLayer?.isHidden = false
             actionSegment.isHidden = false

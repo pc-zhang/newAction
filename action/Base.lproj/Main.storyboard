@@ -1284,13 +1284,45 @@
                                     <outlet property="delegate" destination="GMQ-DF-KZ3" id="gzW-4f-0Df"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v7m-B3-rKz">
-                                <rect key="frame" x="30" y="649" width="31" height="30"/>
-                                <state key="normal" title="Split"/>
-                                <connections>
-                                    <action selector="split:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="UMr-RU-4UH"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="wqS-Et-ZjY">
+                                <rect key="frame" x="0.0" y="649" width="359" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FdH-c3-Ni1">
+                                        <rect key="frame" x="0.0" y="0.0" width="92" height="30"/>
+                                        <state key="normal" title="Undo"/>
+                                        <connections>
+                                            <action selector="Undo:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="nCS-1T-Qgn"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="meh-pb-YSI">
+                                        <rect key="frame" x="142" y="0.0" width="36" height="30"/>
+                                        <state key="normal" title="Redo"/>
+                                        <connections>
+                                            <action selector="Redo:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="m07-iR-Hta"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fmg-3o-n37">
+                                        <rect key="frame" x="228" y="0.0" width="31" height="30"/>
+                                        <state key="normal" title="Split"/>
+                                        <connections>
+                                            <action selector="split:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="D0h-ay-QD5"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v7m-B3-rKz">
+                                        <rect key="frame" x="309" y="0.0" width="50" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="D3x-Mq-Man"/>
+                                        </constraints>
+                                        <state key="normal" title="Merge"/>
+                                        <connections>
+                                            <action selector="merge:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="HHj-Lv-MnM"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="YFo-9y-i3x"/>
+                                </constraints>
+                            </stackView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="0vb-2N-rV9">
                                 <rect key="frame" x="112.66666666666669" y="138" width="150" height="36"/>
                                 <constraints>
@@ -1334,23 +1366,24 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="cl7-RL-W8f" secondAttribute="trailing" id="1u0-GP-MEW"/>
-                            <constraint firstItem="v7m-B3-rKz" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" constant="30" id="4Fo-KT-KeZ"/>
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" id="5Ee-L9-wqv"/>
                             <constraint firstAttribute="trailing" secondItem="bag-Bh-uVi" secondAttribute="trailing" id="7OA-eU-Clu"/>
                             <constraint firstItem="0vb-2N-rV9" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="7OQ-Ma-8io"/>
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="7nl-wq-N7T"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerY" secondItem="bag-Bh-uVi" secondAttribute="centerY" id="9zf-qf-hdT"/>
+                            <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="wqS-Et-ZjY" secondAttribute="bottom" constant="50" id="A32-Rh-Wgq"/>
                             <constraint firstItem="B3d-lg-LgM" firstAttribute="centerY" secondItem="1lz-Rq-gsq" secondAttribute="centerY" id="CuX-U5-rM2"/>
                             <constraint firstItem="B3d-lg-LgM" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="E3a-1N-nBC"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="150" id="Gdo-a2-CN7"/>
                             <constraint firstItem="Q3C-xP-8lJ" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="IdQ-3V-F3F"/>
+                            <constraint firstItem="wqS-Et-ZjY" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" id="Ors-JL-yPB"/>
                             <constraint firstAttribute="bottom" secondItem="cl7-RL-W8f" secondAttribute="bottom" id="PXk-e6-u8x"/>
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="top" secondItem="Q3C-xP-8lJ" secondAttribute="bottom" constant="100" id="Szf-Hk-XDI"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="height" secondItem="bag-Bh-uVi" secondAttribute="height" id="ZH3-pt-ZPv"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerX" secondItem="bag-Bh-uVi" secondAttribute="centerX" id="kqJ-k2-da8"/>
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="q12-31-VF8"/>
+                            <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="trailing" secondItem="wqS-Et-ZjY" secondAttribute="trailing" constant="16" id="tLK-TZ-dHj"/>
                             <constraint firstItem="0vb-2N-rV9" firstAttribute="top" secondItem="sJZ-Nn-Cs3" secondAttribute="top" constant="50" id="tcT-XD-nzC"/>
-                            <constraint firstItem="v7m-B3-rKz" firstAttribute="bottom" secondItem="sJZ-Nn-Cs3" secondAttribute="bottom" constant="-50" id="vof-nO-Vcc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sJZ-Nn-Cs3"/>
                     </view>
@@ -1369,6 +1402,7 @@
                         <outlet property="playerV" destination="cl7-RL-W8f" id="qnY-gu-Kx1"/>
                         <outlet property="recordButton" destination="B3d-lg-LgM" id="U9C-Op-h7k"/>
                         <outlet property="timelineV" destination="bag-Bh-uVi" id="sxd-dv-zLK"/>
+                        <outlet property="tools" destination="wqS-Et-ZjY" id="2RA-dE-JQX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EPO-Zm-rpZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
