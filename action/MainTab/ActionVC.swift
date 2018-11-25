@@ -754,7 +754,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 // update timeline
                 self.push()
                 self.updatePlayer()
-                self.player.play()
+                self.tapPlayView(0)
                 
                 DispatchQueue.global(qos: .background).async {
                     var videoTrackOutput : AVAssetReaderTrackOutput?
