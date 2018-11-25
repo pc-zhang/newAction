@@ -79,21 +79,28 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         if let segment = firstVideoTrack.segment(forTrackTime: splitTime), segment.timeMapping.target.containsTime(splitTime) {
-            let section = firstVideoTrack.segments.firstIndex(of: segment)
-            try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
-            firstVideoTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            let section = firstVideoTrack.segments.firstIndex(of: segment)!
             
-            if let audioTrack = self.composition?.tracks(withMediaType: .audio).first {
+            if false {
+                try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
+                firstVideoTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            
+                let audioTrack = self.composition!.tracks(withMediaType: .audio).first!
                 try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
                 audioTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            } else {
+                let duration = splitTime - segment.timeMapping.target.start
+                var tmpSegments = firstVideoTrack.segments!.map {$0}
+                tmpSegments.replaceSubrange(section...section, with: [AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start, duration: duration+CMTime(value: 1, timescale: 600)), targetTimeRange: CMTimeRange(start: segment.timeMapping.target.start, end: splitTime)), AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start+duration, end: segment.timeMapping.source.end), targetTimeRange: CMTimeRange(start: splitTime, end: segment.timeMapping.target.end))])
+                try! firstVideoTrack.validateSegments(tmpSegments)
+                firstVideoTrack.segments = tmpSegments
             }
             
             timelineV.performBatchUpdates({
-                timelineV.insertSections(IndexSet(integer: section!+1))
-                timelineV.reloadSections(IndexSet(integer: section!))
+                timelineV.insertSections(IndexSet(integer: section+1))
+                timelineV.reloadSections(IndexSet(integer: section))
             }, completion: nil)
         }
-        
     }
     
     @IBAction func split(_ sender: Any) {
@@ -101,6 +108,23 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func merge(_ sender: Any) {
+        guard let firstVideoTrack = self.composition?.tracks(withMediaType: .video).first else {
+            return
+        }
+        
+        let time = player.currentTime()
+        
+        if let segment = firstVideoTrack.segment(forTrackTime: time), segment.timeMapping.target.containsTime(time), let section = firstVideoTrack.segments.firstIndex(of: segment), section < firstVideoTrack.segments.count - 1, segment.sourceURL! == firstVideoTrack.segments[section+1].sourceURL! {
+                var tmpSegments = firstVideoTrack.segments!.map {$0}
+                tmpSegments.replaceSubrange(section...(section+1), with: [AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start, end: firstVideoTrack.segments[section+1].timeMapping.source.end), targetTimeRange: CMTimeRange(start: segment.timeMapping.target.start, end: firstVideoTrack.segments[section+1].timeMapping.target.end))])
+                try! firstVideoTrack.validateSegments(tmpSegments)
+                firstVideoTrack.segments = tmpSegments
+                
+                timelineV.performBatchUpdates({
+                    timelineV.deleteSections(IndexSet(integer: section+1))
+                    timelineV.reloadSections(IndexSet(integer: section))
+                }, completion: nil)
+        }
     }
     
     @IBAction func Undo(_ sender: Any) {
@@ -325,6 +349,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         different(prevInterval, interval)
+        
+        self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
 
         timelineV.collectionViewLayout.invalidateLayout()
         timelineV.reloadData()
@@ -354,7 +380,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         isRecording = true
         viewDidLayoutSubviews()
 
-        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
+//        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
             _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
             audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
                                                        queue: DispatchQueue.global())
@@ -369,7 +395,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 }
             }
             audioLevelTimer?.resume()
-        }
+//        }
     }
     
     // MARK: - UICollectionViewDataSource
@@ -565,9 +591,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     
                     secondVideoTrack.preferredTransform = videoAssetTrack.preferredTransform
                     
-                    if let recordedSegment = secondVideoTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
+//                    if let recordedSegment = secondVideoTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
                         secondVideoTrack.removeTimeRange(self.recordTimeRange)
-                    }
+//                    }
                     
                     try! secondVideoTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: videoAssetTrack, at: self.recordTimeRange.start)
                 }
@@ -575,9 +601,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 if let audioAssetTrack = newAsset.tracks(withMediaType: .audio).first {
                     let compositionAudioTrack = self.composition!.tracks(withMediaType: .audio).first!
                     
-                    if let recordedSegment = compositionAudioTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
+//                    if let recordedSegment = compositionAudioTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
                         compositionAudioTrack.removeTimeRange(self.recordTimeRange)
-                    }
+//                    }
                     
                     try! compositionAudioTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: audioAssetTrack, at:self.recordTimeRange.start)
                 }
