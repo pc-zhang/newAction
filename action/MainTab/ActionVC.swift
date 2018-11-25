@@ -146,7 +146,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func Undo(_ sender: Any) {
-        if undoPos < 0 {
+        if undoPos <= 0 {
             return
         }
         
@@ -754,12 +754,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 // update timeline
                 self.push()
                 self.updatePlayer()
+                self.player.play()
                 
                 DispatchQueue.global(qos: .background).async {
                     var videoTrackOutput : AVAssetReaderTrackOutput?
-                    var avAssetReader = try?AVAssetReader(asset: self.composition!)
+                    var avAssetReader = try?AVAssetReader(asset: newAsset)
 
-                    if let videoTrack = self.composition!.tracks(withMediaType: AVMediaType.video).first {
+                    if let videoTrack = newAsset.tracks(withMediaType: AVMediaType.video).first {
                         videoTrackOutput = AVAssetReaderTrackOutput.init(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange])
                         avAssetReader?.add(videoTrackOutput!)
                     }
@@ -771,7 +772,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
                             let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                             DispatchQueue.main.async {
-                                self.downloadProgress =  CGFloat(sampleBufferTime.seconds / self.composition!.duration.seconds)
+                                self.downloadProgress =  CGFloat(sampleBufferTime.seconds / newAsset.duration.seconds)
                             }
 
                             if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
@@ -915,7 +916,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         playerItem.videoComposition = videoComposition
         playerItem.audioMix = audioMix
         
+        let time = player.currentTime()
         player.replaceCurrentItem(with: playerItem)
+        if time.isValid {
+            player.seek(to: time)
+        }
         
         timelineV.reloadData()
     }
