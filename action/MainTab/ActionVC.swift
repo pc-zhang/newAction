@@ -434,7 +434,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 timelineV.deleteItems(at: toBeDeleted.reversed())
                 timelineV.insertItems(at: expiredIndexPaths)
             }, completion: {(succeed) in
-                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+//                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
             })
         } else if interval < prevInterval {
             var toBeInserted: [IndexPath] = []
@@ -467,7 +467,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 timelineV.deleteItems(at: expiredIndexPaths.reversed())
                 timelineV.insertItems(at: toBeInserted)
             }, completion: {(succeed) in
-                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+//                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
             })
         }
     }
