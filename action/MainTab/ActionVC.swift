@@ -371,12 +371,28 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         _capturePipeline.stopRunning()
     }
     
-    func different(_ prevVisibleTimeRange: Double, _ visibleTimeRange: Double) {
-
-    }
-    
     @IBAction func pinch(_ pinchRecognizer: UIPinchGestureRecognizer) {
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return
+        }
+        
+        var expiredIndexPaths = self.timelineV.indexPathsForVisibleItems.filter({ (indexPath) -> Bool in
+            guard let thumbnailCell = self.timelineV.cellForItem(at: indexPath) as? ThumbnailCell else {
+                return false
+            }
+            
+            let bias = CMTime(seconds: self.interval * Double(indexPath.item), preferredTimescale: 600)
+            let expectedThumbnailTime = firstVideoTrack.segments[indexPath.section].timeMapping.target.start + bias
+            
+            if abs(((thumbnailCell.thumbnailTime ?? .zero) - expectedThumbnailTime).seconds) > 0.1 {
+                return true
+            } else {
+                return false
+            }
+        })
+        
         let prevInterval = interval
+        
         interval = tmpInterval / Double(pinchRecognizer.scale)
         if interval < 0.04 {
             interval = 0.04
@@ -385,12 +401,75 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             interval = composition!.duration.seconds / 5
         }
         
-        different(prevInterval, interval)
-        
-        self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+        if interval > prevInterval {
+            var toBeDeleted: [IndexPath] = []
+            for section in 0..<firstVideoTrack.segments.count {
+                toBeDeleted.append(contentsOf: (numberOfItemsInSection(section: section, interval: interval)..<numberOfItemsInSection(section: section, interval: prevInterval)).map({IndexPath(item: $0, section: section)}))
+            }
+            
+            expiredIndexPaths.removeAll { toBeDeleted.contains($0) }
 
-        timelineV.collectionViewLayout.invalidateLayout()
-        timelineV.reloadData()
+            toBeDeleted.append(contentsOf: expiredIndexPaths)
+            toBeDeleted = toBeDeleted.sorted(by: {
+                if $0.section < $1.section {
+                    return true
+                } else if $0.section > $1.section {
+                    return false
+                } else {
+                    return $0.item < $1.item
+                }
+            })
+            
+            expiredIndexPaths = expiredIndexPaths.sorted(by: {
+                if $0.section < $1.section {
+                    return true
+                } else if $0.section > $1.section {
+                    return false
+                } else {
+                    return $0.item < $1.item
+                }
+            })
+            
+            timelineV.performBatchUpdates({
+                timelineV.deleteItems(at: toBeDeleted.reversed())
+                timelineV.insertItems(at: expiredIndexPaths)
+            }, completion: {(succeed) in
+                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+            })
+        } else if interval < prevInterval {
+            var toBeInserted: [IndexPath] = []
+            for section in 0..<firstVideoTrack.segments.count {
+                toBeInserted.append(contentsOf: (numberOfItemsInSection(section: section, interval: prevInterval)..<numberOfItemsInSection(section: section, interval: interval)).map({IndexPath(item: $0, section: section)}))
+            }
+            
+            toBeInserted.append(contentsOf: expiredIndexPaths)
+            toBeInserted = toBeInserted.sorted(by: {
+                if $0.section < $1.section {
+                    return true
+                } else if $0.section > $1.section {
+                    return false
+                } else {
+                    return $0.item < $1.item
+                }
+            })
+            
+            expiredIndexPaths = expiredIndexPaths.sorted(by: {
+                if $0.section < $1.section {
+                    return true
+                } else if $0.section > $1.section {
+                    return false
+                } else {
+                    return $0.item < $1.item
+                }
+            })
+            
+            timelineV.performBatchUpdates({
+                timelineV.deleteItems(at: expiredIndexPaths.reversed())
+                timelineV.insertItems(at: toBeInserted)
+            }, completion: {(succeed) in
+                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+            })
+        }
     }
     
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -456,6 +535,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         return Int(ceil(firstVideoTrack.segments[section].timeMapping.target.duration.seconds / interval))
     }
     
+    func numberOfItemsInSection(section: Int, interval: Double) -> Int {
+        guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return 0
+        }
+        
+        return Int(ceil(firstVideoTrack.segments[section].timeMapping.target.duration.seconds / interval))
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "thumbnail cell", for: indexPath)
@@ -469,6 +556,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let thumbnailCell = cell as? ThumbnailCell, let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
+            return
+        }
+        
+        thumbnailCell.imageV.image = nil
+    }
+    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let thumbnailCell = cell as? ThumbnailCell, let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
             return
@@ -476,6 +571,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         
         let bias = CMTime(seconds: interval * Double(indexPath.item), preferredTimescale: 600)
         let thumbnailTime = firstVideoTrack.segments[indexPath.section].timeMapping.target.start + bias
+        
+        thumbnailCell.thumbnailTime = thumbnailTime
         
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
         imageGenerator.maximumSize = CGSize(width: timelineV.bounds.height * 2, height: timelineV.bounds.height * 2)
@@ -649,6 +746,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 
                 self.push()
                 self.updatePlayer()
+                
+                if newAsset.tracks(withMediaType: .video).first != nil, let firstVideoTrack = self.composition!.tracks(withMediaType: .video).first, let segment = firstVideoTrack.segments.compactMap({
+                    return $0.timeMapping.target == self.recordTimeRange ? $0 : nil
+                }).first, let section = firstVideoTrack.segments.firstIndex(of: segment) {
+                    self.timelineV.reloadSections(IndexSet(integer: section))
+                }
+                    
                 self.currentTime = self.recordTimeRange.start.seconds
                 
                 self.isRecording = false
@@ -754,6 +858,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 // update timeline
                 self.push()
                 self.updatePlayer()
+                self.timelineV.reloadData()
                 self.tapPlayView(0)
                 
                 DispatchQueue.global(qos: .background).async {
@@ -922,7 +1027,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             player.seek(to: time)
         }
         
-        timelineV.reloadData()
     }
     
     private func recordingStopped() {
@@ -1109,4 +1213,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
 
 class ThumbnailCell: UICollectionViewCell {
     @IBOutlet weak var imageV: UIImageView!
+    
+    var thumbnailTime: CMTime? = nil
 }
