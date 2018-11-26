@@ -264,11 +264,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             player.pause()
             tapPlayView(0)
-            Timer.scheduledTimer(withTimeInterval: recordTimeRange.duration.seconds+0.3, repeats: false, block: { (timer) in
-                self._capturePipeline.stopRunning()
-                self.tapPlayView(0)
-                self.audioLevelTimer?.cancel()
-            })
         }
     }
     
@@ -361,6 +356,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBAction func pan(_ recognizer: UIPanGestureRecognizer) {
         player.pause()
         seekTimer?.invalidate()
+        recordTimer?.invalidate()
         
         if downloadProgress == 0 {
             isRecording = false
@@ -472,6 +468,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         player.pause()
         seekTimer?.invalidate()
+        recordTimer?.invalidate()
         
         if downloadProgress == 0 {
             isRecording = false
@@ -490,9 +487,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             return
         }
         let segment = firstVideoTrack.segments[indexPath.section]
-        timelineV.contentOffset.x = CGFloat(segment.timeMapping.target.start.seconds / interval) * timelineV.bounds.height - timelineV.bounds.width/2
-
         recordTimeRange = segment.timeMapping.target
+        timelineV.contentOffset.x = CGFloat(recordTimeRange.start.seconds / interval) * timelineV.bounds.height - timelineV.bounds.width/2
+
         isRecording = true
 
 //        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
@@ -621,19 +618,30 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             player.play()
             
             //todo: animate
-            if #available(iOS 10.0, *) {
-                seekTimer?.invalidate()
-                seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
-                    self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+            if isRecording {
+                recordTimer?.invalidate()
+                recordTimer = Timer.scheduledTimer(withTimeInterval: recordTimeRange.end.seconds-currentTime+0.3, repeats: false, block: { (timer) in
+                    self.timelineV.contentOffset.x = CGFloat(self.recordTimeRange.start.seconds / self.interval) * self.timelineV.bounds.height - self.timelineV.bounds.width/2
+                    self.tapPlayView(0)
+                    self.player.seek(to: self.recordTimeRange.start)
+                    
+                    if self._recording {
+                        self.audioLevelTimer?.cancel()
+                        self._capturePipeline.stopRunning()
+                    }
                 })
-            } else {
-                // Fallback on earlier versions
             }
+            
+            seekTimer?.invalidate()
+            seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
+                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+            })
         }
         else {
             // Playing, so pause.
             player.pause()
             seekTimer?.invalidate()
+            recordTimer?.invalidate()
         }
     }
     
@@ -749,8 +757,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 }).first, let section = firstVideoTrack.segments.firstIndex(of: segment) {
                     self.timelineV.reloadSections(IndexSet(integer: section))
                 }
-                    
-                self.currentTime = self.recordTimeRange.start.seconds
                 
                 self.isRecording = false
             }
