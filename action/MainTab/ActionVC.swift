@@ -666,13 +666,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     // Recording
     func capturePipelineRecordingDidStart(_ capturePipeline: RosyWriterCapturePipeline) {
         recordButton.isEnabled = true
-        recordButton.setTitle("Stop", for: .normal)
+        recordButton.setTitle("⏹", for: .normal)
     }
     
     func capturePipelineRecordingWillStop(_ capturePipeline: RosyWriterCapturePipeline) {
         // Disable record button until we are ready to start another recording
         recordButton.isEnabled = false
-        recordButton.setTitle("Record", for: .normal)
+        recordButton.setTitle("🔴", for: .normal)
     }
     
     func capturePipelineRecordingDidStop(_ capturePipeline: RosyWriterCapturePipeline) {
