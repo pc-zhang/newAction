@@ -486,6 +486,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         guard let firstVideoTrack = composition?.tracks(withMediaType: AVMediaType.video).first else {
             return
         }
+        
+        if player.rate != 0 {
+            tapPlayView(0)
+        }
+        
         let segment = firstVideoTrack.segments[indexPath.section]
         recordTimeRange = segment.timeMapping.target
         timelineV.contentOffset.x = CGFloat(recordTimeRange.start.seconds / interval) * timelineV.bounds.height - timelineV.bounds.width/2
