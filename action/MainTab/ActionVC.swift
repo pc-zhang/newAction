@@ -73,39 +73,36 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         navigationController?.popViewController(animated: true)
     }
     
-    func split(at splitTime: CMTime) {
+    func split(at splitTime: CMTime) -> Bool {
         guard let firstVideoTrack = self.composition?.tracks(withMediaType: .video).first else {
-            return
+            return false
         }
         
         if let segment = firstVideoTrack.segment(forTrackTime: splitTime), segment.timeMapping.target.containsTime(splitTime) {
             let section = firstVideoTrack.segments.firstIndex(of: segment)!
             
-            if false {
-                try! firstVideoTrack.insertTimeRange(segment.timeMapping.target, of: firstVideoTrack, at: segment.timeMapping.target.end)
-                firstVideoTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
+            let duration = splitTime - segment.timeMapping.target.start
+            var tmpSegments = firstVideoTrack.segments!.map {$0}
+            tmpSegments.replaceSubrange(section...section, with: [AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start, duration: duration+CMTime(value: 1, timescale: 600)), targetTimeRange: CMTimeRange(start: segment.timeMapping.target.start, end: splitTime)), AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start+duration, end: segment.timeMapping.source.end), targetTimeRange: CMTimeRange(start: splitTime, end: segment.timeMapping.target.end))])
             
-                let audioTrack = self.composition!.tracks(withMediaType: .audio).first!
-                try! audioTrack.insertTimeRange(segment.timeMapping.target, of: audioTrack, at: segment.timeMapping.target.end)
-                audioTrack.removeTimeRange(CMTimeRange(start:splitTime, duration:segment.timeMapping.target.duration + CMTime(value: 1, timescale: 600)))
-            } else {
-                let duration = splitTime - segment.timeMapping.target.start
-                var tmpSegments = firstVideoTrack.segments!.map {$0}
-                tmpSegments.replaceSubrange(section...section, with: [AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start, duration: duration+CMTime(value: 1, timescale: 600)), targetTimeRange: CMTimeRange(start: segment.timeMapping.target.start, end: splitTime)), AVCompositionTrackSegment(url: segment.sourceURL!, trackID: segment.sourceTrackID, sourceTimeRange: CMTimeRange(start: segment.timeMapping.source.start+duration, end: segment.timeMapping.source.end), targetTimeRange: CMTimeRange(start: splitTime, end: segment.timeMapping.target.end))])
-                try! firstVideoTrack.validateSegments(tmpSegments)
-                firstVideoTrack.segments = tmpSegments
+            firstVideoTrack.segments = tmpSegments
+            if firstVideoTrack.segments.count == tmpSegments.count {
+                timelineV.performBatchUpdates({
+                    timelineV.insertSections(IndexSet(integer: section+1))
+                    timelineV.reloadSections(IndexSet(integer: section))
+                }, completion: nil)
+                
+                return true
             }
-            
-            timelineV.performBatchUpdates({
-                timelineV.insertSections(IndexSet(integer: section+1))
-                timelineV.reloadSections(IndexSet(integer: section))
-            }, completion: nil)
         }
+        
+        return false
     }
     
     @IBAction func split(_ sender: Any) {
-        split(at: player.currentTime())
-        push()
+        if true == split(at: player.currentTime()) {
+            push()
+        }
     }
     
     @IBAction func merge(_ sender: Any) {
