@@ -12,7 +12,7 @@ import AVFoundation
 import CoreServices
 import CloudKit
 
-class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
+class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextViewDelegate {
     
     // MARK: - UI Controls
     
@@ -183,6 +183,20 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         isExporting = !isExporting
     }
     
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        
+        if text == "\n" {
+            signTextV.resignFirstResponder()
+            return false
+        }
+        
+        let currentText = textView.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        
+        let changedText = currentText.replacingCharacters(in: stringRange, with: text)
+        
+        return changedText.count <= 80
+    }
     
     @IBAction func saveLocalOrUpload(_ sender: Any) {
         // Create the export session with the composition and set the preset to the highest quality.
@@ -1264,6 +1278,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             tools.isHidden = downloadProgress != 0 || isExporting
             saveLocalButton.isEnabled = downloadProgress == 0
             uploadButton.isEnabled = downloadProgress == 0
+            signTextV.isEditable = downloadProgress == 0
             if downloadProgress != 0 {
                 downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
