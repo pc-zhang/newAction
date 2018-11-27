@@ -26,7 +26,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     @IBOutlet weak var audioLevel: UIProgressView!
     @IBOutlet weak var tools: UIStackView!
+    @IBOutlet weak var middleLineV: UIView!
+    @IBOutlet weak var signTextV: UITextView!
+    @IBOutlet weak var uploadButton: UIButton!
+    @IBOutlet weak var saveLocalButton: UIButton!
     
+    let container: CKContainer = CKContainer.default()
+    let database: CKDatabase = CKContainer.default().publicCloudDatabase
+    lazy var operationQueue: OperationQueue = {
+        return OperationQueue()
+    }()
     
     //MARK: - UI Actions
     
@@ -70,7 +79,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func cancel(_ sender: Any) {
-        navigationController?.popViewController(animated: true)
+        if isExporting {
+            isExporting = false
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     func split(at splitTime: CMTime) -> Bool {
@@ -167,7 +180,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func export(_ sender: Any) {
-        let thumbnail = generateThumbnail()
+        isExporting = !isExporting
+    }
+    
+    
+    @IBAction func saveLocalOrUpload(_ sender: Any) {
         // Create the export session with the composition and set the preset to the highest quality.
         let compatiblePresets = AVAssetExportSession.exportPresets(compatibleWith: composition!)
         let exporter = AVAssetExportSession(asset: composition!, presetName: AVAssetExportPreset960x540)!
@@ -187,41 +204,67 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         timer.schedule(deadline: .now(), repeating: .milliseconds(250))
         timer.setEventHandler {
             DispatchQueue.main.async {
-                self.downloadProgress = CGFloat(exporter.progress)
+                if (sender as? UIButton) == self.saveLocalButton {
+                    self.downloadProgress = CGFloat(exporter.progress)
+                } else if (sender as? UIButton) == self.uploadButton {
+                    self.downloadProgress = CGFloat(exporter.progress) / 4
+                }
             }
         }
         timer.resume()
         
         exporter.exportAsynchronously {
-            timer.cancel()
             DispatchQueue.main.async {
+                timer.cancel()
                 self.downloadProgress = CGFloat(exporter.progress)
                 
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                    if (sender as? UIButton) == self.saveLocalButton {
+                        self.downloadProgress = 0
+                    }
+                })
+
                 if (exporter.status == .completed) {
-                    if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)){
-                        UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path, self, #selector(self.video), nil)
-                        
+                    if (sender as? UIButton) == self.saveLocalButton {
+                        if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(exporter.outputURL!.path)) {
+                            UISaveVideoAtPathToSavedPhotosAlbum(exporter.outputURL!.path, self, #selector(self.video), nil)
+                        }
+                    }
+                    
+                    if (sender as? UIButton) == self.uploadButton {
                         let artworkRecord = CKRecord(recordType: "Artwork")
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
-                        if let thumbnail = thumbnail {
+                        if let thumbnail = self.generateThumbnail() {
                             artworkRecord["thumbnail"] = thumbnail
                         }
-                        CKContainer.default().publicCloudDatabase.save(artworkRecord) {
-                            (record, error) in
-                            if let error = error {
-                                // Insert error handling
-                                return
+                        artworkRecord["title"] = self.signTextV.text
+                        
+                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkRecord], recordIDsToDelete: nil)
+                        
+                        operation.perRecordProgressBlock = {(record, progress) in
+                            DispatchQueue.main.async {
+                                self.downloadProgress = 0.25 + CGFloat(progress) * 0.75
                             }
-                            // Insert successfully saved record code
                         }
                         
+                        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [artworkRecord.recordID], alert: true) == nil,
+                                let newRecord = records?[0] else { return }
+                            DispatchQueue.main.async {
+                                self.downloadProgress = 0
+                            }
+                        }
+                        operation.database = self.database
+                        self.operationQueue.addOperation(operation)
                     }
+                    
                 } else {
                     _ = 1
                 }
             }
         }
     }
+    
     
     @objc func video(videoPath: NSString, didFinishSavingWithError error:NSError, contextInfo:Any) -> Void {
     }
@@ -1102,8 +1145,22 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     let avaliableFilters = CoreImageFilters.avaliableFilters()
     
+    var isExporting: Bool = false {
+        didSet {
+            tools.isHidden = isExporting
+            actionSegment.isHidden = isExporting
+            timelineV.isHidden = isExporting
+            middleLineV.isHidden = isExporting
+            
+            signTextV.isHidden = !isExporting
+            uploadButton.isHidden = !isExporting
+            saveLocalButton.isHidden = !isExporting
+        }
+    }
+    
     var isRecording: Bool = false {
         didSet {
+            navigationController?.navigationBar.isHidden = isRecording
             recordButton.isHidden = !isRecording
             tools.isHidden = isRecording
             downloadProgressLayer?.isHidden = isRecording
@@ -1200,9 +1257,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     var downloadProgressLayer: CAShapeLayer?
     var downloadProgress: CGFloat = 0 {
         didSet {
+            timelineV.allowsSelection = downloadProgress == 0
+            tools.isHidden = downloadProgress != 0 || isExporting
+            saveLocalButton.isEnabled = downloadProgress == 0
+            uploadButton.isEnabled = downloadProgress == 0
             if downloadProgress != 0 {
-                timelineV.allowsSelection = false
-                tools.isHidden = true
                 downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)
                 downloadProgressLayer?.borderWidth = 0
@@ -1211,8 +1270,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 downloadProgressLayer?.strokeStart = 0
                 downloadProgressLayer?.strokeEnd = downloadProgress
             } else {
-                timelineV.allowsSelection = true
-                tools.isHidden = false
                 downloadProgressLayer?.path = nil
             }
         }
