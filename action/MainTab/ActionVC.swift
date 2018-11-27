@@ -216,13 +216,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         exporter.exportAsynchronously {
             DispatchQueue.main.async {
                 timer.cancel()
-                self.downloadProgress = CGFloat(exporter.progress)
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                    if (sender as? UIButton) == self.saveLocalButton {
-                        self.downloadProgress = 0
-                    }
-                })
+                if (sender as? UIButton) == self.saveLocalButton {
+                    self.downloadProgress = CGFloat(exporter.progress)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        if (sender as? UIButton) == self.saveLocalButton {
+                            self.downloadProgress = 0
+                        }
+                    })
+                }
 
                 if (exporter.status == .completed) {
                     if (sender as? UIButton) == self.saveLocalButton {
