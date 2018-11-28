@@ -22,7 +22,6 @@
 		F0A401D8217C50AE003ACC53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D7217C50AE003ACC53 /* Assets.xcassets */; };
 		F0A401DB217C50AE003ACC53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D9217C50AE003ACC53 /* LaunchScreen.storyboard */; };
 		F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E3217C511B003ACC53 /* PreviewView.swift */; };
-		F0A40210217C511C003ACC53 /* MainViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E4217C511B003ACC53 /* MainViewCell.swift */; };
 		F0A40211217C511C003ACC53 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E5217C511B003ACC53 /* MainVC.swift */; };
 		F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E6217C511B003ACC53 /* PlayerView.swift */; };
 		F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */; };
@@ -71,7 +70,6 @@
 		F0A401DA217C50AE003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F0A401DC217C50AE003ACC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F0A401E3217C511B003ACC53 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
-		F0A401E4217C511B003ACC53 /* MainViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewCell.swift; sourceTree = "<group>"; };
 		F0A401E5217C511B003ACC53 /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		F0A401E6217C511B003ACC53 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCPURenderer.swift; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 			children = (
 				F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */,
 				F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */,
-				F0A401E4217C511B003ACC53 /* MainViewCell.swift */,
 				F0A401E3217C511B003ACC53 /* PreviewView.swift */,
 				F0A401E6217C511B003ACC53 /* PlayerView.swift */,
 				F0A401E5217C511B003ACC53 /* MainVC.swift */,
@@ -450,7 +447,6 @@
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
 				F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */,
 				F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */,
-				F0A40210217C511C003ACC53 /* MainViewCell.swift in Sources */,
 				F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

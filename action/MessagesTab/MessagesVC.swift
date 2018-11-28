@@ -81,7 +81,7 @@ class MessagesVC: UITableViewController {
         queryDialogOtherInfo(indexPath.row)
         
         if let cell = cell as? DialogCell {
-            if let path = (dialogInfos[indexPath.row].dialogist?["avatarImage"] as? CKAsset)?.fileURL.path {
+            if let path = (dialogInfos[indexPath.row].dialogist?["littleAvatar"] as? CKAsset)?.fileURL.path {
                 cell.avatarV.image = UIImage(contentsOfFile: path)
             }
             cell.nickNameLabel.text = dialogInfos[indexPath.row].dialogist?["nickName"] as? String
@@ -116,7 +116,7 @@ class MessagesVC: UITableViewController {
         if let dialogists = dialogRecord["dialogists"] as? [CKRecord.Reference], let artistID = artistID, let dialogistID = otherDialogist(dialogists, artistID) {
             
             let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [dialogistID])
-            fetchArtistOp.desiredKeys = ["avatarImage", "nickName"]
+            fetchArtistOp.desiredKeys = ["littleAvatar", "nickName"]
             fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
                 guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
                 

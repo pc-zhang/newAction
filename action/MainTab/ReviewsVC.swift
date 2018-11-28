@@ -11,8 +11,6 @@ import CloudKit
 
 fileprivate struct ReviewInfo {
     var isPrefetched: Bool = false
-    var artist: CKRecord? = nil
-    var likes: [CKRecord]? = nil
     var review: CKRecord? = nil
 }
 
@@ -29,10 +27,6 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     var isFetchingData: Bool = false
     var artworkID: CKRecord.ID? = nil
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
-    
-    private var userCacheOrNil: UserLocalCache? {
-        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
-    }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         reviewTextFieldBottomHeight.constant = 500
@@ -61,12 +55,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else { return }
             
             DispatchQueue.main.async {
-                var artistRecord: CKRecord?
-                
-                self.userCacheOrNil?.performReaderBlockAndWait {
-                    artistRecord = self.userCacheOrNil!.userRecord
-                }
-                let reviewInfo = ReviewInfo(isPrefetched: true, artist: artistRecord, likes: [], review: record)
+                let reviewInfo = ReviewInfo(isPrefetched: true, review: record)
                 self.reviewInfos.insert(reviewInfo, at: 0)
                 self.tableView.reloadData()
             }
@@ -93,34 +82,6 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
             tableView.reloadRows(at: [indexPath], with: .fade)
         }
-    }
-    
-    func queryReviewOtherInfo(_ row: Int)
-    {
-        guard let reviewRecord = reviewInfos[row].review else {
-            return
-        }
-        
-        if reviewInfos[row].isPrefetched == true {
-            return
-        }
-        reviewInfos[row].isPrefetched = true
-        
-        if let artistID = reviewRecord.creatorUserRecordID {
-            let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [artistID])
-            fetchArtistOp.desiredKeys = ["avatarImage", "nickName"]
-            fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
-                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                
-                DispatchQueue.main.async {
-                    self.reviewInfos[row].artist = recordsByRecordID?[artistID]
-                    self.reloadVisibleRow(row)
-                }
-            }
-            fetchArtistOp.database = self.database
-            self.operationQueue.addOperation(fetchArtistOp)
-        }
-        
     }
     
     @IBAction func fetchData(_ sender: Any) {
@@ -197,13 +158,12 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        queryReviewOtherInfo(indexPath.row)
         
         if let cell = cell as? ReviewCell {
-            if let path = (reviewInfos[indexPath.row].artist?["avatarImage"] as? CKAsset)?.fileURL.path {
+            if let path = (reviewInfos[indexPath.row].review?["avatar"] as? CKAsset)?.fileURL.path {
                 cell.avatarV.image = UIImage(contentsOfFile: path)
             }
-            cell.nickNameLabel.text = reviewInfos[indexPath.row].artist?["nickName"] as? String
+            cell.nickNameLabel.text = reviewInfos[indexPath.row].review?["nickName"] as? String
             cell.reviewLabel.text = reviewInfos[indexPath.row].review?["text"] as? String
             if let date = reviewInfos[indexPath.row].review?.creationDate {
                 cell.createTimeLabel.text = dateFormatter.string(from: date)

@@ -27,7 +27,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var audioLevel: UIProgressView!
     @IBOutlet weak var tools: UIStackView!
     @IBOutlet weak var middleLineV: UIView!
-    @IBOutlet weak var signTextV: UITextView!
+    @IBOutlet weak var titleTextV: UITextView!
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var saveLocalButton: UIButton!
     
@@ -38,6 +38,20 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }()
     
     //MARK: - UI Actions
+    
+    func generateCover() -> CKAsset? {
+        let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
+        imageGenerator.maximumSize = videoComposition!.renderSize
+        imageGenerator.appliesPreferredTrackTransform = true
+        imageGenerator.videoComposition = videoComposition
+        
+        if let coverImage = try? imageGenerator.copyCGImage(at: .zero, actualTime: nil), let coverImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+            FileManager.default.createFile(atPath: coverImageURL.path, contents: UIImage(cgImage: coverImage).pngData(), attributes: nil)
+            return CKAsset(fileURL: coverImageURL)
+        }
+        
+        return nil
+    }
     
     func generateThumbnail() -> CKAsset? {
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
@@ -186,7 +200,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
         if text == "\n" {
-            signTextV.resignFirstResponder()
+            titleTextV.resignFirstResponder()
             return false
         }
         
@@ -195,7 +209,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         
         let changedText = currentText.replacingCharacters(in: stringRange, with: text)
         
-        return changedText.count <= 80
+        return changedText.count <= 60
     }
     
     @IBAction func saveLocalOrUpload(_ sender: Any) {
@@ -249,16 +263,34 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     }
                     
                     if (sender as? UIButton) == self.uploadButton {
+                        
+                        let artworkInfoRecord = CKRecord(recordType: "ArtworkInfo")
+                        artworkInfoRecord["seconds"] = 0
+                        artworkInfoRecord["reviews"] = 0
+                        artworkInfoRecord["chorus"] = 0
+                        
                         let artworkRecord = CKRecord(recordType: "Artwork")
+                        artworkRecord["info"] = CKRecord.Reference(recordID: artworkInfoRecord.recordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
                         if let thumbnail = self.generateThumbnail() {
                             artworkRecord["thumbnail"] = thumbnail
                         }
-                        artworkRecord["title"] = self.signTextV.text
+                        if let cover = self.generateCover() {
+                            artworkRecord["cover"] = cover
+                        }
+                        artworkRecord["title"] = self.titleTextV.text
+                        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["littleAvatar"] as? CKAsset)?.fileURL {
+                            artworkRecord["avatar"] = CKAsset(fileURL: url)
+                        }
                         
-                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkRecord], recordIDsToDelete: nil)
+                        artworkRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
+                        
+                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkInfoRecord, artworkRecord], recordIDsToDelete: nil)
                         
                         operation.perRecordProgressBlock = {(record, progress) in
+                            guard record.recordID == artworkRecord.recordID else {
+                                return
+                            }
                             DispatchQueue.main.async {
                                 self.downloadProgress = 0.25 + CGFloat(progress) * 0.75
                             }
@@ -272,6 +304,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                             }
                         }
                         operation.database = self.database
+                        
                         self.operationQueue.addOperation(operation)
                     }
                     
@@ -1169,7 +1202,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             timelineV.isHidden = isExporting
             middleLineV.isHidden = isExporting
             
-            signTextV.isHidden = !isExporting
+            titleTextV.isHidden = !isExporting
             uploadButton.isHidden = !isExporting
             saveLocalButton.isHidden = !isExporting
         }
@@ -1278,7 +1311,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             tools.isHidden = downloadProgress != 0 || isExporting
             saveLocalButton.isEnabled = downloadProgress == 0
             uploadButton.isEnabled = downloadProgress == 0
-            signTextV.isEditable = downloadProgress == 0
+            titleTextV.isEditable = downloadProgress == 0
             if downloadProgress != 0 {
                 downloadProgressLayer?.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 downloadProgressLayer?.path = CGPath(rect: playerV.bounds, transform: nil)

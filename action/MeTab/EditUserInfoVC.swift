@@ -16,7 +16,6 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     lazy var spinner: UIActivityIndicatorView = {
         return UIActivityIndicatorView(style: .gray)
     }()
-
     
     private var avatarAsset : CKAsset? {
         didSet {
@@ -25,6 +24,8 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             }
         }
     }
+    
+    private var littleAvatarAsset : CKAsset?
     
     private lazy var picker : UIImagePickerController = {
         let picker = UIImagePickerController()
@@ -119,7 +120,7 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         resignAllTextFirstResponder()
         if nickNameTextField.text != "" && locationTextField.text != "" {
-            guard let avatarAsset = avatarAsset, let nickName = nickNameTextField?.text, let sex = sexLabel?.text, let location = locationTextField?.text, let sign = signTextV?.text else {
+            guard let avatarAsset = avatarAsset, let littleAvatarAsset = littleAvatarAsset, let nickName = nickNameTextField?.text, let sex = sexLabel?.text, let location = locationTextField?.text, let sign = signTextV?.text else {
                 let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
                 present(alert, animated: true)
@@ -129,7 +130,7 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             
             spinner.startAnimating()
 
-            let succeed = userCacheOrNil?.changeUserInfo(avatarAsset: avatarAsset, nickName: nickName, sex: sex, location: location, sign: sign)
+            let succeed = userCacheOrNil?.changeUserInfo(avatarAsset: avatarAsset, littleAvatarAsset: littleAvatarAsset, nickName: nickName, sex: sex, location: location, sign: sign)
             
             spinner.stopAnimating()
             
@@ -249,14 +250,43 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage, let imageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
-                FileManager.default.createFile(atPath: imageURL.path, contents: image.pngData(), attributes: nil)
-                DispatchQueue.main.async {
-                    self.avatarAsset = CKAsset(fileURL: imageURL)
-                }
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage, let avatarImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png"), let littleAvatarImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+            
+            let avatarImage = resizeImage(image: image, targetSize: avatarV.bounds.size)
+            let littleAvatarImage = resizeImage(image: image, targetSize: CGSize(width: 50, height: 50))
+
+            FileManager.default.createFile(atPath: avatarImageURL.path, contents: avatarImage.pngData(), attributes: nil)
+            FileManager.default.createFile(atPath: littleAvatarImageURL.path, contents: littleAvatarImage.pngData(), attributes: nil)
+            DispatchQueue.main.async {
+                self.avatarAsset = CKAsset(fileURL: avatarImageURL)
+                self.littleAvatarAsset = CKAsset(fileURL: littleAvatarImageURL)
+            }
         }
 
         picker.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / image.size.width
+        let heightRatio = targetSize.height / image.size.height
+        
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+        
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
     }
     
 }

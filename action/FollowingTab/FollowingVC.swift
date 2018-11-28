@@ -118,7 +118,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
             let likesCount = (artworkInfosDict[artworkRecord]?["likes"] as? [CKRecord])?.count ?? 0
             let reviewsCount = (artworkInfosDict[artworkRecord]?["reviews"] as? [CKRecord])?.count ?? 0
             let sharesCount = 0
-            playViewCell.likesAndReviews.text = "❤️\(likesCount)   💬\(reviewsCount)   🔗\(sharesCount)"
+            playViewCell.likesAndReviews.text = "⏳\(likesCount)   💬\(reviewsCount)   🔗\(sharesCount)"
             
             if let artist = artworkInfosDict[artworkRecord]?["artist"] as? CKRecord {
                 if let avatarImageAsset = artist["avatarImage"] as? CKAsset {
@@ -213,20 +213,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
             fetchArtistOp.database = self.database
             self.operationQueue.addOperation(fetchArtistOp)
         }
-
-        let query = CKQuery(recordType: "Like", predicate: NSPredicate(format: "artwork = %@", artworkRecord.recordID))
-        let queryLikesOp = CKQueryOperation(query: query)
-        queryLikesOp.resultsLimit = 10
-        queryLikesOp.recordFetchedBlock = { (likeRecord) in
-            likes.append(likeRecord)
-        }
-        queryLikesOp.queryCompletionBlock = { (cursor, error) in
-            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-
-            self.artworkInfosDict[artworkRecord]?["likes"] = likes
-        }
-        queryLikesOp.database = self.database
-        self.operationQueue.addOperation(queryLikesOp)
 
         let reviewQuery = CKQuery(recordType: "Review", predicate: NSPredicate(format: "artwork = %@", artworkRecord.recordID))
         let queryReviewsOp = CKQueryOperation(query: reviewQuery)

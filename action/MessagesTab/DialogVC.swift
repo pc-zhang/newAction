@@ -137,11 +137,11 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
             
             var imageURL: URL?
             userCacheOrNil?.performReaderBlockAndWait {
-                imageURL = (userCacheOrNil!.userRecord?["avatarImage"] as? CKAsset)?.fileURL
+                imageURL = (userCacheOrNil!.userRecord?["littleAvatar"] as? CKAsset)?.fileURL
             }
             
             if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
-                if let path = (yourRecord?["avatarImage"] as? CKAsset)?.fileURL.path {
+                if let path = (yourRecord?["littleAvatar"] as? CKAsset)?.fileURL.path {
                     cell.avatarImageV.image = UIImage(contentsOfFile: path)
                 }
             } else {

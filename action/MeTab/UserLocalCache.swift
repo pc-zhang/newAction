@@ -91,11 +91,12 @@ final class UserLocalCache: BaseLocalCache {
         
     }
     
-    func changeUserInfo(avatarAsset: CKAsset, nickName: String, sex: String, location: String, sign: String) -> Bool {
+    func changeUserInfo(avatarAsset: CKAsset, littleAvatarAsset: CKAsset, nickName: String, sex: String, location: String, sign: String) -> Bool {
         guard let userRecord = self.userRecord else {
             return false
         }
         userRecord["avatarImage"] = avatarAsset
+        userRecord["littleAvatar"] = littleAvatarAsset
         userRecord["nickName"] = nickName
         userRecord["sex"] = sex
         userRecord["location"] = location
