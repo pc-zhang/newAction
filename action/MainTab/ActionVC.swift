@@ -270,6 +270,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         secondsRecord["seconds"] = 0
                         reviewsRecord["reviews"] = 0
                         chorusRecord["chorus"] = 0
+                        chorusRecord["chorusRef"] = self.chorusRef
                         
                         let saveInfosOp = CKModifyRecordsOperation(recordsToSave: [secondsRecord, reviewsRecord, chorusRecord], recordIDsToDelete: nil)
                         
@@ -314,6 +315,20 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         }
                         operation.database = self.database
                         
+                        if let chorusRefID = self.chorusRef?.recordID {
+                            let fetchInfoOp = CKFetchRecordsOperation(recordIDs: [chorusRefID])
+                            fetchInfoOp.desiredKeys = ["chorus"]
+                            fetchInfoOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+                                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                                
+                                if let chorusRecord = recordsByRecordID?[chorusRefID] {
+                                    self.chorusPlus(chorusRecord)
+                                }
+                            }
+                            fetchInfoOp.database = self.database
+                            self.operationQueue.addOperation(fetchInfoOp)
+                        }
+                        
                         operation.addDependency(saveInfosOp)
                         self.operationQueue.addOperation(saveInfosOp)
                         self.operationQueue.addOperation(operation)
@@ -326,6 +341,36 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
     }
     
+    
+    func chorusPlus(_ chorusRecord: CKRecord) {
+        guard let chorusCount = chorusRecord["chorus"] as? Int64 else {
+            return
+        }
+        
+        chorusRecord["chorus"] = chorusCount + 1
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [chorusRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
+                
+                if let newRecord = records?.first {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        self.chorusPlus(newRecord)
+                    })
+                }
+                
+                return
+            }
+            
+            if let newRecord = records?.first {
+            }
+            
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+    }
     
     @objc func video(videoPath: NSString, didFinishSavingWithError error:NSError, contextInfo:Any) -> Void {
     }
@@ -1193,6 +1238,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     
     var url: URL?
+    
+    var chorusRef: CKRecord.Reference?
     
     var player = AVPlayer()
     

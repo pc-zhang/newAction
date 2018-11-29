@@ -85,6 +85,11 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 queryReviews(row)
             }
         }
+        if bySegue.identifier == "action to main" {
+            if let row = tableView.indexPathsForVisibleRows?.first?.row {
+                queryChorus(row)
+            }
+        }
     }
     
     @IBAction func swipeRight(_ sender: Any) {
@@ -373,7 +378,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                     }
                     
                     self.isFetchingData = false
-                    self.tableView.insertRows(at: indexPaths, with: .fade)
+                    self.tableView.insertRows(at: indexPaths, with: .none)
                 }
             }
             queryArtworksOp.database = self.database
@@ -402,6 +407,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         playViewCell.avatarV.image = #imageLiteral(resourceName: "avatar")
         playViewCell.url = nil
         playViewCell.coverV.image = nil
+        playViewCell.progressV.progress = 0
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
@@ -448,12 +454,13 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "action segue" {
-            if let actionVC = segue.destination as? ActionVC, let currentCell = self.tableView.visibleCells.first as? MainViewCell {
+            if let actionVC = segue.destination as? ActionVC, let currentCell = tableView.visibleCells.first as? MainViewCell, let currentIndex = tableView.indexPath(for: currentCell), let artworkRecord = artworkRecords[currentIndex.row].artwork {
                 actionVC.url = currentCell.url
+                actionVC.chorusRef = artworkRecord["chorus"] as? CKRecord.Reference
                 currentCell.player.pause()
             }
         } else if segue.identifier == "artist segue" {
-            if let userInfoVC = segue.destination as? UserInfoVC, let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+            if let userInfoVC = segue.destination as? UserInfoVC, let row = tableView.indexPathsForVisibleRows?.first?.row {
                 userInfoVC.userID = artworkRecords[row].artwork?.creatorUserRecordID
             }
         } else if segue.identifier == "reviews segue", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
@@ -492,12 +499,19 @@ class MainViewCell: UITableViewCell {
         
         playerView.player = player
         
-        let times = stride(from: 0, to: 60, by: 10).map {
-            CMTime(seconds: Double($0), preferredTimescale: 600) as NSValue
+        let times = (1..<240).map {
+            CMTime(seconds: Double($0)/4, preferredTimescale: 600) as NSValue
         }
         
         player.addBoundaryTimeObserver(forTimes: times, queue: nil, using: {
-            self.delegate?.addSeconds(self)
+            let playerTime = self.player.currentTime()
+            
+            if Int(playerTime.seconds) % 10 == 0, Int(playerTime.seconds) == Int(playerTime.seconds+0.9) {
+                self.delegate?.addSeconds(self)
+            }
+            if let duration = self.player.currentItem?.duration {
+                self.progressV.progress = Float(playerTime.seconds / duration.seconds)
+            }
         })
 
     }
@@ -529,6 +543,7 @@ class MainViewCell: UITableViewCell {
     @IBOutlet weak var secondsLabel: UILabel!
     @IBOutlet weak var reviewsLabel: UILabel!
     @IBOutlet weak var chorusLabel: UILabel!
+    @IBOutlet weak var progressV: UIProgressView!
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()

@@ -624,6 +624,14 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AXy-c3-PSp" customClass="PlayerView" customModule="action" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                                     <subviews>
+                                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MsN-Io-aUe">
+                                                            <rect key="frame" x="0.0" y="728" width="375" height="1"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="1" id="vxX-eG-Shi"/>
+                                                            </constraints>
+                                                            <color key="progressTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="trackTintColor" white="0.66666666666666663" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </progressView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="7Wz-ZD-Sr7">
                                                             <rect key="frame" x="317" y="417" width="50" height="292"/>
                                                             <subviews>
@@ -753,7 +761,7 @@
                                                                 <constraint firstAttribute="height" constant="40" id="fOT-RA-wNg"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@代古拉" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXI-o7-Bkf">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@卓别林" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXI-o7-Bkf">
                                                             <rect key="frame" x="65" y="589" width="55.666666666666657" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="oFS-eG-AF7"/>
@@ -784,13 +792,16 @@
                                                     <constraints>
                                                         <constraint firstItem="FXI-o7-Bkf" firstAttribute="centerY" secondItem="UbK-AS-cOU" secondAttribute="centerY" id="4BV-dU-ENP"/>
                                                         <constraint firstItem="99H-1s-13C" firstAttribute="leading" secondItem="AXy-c3-PSp" secondAttribute="leading" constant="20" id="5d2-Jl-mEq"/>
+                                                        <constraint firstAttribute="bottom" secondItem="MsN-Io-aUe" secondAttribute="bottom" id="7fE-w7-7y3"/>
                                                         <constraint firstItem="7Wz-ZD-Sr7" firstAttribute="leading" secondItem="99H-1s-13C" secondAttribute="trailing" constant="30" id="7j1-Wn-Qq3"/>
                                                         <constraint firstAttribute="bottom" secondItem="7Wz-ZD-Sr7" secondAttribute="bottom" constant="20" id="BaG-7h-gcq"/>
                                                         <constraint firstItem="9WA-ae-tkv" firstAttribute="leading" secondItem="UbK-AS-cOU" secondAttribute="leading" id="DlQ-GJ-CrL"/>
                                                         <constraint firstItem="9WA-ae-tkv" firstAttribute="trailing" secondItem="FXI-o7-Bkf" secondAttribute="trailing" id="JLf-Fn-i6l"/>
                                                         <constraint firstItem="9WA-ae-tkv" firstAttribute="height" secondItem="UbK-AS-cOU" secondAttribute="height" id="Kwa-6H-oNr"/>
                                                         <constraint firstItem="FXI-o7-Bkf" firstAttribute="leading" secondItem="UbK-AS-cOU" secondAttribute="trailing" constant="5" id="P1I-4x-GwJ"/>
+                                                        <constraint firstItem="MsN-Io-aUe" firstAttribute="leading" secondItem="AXy-c3-PSp" secondAttribute="leading" id="WtS-5b-ZwD"/>
                                                         <constraint firstItem="UbK-AS-cOU" firstAttribute="leading" secondItem="AXy-c3-PSp" secondAttribute="leading" constant="20" id="YwX-yY-vtA"/>
+                                                        <constraint firstAttribute="trailing" secondItem="MsN-Io-aUe" secondAttribute="trailing" id="aPh-Ef-UZY"/>
                                                         <constraint firstItem="99H-1s-13C" firstAttribute="top" secondItem="UbK-AS-cOU" secondAttribute="bottom" constant="10" id="eoJ-wT-gF6"/>
                                                         <constraint firstAttribute="bottom" secondItem="99H-1s-13C" secondAttribute="bottom" constant="20" id="jmx-0m-P2F"/>
                                                         <constraint firstItem="9WA-ae-tkv" firstAttribute="centerY" secondItem="UbK-AS-cOU" secondAttribute="centerY" id="x3v-BR-TbO"/>
@@ -820,6 +831,7 @@
                                             <outlet property="coverV" destination="sBN-J7-fz3" id="DRn-RD-YVt"/>
                                             <outlet property="nickNameLabel" destination="FXI-o7-Bkf" id="6be-p6-Igk"/>
                                             <outlet property="playerView" destination="AXy-c3-PSp" id="YZj-dN-lDy"/>
+                                            <outlet property="progressV" destination="MsN-Io-aUe" id="PUs-bL-Bf7"/>
                                             <outlet property="reviewsLabel" destination="A2Y-aU-DgI" id="fYX-Ni-QSj"/>
                                             <outlet property="secondsLabel" destination="aZS-yj-A1f" id="Ab4-6U-bya"/>
                                             <outlet property="titleLabel" destination="99H-1s-13C" id="XSd-Y5-WDj"/>
@@ -1474,6 +1486,7 @@
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="V5g-es-tUs">
                             <connections>
                                 <action selector="cancel:" destination="GMQ-DF-KZ3" id="JfG-Kp-33e"/>
+                                <segue destination="EEy-vJ-4kQ" kind="unwind" identifier="action to main" unwindAction="doneBySegue:" id="yd5-4m-489"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="export" id="RM0-SD-IS5">
@@ -1497,6 +1510,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EPO-Zm-rpZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="EEy-vJ-4kQ" userLabel="Exit" sceneMemberID="exit"/>
                 <tapGestureRecognizer id="UlO-se-VjB">
                     <connections>
                         <action selector="tapPlayView:" destination="GMQ-DF-KZ3" id="iXP-zu-0Ub"/>
@@ -1700,8 +1714,8 @@
         <image name="export" width="58" height="58"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="voU-2e-4sJ"/>
+        <segue reference="YMX-aQ-4Vn"/>
         <segue reference="8U0-dU-CZ9"/>
-        <segue reference="mXV-vf-QgJ"/>
+        <segue reference="TFS-tO-vIX"/>
     </inferredMetricsTieBreakers>
 </document>
