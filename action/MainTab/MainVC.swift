@@ -19,8 +19,7 @@ fileprivate struct ArtWorkInfo {
     var chorus: CKRecord? = nil
 }
 
-class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching {
-    
+class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching, SecondsDelegate {
     var userID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
@@ -35,6 +34,49 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     var isAppearing: Bool = false
     @IBOutlet weak var tableView: UITableView!
     
+    func addSeconds(_ cell: UITableViewCell) {
+        guard let row = tableView.indexPath(for: cell)?.row, let secondsRecord = artworkRecords[row].seconds else {
+            return
+        }
+        secondsPlus(secondsRecord) { newSecondsRecord in
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].seconds = newSecondsRecord
+                if let seconds = newSecondsRecord["seconds"] as? Int64 {
+                    self.reloadVisibleRow(row, type: 0, value: seconds)
+                }
+            }
+        }
+    }
+    
+    func secondsPlus(_ secondsRecord: CKRecord, _ succeedHandler: @escaping (_ secondsRecord: CKRecord) -> Void) {
+        guard let secondsCount = secondsRecord["seconds"] as? Int64 else {
+            return
+        }
+        
+        secondsRecord["seconds"] = secondsCount + 10
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [secondsRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
+                
+                if let newRecord = records?.first {
+                    self.secondsPlus(newRecord, succeedHandler)
+                }
+                
+                return
+            }
+            
+            if let newRecord = records?.first {
+                succeedHandler(newRecord)
+            }
+            
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+    }
+    
     @IBAction func done(bySegue: UIStoryboardSegue) {
         if bySegue.identifier == "review to main" {
             if let row = tableView.indexPathsForVisibleRows?.first?.row {
@@ -47,13 +89,38 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         cancel(sender)
     }
     
+    func secondsToHoursMinutesSeconds (seconds : Int64) -> String {
+        let (h,m,s) = (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+        let (Y,D,H) = (h/(365*24), (h%(365*24))/24, (h%(365*24))%24)
+        if Y/100>0 {
+            return "\(Y/100)世纪"
+        }
+        if Y>0 {
+            return "\(Y)年"
+        }
+        if D>0 {
+            return "\(D)天"
+        }
+        if H>0 {
+            return "\(H)时"
+        }
+        if m>0 {
+            return "\(m)分"
+        }
+        if s>=0 {
+            return "\(s)秒"
+        }
+        
+        return ""
+    }
+    
     func reloadVisibleRow(_ row: Int, type: Int, value: Int64) {
         let indexPath = IndexPath(row: row, section: 0)
 
         if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
             switch(type) {
             case 0:
-                (tableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(value)"
+                (tableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsToHoursMinutesSeconds(seconds: value))"
             case 1:
                 (tableView.cellForRow(at: indexPath) as? MainViewCell)?.reviewsLabel.text = "\(value)"
             case 2:
@@ -261,7 +328,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         let chorusRecord = artworkRecords[indexPath.row].chorus
         let artwork = artworkRecords[indexPath.row].artwork
         
-        playViewCell.secondsLabel.text = "\(secondsRecord?["seconds"] ?? 0)"
+        playViewCell.secondsLabel.text = "\(secondsToHoursMinutesSeconds(seconds: secondsRecord?["seconds"] ?? 0))"
         playViewCell.reviewsLabel.text = "\(reviewsRecord?["reviews"] ?? 0)"
         playViewCell.chorusLabel.text = "\(chorusRecord?["chorus"] ?? 0)"
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
@@ -371,7 +438,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainViewCell.reuseIdentifier, for: indexPath) as? MainViewCell else {
             fatalError("Expected `\(MainViewCell.self)` type for reuseIdentifier \(MainViewCell.reuseIdentifier). Check the configuration in Main.storyboard.")
         }
-                
+        
+        cell.delegate = self
+        
         return cell
     }
     
@@ -420,6 +489,15 @@ class MainViewCell: UITableViewCell {
         self.playerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainViewCell.tapPlayViewCell(_:))))
         
         playerView.player = player
+        
+        let times = stride(from: 0, to: 60, by: 10).map {
+            CMTime(seconds: Double($0), preferredTimescale: 600) as NSValue
+        }
+        
+        player.addBoundaryTimeObserver(forTimes: times, queue: nil, using: {
+            self.delegate?.addSeconds(self)
+        })
+
     }
     
     @IBAction func tapPlayViewCell(_ sender: Any) {
@@ -453,4 +531,9 @@ class MainViewCell: UITableViewCell {
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()
     var url : URL?
+    weak open var delegate: SecondsDelegate?
+}
+
+public protocol SecondsDelegate : NSObjectProtocol {
+    func addSeconds(_ cell: UITableViewCell)
 }
