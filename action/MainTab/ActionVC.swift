@@ -264,13 +264,25 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     
                     if (sender as? UIButton) == self.uploadButton {
                         
-                        let artworkInfoRecord = CKRecord(recordType: "ArtworkInfo")
-                        artworkInfoRecord["seconds"] = 0
-                        artworkInfoRecord["reviews"] = 0
-                        artworkInfoRecord["chorus"] = 0
+                        let secondsRecord = CKRecord(recordType: "ArtworkInfoSeconds")
+                        let reviewsRecord = CKRecord(recordType: "ArtworkInfoReviews")
+                        let chorusRecord = CKRecord(recordType: "ArtworkInfoChorus")
+                        secondsRecord["seconds"] = 0
+                        reviewsRecord["reviews"] = 0
+                        chorusRecord["chorus"] = 0
+                        
+                        let saveInfosOp = CKModifyRecordsOperation(recordsToSave: [secondsRecord, reviewsRecord, chorusRecord], recordIDsToDelete: nil)
+                        
+                        saveInfosOp.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
+                            
+                        }
+                        saveInfosOp.database = self.database
                         
                         let artworkRecord = CKRecord(recordType: "Artwork")
-                        artworkRecord["info"] = CKRecord.Reference(recordID: artworkInfoRecord.recordID, action: .none)
+                        artworkRecord["seconds"] = CKRecord.Reference(recordID: secondsRecord.recordID, action: .none)
+                        artworkRecord["reviews"] = CKRecord.Reference(recordID: reviewsRecord.recordID, action: .none)
+                        artworkRecord["chorus"] = CKRecord.Reference(recordID: chorusRecord.recordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
                         if let thumbnail = self.generateThumbnail() {
                             artworkRecord["thumbnail"] = thumbnail
@@ -285,19 +297,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         
                         artworkRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
                         
-                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkInfoRecord, artworkRecord], recordIDsToDelete: nil)
+                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkRecord], recordIDsToDelete: nil)
                         
                         operation.perRecordProgressBlock = {(record, progress) in
-                            guard record.recordID == artworkRecord.recordID else {
-                                return
-                            }
                             DispatchQueue.main.async {
                                 self.downloadProgress = 0.25 + CGFloat(progress) * 0.75
                             }
                         }
                         
                         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [artworkRecord.recordID], alert: true) == nil,
+                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
                                 let newRecord = records?[0] else { return }
                             DispatchQueue.main.async {
                                 self.downloadProgress = 0
@@ -305,6 +314,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         }
                         operation.database = self.database
                         
+                        operation.addDependency(saveInfosOp)
+                        self.operationQueue.addOperation(saveInfosOp)
                         self.operationQueue.addOperation(operation)
                     }
                     

@@ -26,6 +26,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
     var artworkID: CKRecord.ID? = nil
+    var reviewsID: CKRecord.ID? = nil
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -50,16 +51,59 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         let reviewRecord = CKRecord(recordType: "Review")
         reviewRecord["artwork"] = CKRecord.Reference(recordID: artworkID, action: .deleteSelf)
         reviewRecord["text"] = text
+        reviewRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
+        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["littleAvatar"] as? CKAsset)?.fileURL {
+            reviewRecord["avatar"] = CKAsset(fileURL: url)
+        }
         
-        database.save(reviewRecord) { (record, error) in
-            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else { return }
-            
-            DispatchQueue.main.async {
-                let reviewInfo = ReviewInfo(isPrefetched: true, review: record)
+        let operation = CKModifyRecordsOperation(recordsToSave: [reviewRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil, let newRecord = records?[0] else { return }
+            DispatchQueue.main.sync {
+                let reviewInfo = ReviewInfo(isPrefetched: true, review: newRecord)
                 self.reviewInfos.insert(reviewInfo, at: 0)
                 self.tableView.reloadData()
             }
         }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+        
+        if let reviewsID = reviewsID {
+            let fetchInfoOp = CKFetchRecordsOperation(recordIDs: [reviewsID])
+            fetchInfoOp.desiredKeys = ["reviews"]
+            fetchInfoOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+                
+                if let reviewsRecord = recordsByRecordID?[reviewsID] {
+                    self.reviewsPlus(reviewsRecord)
+                }
+            }
+            fetchInfoOp.database = self.database
+            self.operationQueue.addOperation(fetchInfoOp)
+        }
+        
+    }
+    
+    func reviewsPlus(_ reviewsRecord: CKRecord) {
+        guard let reviewsCount = reviewsRecord["reviews"] as? Int64 else {
+            return
+        }
+        
+        reviewsRecord["reviews"] = reviewsCount + 1
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [reviewsRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) != nil, let newRecord = records?.first else { return }
+            
+            self.reviewsPlus(newRecord)
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+
     }
     
     override func viewDidLoad() {
@@ -99,7 +143,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         query.sortDescriptors = [byCreation]
         let queryReviewsOp = CKQueryOperation(query: query)
         
-        queryReviewsOp.desiredKeys = ["text"]
+        queryReviewsOp.desiredKeys = ["text", "avatar", "nickName"]
         queryReviewsOp.resultsLimit = 6
         queryReviewsOp.recordFetchedBlock = { (reviewRecord) in
             var reviewInfo = ReviewInfo()
@@ -174,10 +218,6 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         
-    }
-    
-    @IBAction func tapBlankPlace(_ sender: Any) {
-        super.dismiss(animated: true)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
