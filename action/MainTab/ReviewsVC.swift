@@ -96,9 +96,17 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         let operation = CKModifyRecordsOperation(recordsToSave: [reviewsRecord], recordIDsToDelete: nil)
         
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) != nil, let newRecord = records?.first else { return }
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
+                
+                if let newRecord = records?.first {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        self.reviewsPlus(newRecord)
+                    })
+                }
+                
+                return
+            }
             
-            self.reviewsPlus(newRecord)
         }
         operation.database = self.database
         

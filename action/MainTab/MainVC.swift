@@ -61,7 +61,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
                 
                 if let newRecord = records?.first {
-                    self.secondsPlus(newRecord, succeedHandler)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        self.secondsPlus(newRecord, succeedHandler)
+                    })
                 }
                 
                 return
