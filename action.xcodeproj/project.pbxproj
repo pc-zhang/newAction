@@ -10,6 +10,7 @@
 		1E7CFFE21ABF211F1D5F5290 /* libPods-action.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBCE7C59AD5C72292F83DBEF /* libPods-action.a */; };
 		F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */; };
 		F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025537821904D1A00261DEA /* EditUserInfoVC.swift */; };
+		F02A93CE21B112CA00DC59D2 /* ChorusVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02A93CD21B112CA00DC59D2 /* ChorusVC.swift */; };
 		F02ADDA321991F4200A28B35 /* FollowingPlayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA221991F4200A28B35 /* FollowingPlayViewCell.swift */; };
 		F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA42199264400A28B35 /* MessagesVC.swift */; };
 		F02ADDA8219BF4EB00A28B35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA6219BE62D00A28B35 /* ActionVC.swift */; };
@@ -55,6 +56,7 @@
 		CBCE7C59AD5C72292F83DBEF /* libPods-action.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-action.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "iOSDevCenters+GIF.swift"; sourceTree = "<group>"; };
 		F025537821904D1A00261DEA /* EditUserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoVC.swift; sourceTree = "<group>"; };
+		F02A93CD21B112CA00DC59D2 /* ChorusVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChorusVC.swift; sourceTree = "<group>"; };
 		F02ADDA221991F4200A28B35 /* FollowingPlayViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingPlayViewCell.swift; sourceTree = "<group>"; };
 		F02ADDA42199264400A28B35 /* MessagesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
 		F02ADDA6219BE62D00A28B35 /* ActionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionVC.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		F0A401E2217C511B003ACC53 /* MainTab */ = {
 			isa = PBXGroup;
 			children = (
+				F02A93CD21B112CA00DC59D2 /* ChorusVC.swift */,
 				F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */,
 				F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */,
 				F0A401E3217C511B003ACC53 /* PreviewView.swift */,
@@ -447,6 +450,7 @@
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
 				F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */,
 				F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */,
+				F02A93CE21B112CA00DC59D2 /* ChorusVC.swift in Sources */,
 				F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

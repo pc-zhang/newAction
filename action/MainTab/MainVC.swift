@@ -18,6 +18,7 @@ struct ArtWorkInfo {
 
 class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching, SecondsDelegate {
     var userID: CKRecord.ID? = nil
+    var chorusFromArtworkID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -222,6 +223,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
+        } else if let chorusFromArtworkID = chorusFromArtworkID {
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", chorusFromArtworkID))
+            let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
+            query.sortDescriptors = [byChorusCount]
         } else {
             query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(value: true))
             let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
@@ -414,6 +419,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             if let actionVC = segue.destination as? ActionVC, let currentCell = tableView.visibleCells.first as? MainViewCell, let currentIndex = tableView.indexPath(for: currentCell) {
                 actionVC.url = currentCell.url
                 actionVC.infoRecord = artworkRecords[currentIndex.row].info
+                actionVC.artworkID = artworkRecords[currentIndex.row].artwork?.recordID
                 currentCell.player.pause()
             }
         } else if segue.identifier == "artist segue" {
@@ -425,7 +431,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }
+        } else if segue.identifier == "main to chorus", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+            if let chorusVC = segue.destination as? ChorusVC {
+                chorusVC.artworkID = artworkRecords[row].artwork?.recordID
+            }
         }
+        
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -462,11 +473,14 @@ class MainViewCell: UITableViewCell {
         
         player.addBoundaryTimeObserver(forTimes: times, queue: nil, using: {
             let playerTime = self.player.currentTime()
+            guard playerTime.isValid else {
+                return
+            }
             
             if Int(playerTime.seconds) % 10 == 0, Int(playerTime.seconds) == Int(playerTime.seconds+0.9) {
                 self.delegate?.addSeconds(self)
             }
-            if let duration = self.player.currentItem?.duration {
+            if let duration = self.player.currentItem?.duration, duration.isValid {
                 self.progressV.progress = Float(playerTime.seconds / duration.seconds)
             }
         })

@@ -50,14 +50,20 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         if isEditMode {
             let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "删除作品", style: .destructive, handler: { (action) in
-                guard let cell = sender as? UICollectionViewCell, let index = self.collectionView.indexPath(for: cell), let artworkRecord = self.artworkRecords[index.item].artwork else {
+                guard let cell = sender as? UICollectionViewCell, let index = self.collectionView.indexPath(for: cell), let infoRecord = self.artworkRecords[index.item].info else {
                     return
                 }
                 
-                let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [artworkRecord.recordID])
+                var recordIDsToDelete = [infoRecord.recordID]
+                
+                if let artworkRecord = self.artworkRecords[index.item].artwork {
+                    recordIDsToDelete.append(artworkRecord.recordID)
+                }
+                
+                let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDsToDelete)
                 
                 operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                    guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [artworkRecord.recordID], alert: true) == nil else { return }
+                    guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
                     DispatchQueue.main.async {
                         self.artworkRecords.remove(at: index.item)
                         self.collectionView.deleteItems(at: [index])

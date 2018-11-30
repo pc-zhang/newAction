@@ -270,20 +270,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         myInfoRecord["seconds"] = 0
                         myInfoRecord["reviews"] = 0
                         myInfoRecord["chorus"] = 0
-                        if let artworkID = self.artworkID {
-                            myInfoRecord["chorusFrom"] = CKRecord.Reference(recordID: artworkID, action: .none)
-                        }
-                        
-                        let saveInfosOp = CKModifyRecordsOperation(recordsToSave: [myInfoRecord], recordIDsToDelete: nil)
-                        
-                        saveInfosOp.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
-                            
-                        }
-                        saveInfosOp.database = self.database
                         
                         let artworkRecord = CKRecord(recordType: "Artwork")
-                        artworkRecord["info"] = CKRecord.Reference(recordID: myInfoRecord.recordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
                         if let thumbnail = self.generateThumbnail() {
                             artworkRecord["thumbnail"] = thumbnail
@@ -299,24 +287,30 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         
                         artworkRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
                         
-                        let operation = CKModifyRecordsOperation(recordsToSave: [artworkRecord], recordIDsToDelete: nil)
+                        if let artworkID = self.artworkID {
+                            myInfoRecord["chorusFrom"] = CKRecord.Reference(recordID: artworkID, action: .none)
+                        } else {
+                            myInfoRecord["chorusFrom"] = CKRecord.Reference(recordID: artworkRecord.recordID, action: .none)
+                        }
+                        artworkRecord["info"] = CKRecord.Reference(recordID: myInfoRecord.recordID, action: .none)
+                        
+                        let operation = CKModifyRecordsOperation(recordsToSave: [myInfoRecord, artworkRecord], recordIDsToDelete: nil)
                         
                         operation.perRecordProgressBlock = {(record, progress) in
-                            DispatchQueue.main.async {
-                                self.downloadProgress = 0.25 + CGFloat(progress) * 0.75
+                            if record.recordID == artworkRecord.recordID {
+                                DispatchQueue.main.async {
+                                    self.downloadProgress = 0.25 + CGFloat(progress) * 0.75
+                                }
                             }
                         }
                         
                         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
-                                let newRecord = records?[0] else { return }
+                            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
                             DispatchQueue.main.async {
                                 self.downloadProgress = 0
                             }
                         }
                         operation.database = self.database
-                        operation.addDependency(saveInfosOp)
-                        self.operationQueue.addOperation(saveInfosOp)
                         self.operationQueue.addOperation(operation)
                         
                         if let infoRecord = self.infoRecord {
@@ -351,9 +345,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 }
                 
                 return
-            }
-            
-            if let newRecord = records?.first {
             }
             
         }
