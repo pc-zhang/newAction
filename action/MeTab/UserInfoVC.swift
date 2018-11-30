@@ -10,10 +10,6 @@ import Foundation
 import CloudKit
 import UIKit
 
-fileprivate struct UserPageArtWorkInfo {
-    var isPrefetched: Bool = false
-    var artwork: CKRecord? = nil
-}
 
 class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, HeaderViewDelegate {
     
@@ -25,7 +21,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            queryArtworkOtherInfo(indexPath.item)
+            queryFullArtwork(indexPath.item)
         }
     }
     
@@ -38,7 +34,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var userID: CKRecord.ID?
-    private var artworkRecords: [UserPageArtWorkInfo] = []
+    private var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
@@ -91,6 +87,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         fetchData(0)
     }
     
+    
     @IBAction func fetchData(_ sender: Any) {
         operationQueue.cancelAllOperations()
         artworkRecords = []
@@ -121,24 +118,23 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         
     }
     
-    func updateWithRecordID(_ recordID: CKRecord.ID) {
+    func updateWithRecordID(_ userID: CKRecord.ID) {
 
         isFetchingData = true
-        var tmpArtworkRecords:[UserPageArtWorkInfo] = []
+        var tmpArtworkRecords:[ArtWorkInfo] = []
         
-        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "creatorUserRecordID = %@", recordID))
+        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
         let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
         query.sortDescriptors = [byCreation]
-        let queryArtworksOp = CKQueryOperation(query: query)
         
-        queryArtworksOp.desiredKeys = []
-        queryArtworksOp.resultsLimit = 6
-        queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-            var artWorkInfo = UserPageArtWorkInfo()
-            artWorkInfo.artwork = artworkRecord
+        let queryInfoOp = CKQueryOperation(query: query)
+        queryInfoOp.resultsLimit = 1000
+        queryInfoOp.recordFetchedBlock = { (infoRecord) in
+            var artWorkInfo = ArtWorkInfo()
+            artWorkInfo.info = infoRecord
             tmpArtworkRecords.append(artWorkInfo)
         }
-        queryArtworksOp.queryCompletionBlock = { (cursor, error) in
+        queryInfoOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
             
@@ -150,8 +146,8 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 self.refreshControl.endRefreshing()
             }
         }
-        queryArtworksOp.database = self.database
-        self.operationQueue.addOperation(queryArtworksOp)
+        queryInfoOp.database = self.database
+        self.operationQueue.addOperation(queryInfoOp)
         
     }
     
@@ -165,9 +161,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         navigationController?.popViewController(animated: true)
     }
     
-    func queryArtworkOtherInfo(_ row: Int)
+    func queryFullArtwork(_ row: Int)
     {
-        guard let artworkRecord = artworkRecords[row].artwork else {
+        guard let infoRecord = artworkRecords[row].info else {
             return
         }
         
@@ -176,24 +172,45 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         }
         artworkRecords[row].isPrefetched = true
         
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
         
-        let fetchArtworkOp = CKFetchRecordsOperation(recordIDs: [artworkRecord.recordID])
-        fetchArtworkOp.desiredKeys = ["thumbnail"]
-        fetchArtworkOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
+        let queryArtworkOp = CKQueryOperation(query: query)
+        queryArtworkOp.desiredKeys = ["littleCover"]
+        queryArtworkOp.recordFetchedBlock = { (artworkRecord) in
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].artwork = artworkRecord
+                
+                if self.collectionView.indexPathsForVisibleItems.contains(IndexPath(item: row, section: 0)) {
+                    self.collectionView.reloadItems(at: [IndexPath(item: row, section: 0)])
+                }
+            }
+        }
+        queryArtworkOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-            
-            if let artworkRecord = recordsByRecordID?[artworkRecord.recordID] {
-                DispatchQueue.main.async {
-                    self.artworkRecords[row].artwork = artworkRecord
+        }
+        queryArtworkOp.database = self.database
+        self.operationQueue.addOperation(queryArtworkOp)
+        
+        
+        let queryFullArtworkOp = CKQueryOperation(query: query)
+        queryFullArtworkOp.desiredKeys = ["thumbnail"]
+        queryFullArtworkOp.recordFetchedBlock = { (artworkRecord) in
+            if let ckasset = artworkRecord["thumbnail"] as? CKAsset {
+                DispatchQueue.main.sync {
+                    self.artworkRecords[row].artwork?["thumbnail"] = ckasset
+
                     if self.collectionView.indexPathsForVisibleItems.contains(IndexPath(item: row, section: 0)) {
                         self.collectionView.reloadItems(at: [IndexPath(item: row, section: 0)])
                     }
                 }
             }
-            
         }
-        fetchArtworkOp.database = self.database
-        self.operationQueue.addOperation(fetchArtworkOp)
+        queryFullArtworkOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+        }
+        queryFullArtworkOp.database = self.database
+        queryFullArtworkOp.addDependency(queryArtworkOp)
+        self.operationQueue.addOperation(queryFullArtworkOp)
     }
     
     
@@ -236,50 +253,11 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        queryArtworkOtherInfo(indexPath.item)
+        queryFullArtwork(indexPath.item)
         if let thumbnail = artworkRecords[indexPath.item].artwork?["thumbnail"] as? CKAsset, let imageData = try? Data(contentsOf: thumbnail.fileURL), let cell = cell as? GifViewCell {
             cell.imageV.image = UIImage.gifImageWithData(imageData)
-            
-            if true {
-                let surplus = artworkRecords.count - (indexPath.row + 1)
-                
-                if let cursor = cursor, !isFetchingData, surplus < 6 {
-                    isFetchingData = true
-                    
-                    let recordsCountBefore = artworkRecords.count
-                    var tmpArtworkRecords:[UserPageArtWorkInfo] = []
-                    
-                    let queryArtworksOp = CKQueryOperation(cursor: cursor)
-                    queryArtworksOp.desiredKeys = []
-                    queryArtworksOp.resultsLimit = 6 - surplus
-                    queryArtworksOp.recordFetchedBlock = { (artworkRecord) in
-                        var artWorkInfo = UserPageArtWorkInfo()
-                        artWorkInfo.artwork = artworkRecord
-                        DispatchQueue.main.async {
-                            tmpArtworkRecords.append(artWorkInfo)
-                        }
-                    }
-                    queryArtworksOp.queryCompletionBlock = { (cursor, error) in
-                        guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                        self.cursor = cursor
-                    }
-                    queryArtworksOp.database = self.database
-                    self.operationQueue.addOperation(queryArtworksOp)
-                    
-                    DispatchQueue.global().async {
-                        self.operationQueue.waitUntilAllOperationsAreFinished()
-                        DispatchQueue.main.async {
-                            self.artworkRecords.append(contentsOf: tmpArtworkRecords)
-                            let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
-                                IndexPath(item: $0, section: 0)
-                            }
-                            
-                            self.isFetchingData = false
-                            self.collectionView.insertItems(at: indexPaths)
-                        }
-                    }
-                }
-            }
+        } else if let littleCover = artworkRecords[indexPath.item].artwork?["littleCover"] as? CKAsset, let imageData = try? Data(contentsOf: littleCover.fileURL), let cell = cell as? GifViewCell {
+            cell.imageV.image = UIImage(data: imageData)
         }
     }
     

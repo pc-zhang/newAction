@@ -39,15 +39,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     //MARK: - UI Actions
     
-    func generateCover() -> CKAsset? {
+    func generateCover() -> (CKAsset, CKAsset)? {
         let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
         imageGenerator.maximumSize = videoComposition!.renderSize
         imageGenerator.appliesPreferredTrackTransform = true
         imageGenerator.videoComposition = videoComposition
         
-        if let coverImage = try? imageGenerator.copyCGImage(at: .zero, actualTime: nil), let coverImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+        if let coverImage = try? imageGenerator.copyCGImage(at: .zero, actualTime: nil), let coverImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png"), let littleCoverImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
+            
             FileManager.default.createFile(atPath: coverImageURL.path, contents: UIImage(cgImage: coverImage).pngData(), attributes: nil)
-            return CKAsset(fileURL: coverImageURL)
+            FileManager.default.createFile(atPath: littleCoverImageURL.path, contents: UIImage(cgImage: coverImage).resize(targetSize: CGSize(width: 90, height: 160)).pngData(), attributes: nil)
+            return (CKAsset(fileURL: coverImageURL), CKAsset(fileURL: littleCoverImageURL))
         }
         
         return nil
@@ -264,15 +266,15 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     
                     if (sender as? UIButton) == self.uploadButton {
                         
-                        let secondsRecord = CKRecord(recordType: "ArtworkInfoSeconds")
-                        let reviewsRecord = CKRecord(recordType: "ArtworkInfoReviews")
-                        let chorusRecord = CKRecord(recordType: "ArtworkInfoChorus")
-                        secondsRecord["seconds"] = 0
-                        reviewsRecord["reviews"] = 0
-                        chorusRecord["chorus"] = 0
-                        chorusRecord["chorusRef"] = self.chorusRef
+                        let myInfoRecord = CKRecord(recordType: "ArtworkInfo")
+                        myInfoRecord["seconds"] = 0
+                        myInfoRecord["reviews"] = 0
+                        myInfoRecord["chorus"] = 0
+                        if let artworkID = self.artworkID {
+                            myInfoRecord["chorusFrom"] = CKRecord.Reference(recordID: artworkID, action: .none)
+                        }
                         
-                        let saveInfosOp = CKModifyRecordsOperation(recordsToSave: [secondsRecord, reviewsRecord, chorusRecord], recordIDsToDelete: nil)
+                        let saveInfosOp = CKModifyRecordsOperation(recordsToSave: [myInfoRecord], recordIDsToDelete: nil)
                         
                         saveInfosOp.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
                             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
@@ -281,15 +283,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         saveInfosOp.database = self.database
                         
                         let artworkRecord = CKRecord(recordType: "Artwork")
-                        artworkRecord["seconds"] = CKRecord.Reference(recordID: secondsRecord.recordID, action: .none)
-                        artworkRecord["reviews"] = CKRecord.Reference(recordID: reviewsRecord.recordID, action: .none)
-                        artworkRecord["chorus"] = CKRecord.Reference(recordID: chorusRecord.recordID, action: .none)
+                        artworkRecord["info"] = CKRecord.Reference(recordID: myInfoRecord.recordID, action: .none)
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)
                         if let thumbnail = self.generateThumbnail() {
                             artworkRecord["thumbnail"] = thumbnail
                         }
-                        if let cover = self.generateCover() {
+                        if let (cover, littleCover) = self.generateCover() {
                             artworkRecord["cover"] = cover
+                            artworkRecord["littleCover"] = littleCover
                         }
                         artworkRecord["title"] = self.titleTextV.text
                         if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["littleAvatar"] as? CKAsset)?.fileURL {
@@ -314,24 +315,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                             }
                         }
                         operation.database = self.database
-                        
-                        if let chorusRefID = self.chorusRef?.recordID {
-                            let fetchInfoOp = CKFetchRecordsOperation(recordIDs: [chorusRefID])
-                            fetchInfoOp.desiredKeys = ["chorus"]
-                            fetchInfoOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
-                                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                                
-                                if let chorusRecord = recordsByRecordID?[chorusRefID] {
-                                    self.chorusPlus(chorusRecord)
-                                }
-                            }
-                            fetchInfoOp.database = self.database
-                            self.operationQueue.addOperation(fetchInfoOp)
-                        }
-                        
                         operation.addDependency(saveInfosOp)
                         self.operationQueue.addOperation(saveInfosOp)
                         self.operationQueue.addOperation(operation)
+                        
+                        if let infoRecord = self.infoRecord {
+                            self.chorusPlus(infoRecord)
+                        }
                     }
                     
                 } else {
@@ -342,20 +332,20 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     
-    func chorusPlus(_ chorusRecord: CKRecord) {
-        guard let chorusCount = chorusRecord["chorus"] as? Int64 else {
+    func chorusPlus(_ infoRecord: CKRecord) {
+        guard let chorusCount = infoRecord["chorus"] as? Int64 else {
             return
         }
         
-        chorusRecord["chorus"] = chorusCount + 1
+        infoRecord["chorus"] = chorusCount + 1
         
-        let operation = CKModifyRecordsOperation(recordsToSave: [chorusRecord], recordIDsToDelete: nil)
+        let operation = CKModifyRecordsOperation(recordsToSave: [infoRecord], recordIDsToDelete: nil)
         
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
                 
                 if let newRecord = records?.first {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                         self.chorusPlus(newRecord)
                     })
                 }
@@ -1239,7 +1229,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var url: URL?
     
-    var chorusRef: CKRecord.Reference?
+    var artworkID: CKRecord.ID? = nil
+    
+    var infoRecord: CKRecord?
     
     var player = AVPlayer()
     

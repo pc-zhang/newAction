@@ -252,8 +252,8 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         
         if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage, let avatarImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png"), let littleAvatarImageURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(UUID().uuidString).png") {
             
-            let avatarImage = resizeImage(image: image, targetSize: avatarV.bounds.size)
-            let littleAvatarImage = resizeImage(image: image, targetSize: CGSize(width: 50, height: 50))
+            let avatarImage = image.resize(targetSize: avatarV.bounds.size)
+            let littleAvatarImage = image.resize(targetSize: CGSize(width: 50, height: 50))
 
             FileManager.default.createFile(atPath: avatarImageURL.path, contents: avatarImage.pngData(), attributes: nil)
             FileManager.default.createFile(atPath: littleAvatarImageURL.path, contents: littleAvatarImage.pngData(), attributes: nil)
@@ -266,11 +266,14 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         picker.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
-    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-        let size = image.size
+}
+
+extension UIImage {
+    func resize(targetSize: CGSize) -> UIImage {
+        let size = self.size
         
-        let widthRatio  = targetSize.width  / image.size.width
-        let heightRatio = targetSize.height / image.size.height
+        let widthRatio  = targetSize.width  / self.size.width
+        let heightRatio = targetSize.height / self.size.height
         
         var newSize: CGSize
         if(widthRatio > heightRatio) {
@@ -282,11 +285,10 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
         
         UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-        image.draw(in: rect)
+        self.draw(in: rect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         return newImage!
     }
-    
 }

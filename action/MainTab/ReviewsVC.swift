@@ -26,7 +26,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
     var artworkID: CKRecord.ID? = nil
-    var reviewsID: CKRecord.ID? = nil
+    var infoRecord: CKRecord? = nil
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -70,36 +70,26 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         
         self.operationQueue.addOperation(operation)
         
-        if let reviewsID = reviewsID {
-            let fetchInfoOp = CKFetchRecordsOperation(recordIDs: [reviewsID])
-            fetchInfoOp.desiredKeys = ["reviews"]
-            fetchInfoOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
-                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                
-                if let reviewsRecord = recordsByRecordID?[reviewsID] {
-                    self.reviewsPlus(reviewsRecord)
-                }
-            }
-            fetchInfoOp.database = self.database
-            self.operationQueue.addOperation(fetchInfoOp)
+        if let infoRecord = infoRecord {
+            reviewsPlus(infoRecord)
         }
         
     }
     
-    func reviewsPlus(_ reviewsRecord: CKRecord) {
-        guard let reviewsCount = reviewsRecord["reviews"] as? Int64 else {
+    func reviewsPlus(_ infoRecord: CKRecord) {
+        guard let reviewsCount = infoRecord["reviews"] as? Int64 else {
             return
         }
         
-        reviewsRecord["reviews"] = reviewsCount + 1
+        infoRecord["reviews"] = reviewsCount + 1
         
-        let operation = CKModifyRecordsOperation(recordsToSave: [reviewsRecord], recordIDsToDelete: nil)
+        let operation = CKModifyRecordsOperation(recordsToSave: [infoRecord], recordIDsToDelete: nil)
         
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
                 
                 if let newRecord = records?.first {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                         self.reviewsPlus(newRecord)
                     })
                 }
