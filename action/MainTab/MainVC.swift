@@ -424,7 +424,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             }
         } else if segue.identifier == "artist segue" {
             if let userInfoVC = segue.destination as? UserInfoVC, let row = tableView.indexPathsForVisibleRows?.first?.row {
-                userInfoVC.userID = artworkRecords[row].artwork?.creatorUserRecordID
+                userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
         } else if segue.identifier == "reviews segue", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
             if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {

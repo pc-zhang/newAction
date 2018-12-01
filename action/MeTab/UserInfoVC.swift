@@ -27,13 +27,10 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    private var userCacheOrNil: UserLocalCache? {
-        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
-    }
-    
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var userID: CKRecord.ID?
+    var userRecord: CKRecord?
     private var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
@@ -41,6 +38,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
     var refreshControl = UIRefreshControl()
+    var isMyPage: Bool? = nil
     
     @IBAction func swipeRight(_ sender: Any) {
         cancel(0)
@@ -119,14 +117,35 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     @objc func userCacheDidChange(_ notification: Notification) {
-        
         self.collectionView.reloadData()
-        
+    }
+    
+    func fetchUserRecord(_ userID: CKRecord.ID) {
+        let fetchRecordsOp = CKFetchRecordsOperation(recordIDs: [userID])
+        fetchRecordsOp.fetchRecordsCompletionBlock = {recordsByRecordID, error in
+            
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil,
+                let userRecord = recordsByRecordID?[userID]  else { return }
+            
+            DispatchQueue.main.sync {
+                self.userRecord = userRecord
+                if self.userRecord?.recordID.recordName == (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID.recordName {
+                    self.isMyPage = true
+                } else {
+                    self.isMyPage = false
+                }
+                self.collectionView.reloadData()
+            }
+        }
+        fetchRecordsOp.database = database
+        operationQueue.addOperation(fetchRecordsOp)
     }
     
     func updateWithRecordID(_ userID: CKRecord.ID) {
-
         isFetchingData = true
+        
+        fetchUserRecord(userID)
+        
         var tmpArtworkRecords:[ArtWorkInfo] = []
         
         let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
@@ -219,23 +238,39 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         self.operationQueue.addOperation(queryFullArtworkOp)
     }
     
+    @IBAction func follow(_ sender: Any) {
+        if let userID = userID {
+            (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.follow(userID)
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
-            var imageURL: URL?
-            var nickName: String?
-            var sex: String?
-            var location: String?
-            var sign: String?
             
-            userCacheOrNil?.performReaderBlockAndWait {
-                imageURL = (userCacheOrNil!.userRecord?["avatarImage"] as? CKAsset)?.fileURL
-                nickName = userCacheOrNil!.userRecord?["nickName"] as? String
-                sex = userCacheOrNil!.userRecord?["sex"] as? String
-                location = userCacheOrNil!.userRecord?["location"] as? String
-                sign = userCacheOrNil!.userRecord?["sign"] as? String
+            if let isMyPage = isMyPage {
+                headerV.editButton.isHidden = !isMyPage
+                headerV.deleteArtworksButton.isHidden = !isMyPage
+                headerV.uploadButton.isHidden = !isMyPage
+                headerV.followButton.isHidden = isMyPage
+                headerV.messageButton.isHidden = isMyPage
+            } else {
+                headerV.editButton.isHidden = true
+                headerV.deleteArtworksButton.isHidden = true
+                headerV.uploadButton.isHidden = true
+                headerV.followButton.isHidden = true
+                headerV.messageButton.isHidden = true
             }
+            
+            if let userID = userID, let isFollowing = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.isFollowing(userID) {
+                headerV.followButton.setTitle(isFollowing ? "取消关注" : "关注", for: .normal)
+            }
+            
+            let imageURL = (userRecord?["avatarImage"] as? CKAsset)?.fileURL
+            let nickName = userRecord?["nickName"] as? String
+            let sex = userRecord?["sex"] as? String
+            let location = userRecord?["location"] as? String
+            let sign = userRecord?["sign"] as? String
             
             if let imagePath = imageURL?.path {
                 let advTimeGif = UIImage(contentsOfFile: imagePath)
@@ -284,6 +319,11 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 artworksVC.userID = userID
                 artworksVC.selectedRow = selectedItem
             }
+        } else if segue.identifier == "me to dialog" {
+            if let dialogVC = segue.destination as? DialogVC {
+//                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
+                dialogVC.yourRecord = userRecord
+            }
         }
     }
 }
@@ -317,6 +357,10 @@ class UserInfoHeaderV: UICollectionReusableView {
     @IBOutlet weak var signV: UILabel!
     @IBOutlet weak var positionV: UILabel!
     @IBOutlet weak var deleteArtworksButton: UIButton!
+    @IBOutlet weak var editButton: UIButton!
+    @IBOutlet weak var uploadButton: UIButton!
+    @IBOutlet weak var followButton: UIButton!
+    @IBOutlet weak var messageButton: UIButton!
     
     weak open var delegate: HeaderViewDelegate?
     

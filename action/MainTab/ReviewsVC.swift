@@ -51,8 +51,8 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         let reviewRecord = CKRecord(recordType: "Review")
         reviewRecord["artwork"] = CKRecord.Reference(recordID: artworkID, action: .deleteSelf)
         reviewRecord["text"] = text
-        reviewRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
-        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["littleAvatar"] as? CKAsset)?.fileURL {
+        reviewRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["nickName"] as? String
+        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL {
             reviewRecord["avatar"] = CKAsset(fileURL: url)
         }
         

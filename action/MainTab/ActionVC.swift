@@ -281,11 +281,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                             artworkRecord["littleCover"] = littleCover
                         }
                         artworkRecord["title"] = self.titleTextV.text
-                        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["littleAvatar"] as? CKAsset)?.fileURL {
+                        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL {
                             artworkRecord["avatar"] = CKAsset(fileURL: url)
                         }
                         
-                        artworkRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.userRecord?["nickName"] as? String
+                        artworkRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["nickName"] as? String
                         
                         if let artworkID = self.artworkID {
                             myInfoRecord["chorusFrom"] = CKRecord.Reference(recordID: artworkID, action: .none)

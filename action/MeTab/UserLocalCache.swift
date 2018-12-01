@@ -26,17 +26,19 @@ import CloudKit
 // 1. Access mutable properties via "perform...".
 // 2. Call public methods directly, otherwise will trigger a deadlock.
 //
-final class UserLocalCache: BaseLocalCache {
+final class UserLocalCache {
     
     let container: CKContainer
     let database: CKDatabase
-    var userRecord: CKRecord?
+    var myInfoRecord: CKRecord?
     
-    override init() {
+    lazy var operationQueue: OperationQueue = {
+        return OperationQueue()
+    }()
+    
+    init() {
         self.container = CKContainer.default()
         self.database = container.publicCloudDatabase
-        
-        super.init()
         
         CKContainer.default().fetchUserRecordID { (recordID, error) in
             if let recordID = recordID {
@@ -74,25 +76,23 @@ final class UserLocalCache: BaseLocalCache {
     // Convenient method for updating the cache with one specified record ID.
     //
     func updateWithRecordID(_ recordID: CKRecord.ID) {
-        
         let fetchRecordsOp = CKFetchRecordsOperation(recordIDs: [recordID])
         fetchRecordsOp.fetchRecordsCompletionBlock = {recordsByRecordID, error in
             
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: [recordID]) == nil,
                 let userRecord = recordsByRecordID?[recordID]  else { return }
             
-            self.performWriterBlock {
-                self.userRecord = userRecord
+            DispatchQueue.main.sync {
+                self.myInfoRecord = userRecord
+                NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
             }
         }
         fetchRecordsOp.database = database
         operationQueue.addOperation(fetchRecordsOp)
-        postWhenOperationQueueClear(name: .userCacheDidChange)
-        
     }
     
     func changeUserInfo(avatarAsset: CKAsset, littleAvatarAsset: CKAsset, nickName: String, sex: String, location: String, sign: String) -> Bool {
-        guard let userRecord = self.userRecord else {
+        guard let userRecord = self.myInfoRecord else {
             return false
         }
         userRecord["avatarImage"] = avatarAsset
@@ -111,16 +111,56 @@ final class UserLocalCache: BaseLocalCache {
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [userRecord.recordID], alert: true) == nil,
                 let newRecord = records?[0] else { return }
             
-            self.performWriterBlock {
-                self.userRecord = newRecord
+            DispatchQueue.main.sync {
+                self.myInfoRecord = newRecord
+                NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
             }
         }
         operation.database = database
         operationQueue.addOperation(operation)
         operationQueue.waitUntilAllOperationsAreFinished()
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
+        
+        return succeed
+    }
+    
+    func isFollowing(_ userID: CKRecord.ID) -> Bool {
+        guard let userRecord = self.myInfoRecord, let following = userRecord["following"] as? [CKRecord.Reference] else {
+            return false
         }
+        
+        return following.contains(CKRecord.Reference(recordID: userID, action: .none))
+    }
+    
+    func follow(_ userID: CKRecord.ID) -> Bool {
+        guard let userRecord = self.myInfoRecord, var following = userRecord["following"] as? [CKRecord.Reference] else {
+            return false
+        }
+        
+        if let index = following.firstIndex(of: CKRecord.Reference(recordID: userID, action: .none)) {
+            following.remove(at: index)
+        } else {
+            following.insert(CKRecord.Reference(recordID: userID, action: .none), at: 0)
+        }
+        userRecord["following"] = following
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [userRecord], recordIDsToDelete: nil)
+        
+        var succeed: Bool = true
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            succeed = (error == nil)
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [userRecord.recordID], alert: true) == nil,
+                let newRecord = records?[0] else { return }
+            
+            DispatchQueue.main.async {
+                self.myInfoRecord = newRecord
+                NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
+            }
+        }
+        operation.database = database
+        operationQueue.addOperation(operation)
+        operationQueue.waitUntilAllOperationsAreFinished()
+        
         return succeed
     }
 }

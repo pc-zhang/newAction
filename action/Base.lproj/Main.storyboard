@@ -526,6 +526,26 @@
                                                         <segue destination="GMQ-DF-KZ3" kind="show" animates="NO" id="voU-2e-4sJ"/>
                                                     </connections>
                                                 </button>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMY-Da-H8Z">
+                                                    <rect key="frame" x="206" y="0.0" width="0.0" height="30"/>
+                                                    <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" title="关注">
+                                                        <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="follow:" destination="HVg-Ei-wGV" eventType="touchUpInside" id="9uu-oq-Oz7"/>
+                                                    </connections>
+                                                </button>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kpi-ub-LWk">
+                                                    <rect key="frame" x="206" y="0.0" width="0.0" height="30"/>
+                                                    <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" title="私信">
+                                                        <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <segue destination="2cG-zd-X3K" kind="show" identifier="me to dialog" id="xIF-lt-3ik"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                         </stackView>
                                     </subviews>
@@ -555,11 +575,15 @@
                                     <connections>
                                         <outlet property="avatarV" destination="whx-km-ug9" id="8UT-FB-zrz"/>
                                         <outlet property="deleteArtworksButton" destination="y6T-Nc-e4E" id="L4e-aW-kKI"/>
+                                        <outlet property="editButton" destination="aox-tB-Kb2" id="QTi-Eq-R7P"/>
+                                        <outlet property="followButton" destination="RMY-Da-H8Z" id="m81-Ul-CMp"/>
                                         <outlet property="friendsV" destination="DBL-hw-wXp" id="kZT-m7-WTL"/>
                                         <outlet property="idV" destination="AyT-Ha-KlO" id="mpW-an-0Of"/>
+                                        <outlet property="messageButton" destination="Kpi-ub-LWk" id="lyl-m1-dIY"/>
                                         <outlet property="nickNameV" destination="bbz-Bg-qKv" id="AIT-4a-pOl"/>
                                         <outlet property="positionV" destination="IJE-O0-OCC" id="B6M-eH-CVT"/>
                                         <outlet property="signV" destination="14O-Je-ieB" id="viS-J7-8Un"/>
+                                        <outlet property="uploadButton" destination="1VK-Tv-nAb" id="etc-1j-LFo"/>
                                     </connections>
                                 </collectionReusableView>
                                 <connections>
@@ -892,7 +916,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="G9k-9i-YJt">
-                                <rect key="frame" x="0.0" y="88" width="375" height="655"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="606"/>
                                 <color key="backgroundColor" red="0.086212329569999996" green="0.067392162980000003" blue="0.1753771901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.1058746949" green="0.07798809558" blue="0.2152261436" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
@@ -983,7 +1007,7 @@
                                 </connections>
                             </tableView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="说点啥呢？" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RSX-c4-Djz">
-                                <rect key="frame" x="10" y="743" width="355" height="35"/>
+                                <rect key="frame" x="10" y="694" width="355" height="35"/>
                                 <color key="backgroundColor" red="0.1549201311" green="0.1214308488" blue="0.32514321169999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="cUc-oH-8FM"/>
@@ -1803,8 +1827,9 @@
         <image name="export" width="58" height="58"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="YMX-aQ-4Vn"/>
-        <segue reference="ahZ-Af-xlX"/>
+        <segue reference="voU-2e-4sJ"/>
+        <segue reference="xIF-lt-3ik"/>
+        <segue reference="8U0-dU-CZ9"/>
         <segue reference="TFS-tO-vIX"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -46,9 +46,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     
     func sendMessage(_ text: String) {
         var myID: CKRecord.ID?
-        userCacheOrNil?.performReaderBlockAndWait {
-            myID = userCacheOrNil!.userRecord?.recordID
-        }
+        myID = userCacheOrNil!.myInfoRecord?.recordID
         
         guard let dialogID = dialogID, myID != nil else {
             return
@@ -112,9 +110,8 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var myID: CKRecord.ID?
-        userCacheOrNil?.performReaderBlockAndWait {
-            myID = userCacheOrNil!.userRecord?.recordID
-        }
+
+        myID = userCacheOrNil!.myInfoRecord?.recordID
         var identifier = "my message"
         if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
             identifier = "your message"
@@ -131,14 +128,10 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         
         if let cell = cell as? MessageCell {
             var myID: CKRecord.ID?
-            userCacheOrNil?.performReaderBlockAndWait {
-                myID = userCacheOrNil!.userRecord?.recordID
-            }
+            myID = userCacheOrNil!.myInfoRecord?.recordID
             
             var imageURL: URL?
-            userCacheOrNil?.performReaderBlockAndWait {
-                imageURL = (userCacheOrNil!.userRecord?["littleAvatar"] as? CKAsset)?.fileURL
-            }
+            imageURL = (userCacheOrNil!.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL
             
             if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
                 if let path = (yourRecord?["littleAvatar"] as? CKAsset)?.fileURL.path {

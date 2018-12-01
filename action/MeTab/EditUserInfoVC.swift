@@ -72,13 +72,11 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         var location: String?
         var sign: String?
         
-        userCacheOrNil?.performReaderBlockAndWait {
-            imageURL = (userCacheOrNil!.userRecord?["avatarImage"] as? CKAsset)?.fileURL
-            nickName = userCacheOrNil!.userRecord?["nickName"] as? String
-            sex = userCacheOrNil!.userRecord?["sex"] as? String
-            location = userCacheOrNil!.userRecord?["location"] as? String
-            sign = userCacheOrNil!.userRecord?["sign"] as? String
-        }
+            imageURL = (userCacheOrNil!.myInfoRecord?["avatarImage"] as? CKAsset)?.fileURL
+            nickName = userCacheOrNil!.myInfoRecord?["nickName"] as? String
+            sex = userCacheOrNil!.myInfoRecord?["sex"] as? String
+            location = userCacheOrNil!.myInfoRecord?["location"] as? String
+            sign = userCacheOrNil!.myInfoRecord?["sign"] as? String
         
         if let imageURL = imageURL {
             self.avatarAsset = CKAsset(fileURL: imageURL)
