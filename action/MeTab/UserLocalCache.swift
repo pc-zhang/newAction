@@ -123,44 +123,4 @@ final class UserLocalCache {
         return succeed
     }
     
-    func isFollowing(_ userID: CKRecord.ID) -> Bool {
-        guard let userRecord = self.myInfoRecord, let following = userRecord["following"] as? [CKRecord.Reference] else {
-            return false
-        }
-        
-        return following.contains(CKRecord.Reference(recordID: userID, action: .none))
-    }
-    
-    func follow(_ userID: CKRecord.ID) -> Bool {
-        guard let userRecord = self.myInfoRecord, var following = userRecord["following"] as? [CKRecord.Reference] else {
-            return false
-        }
-        
-        if let index = following.firstIndex(of: CKRecord.Reference(recordID: userID, action: .none)) {
-            following.remove(at: index)
-        } else {
-            following.insert(CKRecord.Reference(recordID: userID, action: .none), at: 0)
-        }
-        userRecord["following"] = following
-        
-        let operation = CKModifyRecordsOperation(recordsToSave: [userRecord], recordIDsToDelete: nil)
-        
-        var succeed: Bool = true
-        
-        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-            succeed = (error == nil)
-            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [userRecord.recordID], alert: true) == nil,
-                let newRecord = records?[0] else { return }
-            
-            DispatchQueue.main.async {
-                self.myInfoRecord = newRecord
-                NotificationCenter.default.post(name: .userCacheDidChange, object: nil)
-            }
-        }
-        operation.database = database
-        operationQueue.addOperation(operation)
-        operationQueue.waitUntilAllOperationsAreFinished()
-        
-        return succeed
-    }
 }

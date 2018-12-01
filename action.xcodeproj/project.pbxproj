@@ -17,6 +17,7 @@
 		F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */; };
 		F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA121A40499008FB7BE /* DialogVC.swift */; };
 		F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */; };
+		F04B914521B288E9000F5003 /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B914421B288E9000F5003 /* Followers.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
@@ -64,6 +65,7 @@
 		F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsVC.swift; sourceTree = "<group>"; };
 		F030FFA121A40499008FB7BE /* DialogVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogVC.swift; sourceTree = "<group>"; };
 		F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
+		F04B914421B288E9000F5003 /* Followers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401D2217C50AD003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		F02ADD9F2196F39C00A28B35 /* MessagesTab */ = {
 			isa = PBXGroup;
 			children = (
+				F04B914421B288E9000F5003 /* Followers.swift */,
 				F030FFA121A40499008FB7BE /* DialogVC.swift */,
 				F02ADDA42199264400A28B35 /* MessagesVC.swift */,
 			);
@@ -423,6 +426,7 @@
 				F0A40252217D9287003ACC53 /* Database.swift in Sources */,
 				F02ADDA321991F4200A28B35 /* FollowingPlayViewCell.swift in Sources */,
 				F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */,
+				F04B914521B288E9000F5003 /* Followers.swift in Sources */,
 				F0A40254217D9287003ACC53 /* CKDatabase+CloudShares.swift in Sources */,
 				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
 				F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */,

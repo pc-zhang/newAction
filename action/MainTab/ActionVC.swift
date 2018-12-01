@@ -339,7 +339,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
                 
                 if let newRecord = records?.first {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
                         self.chorusPlus(newRecord)
                     })
                 }

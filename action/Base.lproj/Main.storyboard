@@ -230,16 +230,18 @@
                                             <rect key="frame" x="16" y="11" width="343" height="110"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="b5J-k8-2NR">
-                                                    <rect key="frame" x="0.0" y="25" width="85.666666666666671" height="60"/>
+                                                    <rect key="frame" x="0.0" y="19" width="85.666666666666671" height="72"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="👥" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PQ0-1L-ckI">
-                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
-                                                            <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2xW-pe-XR4">
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="55"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                            <state key="normal" title="👥"/>
+                                                            <connections>
+                                                                <segue destination="wmD-o3-oQj" kind="show" id="odh-eK-i01"/>
+                                                            </connections>
+                                                        </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="粉丝" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vdj-cY-a6K">
-                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
+                                                            <rect key="frame" x="0.0" y="55" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -247,16 +249,15 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="b3T-RW-fcc">
-                                                    <rect key="frame" x="85.666666666666686" y="25" width="86" height="60"/>
+                                                    <rect key="frame" x="85.666666666666686" y="19" width="86" height="72"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="💬" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jB7-O3-OHl">
-                                                            <rect key="frame" x="0.0" y="0.0" width="86" height="43"/>
-                                                            <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0RW-ep-vsx">
+                                                            <rect key="frame" x="0.0" y="0.0" width="86" height="55"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                            <state key="normal" title="⏳"/>
+                                                        </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="评论" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GEx-S8-qyj">
-                                                            <rect key="frame" x="0.0" y="43" width="86" height="17"/>
+                                                            <rect key="frame" x="0.0" y="55" width="86" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -264,16 +265,15 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="SR7-Gc-UWn">
-                                                    <rect key="frame" x="171.66666666666666" y="25" width="85.666666666666657" height="60"/>
+                                                    <rect key="frame" x="171.66666666666666" y="19" width="85.666666666666657" height="72"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="⏳" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nQM-6s-16m">
-                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
-                                                            <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xQL-hh-jul">
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="55"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                            <state key="normal" title="💬"/>
+                                                        </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="时间" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="roE-kA-U6c">
-                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
+                                                            <rect key="frame" x="0.0" y="55" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -281,16 +281,15 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ovx-5z-3i8">
-                                                    <rect key="frame" x="257.33333333333331" y="25" width="85.666666666666686" height="60"/>
+                                                    <rect key="frame" x="257.33333333333331" y="19" width="85.666666666666686" height="72"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🔗" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="caC-RP-LDW">
-                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="43"/>
-                                                            <fontDescription key="fontDescription" name=".AppleColorEmojiUI" family=".Apple Color Emoji UI" pointSize="36"/>
-                                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DhF-f4-Ais">
+                                                            <rect key="frame" x="0.0" y="0.0" width="85.666666666666671" height="55"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                                            <state key="normal" title="🔗"/>
+                                                        </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="合演" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4DW-ZA-R6P">
-                                                            <rect key="frame" x="0.0" y="43" width="85.666666666666671" height="17"/>
+                                                            <rect key="frame" x="0.0" y="55" width="85.666666666666671" height="17"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -916,7 +915,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="G9k-9i-YJt">
-                                <rect key="frame" x="0.0" y="88" width="375" height="606"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="655"/>
                                 <color key="backgroundColor" red="0.086212329569999996" green="0.067392162980000003" blue="0.1753771901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.1058746949" green="0.07798809558" blue="0.2152261436" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
@@ -1007,7 +1006,7 @@
                                 </connections>
                             </tableView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="说点啥呢？" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RSX-c4-Djz">
-                                <rect key="frame" x="10" y="694" width="355" height="35"/>
+                                <rect key="frame" x="10" y="743" width="355" height="35"/>
                                 <color key="backgroundColor" red="0.1549201311" green="0.1214308488" blue="0.32514321169999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="cUc-oH-8FM"/>
@@ -1821,6 +1820,88 @@
             </objects>
             <point key="canvasLocation" x="-2990" y="805"/>
         </scene>
+        <!--消息-->
+        <scene sceneID="Q1r-vj-vXf">
+            <objects>
+                <tableViewController id="wmD-o3-oQj" customClass="FollowersVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="46j-WI-Tkb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.086212329569999996" green="0.067392162980000003" blue="0.1753771901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="follower" rowHeight="76" id="tDq-Vn-2Wg" customClass="FollowerCell" customModule="action" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="1" width="375" height="76"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tDq-Vn-2Wg" id="LSL-jI-kMp">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="76"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="q55-oF-KIq">
+                                            <rect key="frame" x="16" y="10" width="50" height="50"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="50" id="CZ2-bD-A45"/>
+                                                <constraint firstAttribute="width" constant="50" id="XOa-oL-mWk"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="乐乐" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pTu-Ah-lXU">
+                                            <rect key="frame" x="76" y="10" width="31" height="25"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="对方发布的私信是否打扰到你，如果涉及诈骗或者" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hLo-Nn-suk">
+                                            <rect key="frame" x="76" y="35" width="198" height="25"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Iy4-7Q-0rV">
+                                            <rect key="frame" x="284" y="22.666666666666671" width="75" height="25"/>
+                                            <color key="backgroundColor" red="1" green="0.20425032530678822" blue="0.17641434118050714" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="Iy4-7Q-0rV" secondAttribute="height" multiplier="3:1" id="445-S4-eEX"/>
+                                            </constraints>
+                                            <state key="normal" title="关注">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="q55-oF-KIq" firstAttribute="top" secondItem="LSL-jI-kMp" secondAttribute="top" constant="10" id="1Bo-am-1Hy"/>
+                                        <constraint firstAttribute="bottom" secondItem="q55-oF-KIq" secondAttribute="bottom" constant="10" id="Bud-xy-Zz1"/>
+                                        <constraint firstItem="pTu-Ah-lXU" firstAttribute="top" secondItem="q55-oF-KIq" secondAttribute="top" id="CXp-hv-iqg"/>
+                                        <constraint firstItem="q55-oF-KIq" firstAttribute="leading" secondItem="LSL-jI-kMp" secondAttribute="leadingMargin" id="Hrp-fq-CK3"/>
+                                        <constraint firstItem="pTu-Ah-lXU" firstAttribute="height" secondItem="q55-oF-KIq" secondAttribute="height" multiplier="1:2" id="KxA-dS-A1c"/>
+                                        <constraint firstItem="hLo-Nn-suk" firstAttribute="leading" secondItem="q55-oF-KIq" secondAttribute="trailing" constant="10" id="LlT-aX-qC3"/>
+                                        <constraint firstItem="hLo-Nn-suk" firstAttribute="height" secondItem="q55-oF-KIq" secondAttribute="height" multiplier="1:2" id="ZUJ-af-h5z"/>
+                                        <constraint firstItem="Iy4-7Q-0rV" firstAttribute="centerY" secondItem="q55-oF-KIq" secondAttribute="centerY" id="dJC-Ju-hEs"/>
+                                        <constraint firstItem="hLo-Nn-suk" firstAttribute="bottom" secondItem="q55-oF-KIq" secondAttribute="bottom" id="hbZ-sS-h50"/>
+                                        <constraint firstItem="Iy4-7Q-0rV" firstAttribute="height" secondItem="q55-oF-KIq" secondAttribute="height" multiplier="1:2" id="hvI-Bn-Paf"/>
+                                        <constraint firstItem="Iy4-7Q-0rV" firstAttribute="leading" secondItem="hLo-Nn-suk" secondAttribute="trailing" constant="10" id="kae-Z6-I6y"/>
+                                        <constraint firstItem="pTu-Ah-lXU" firstAttribute="leading" secondItem="q55-oF-KIq" secondAttribute="trailing" constant="10" id="qGc-ZB-AQa"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Iy4-7Q-0rV" secondAttribute="trailing" id="ujr-zH-byD"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="avatarV" destination="q55-oF-KIq" id="Bbw-VN-pqK"/>
+                                    <outlet property="lastMessageLabel" destination="hLo-Nn-suk" id="BjK-5u-svi"/>
+                                    <outlet property="nickNameLabel" destination="pTu-Ah-lXU" id="b6C-GQ-dh4"/>
+                                    <outlet property="signLabel" destination="hLo-Nn-suk" id="Da2-65-L86"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="wmD-o3-oQj" id="EeJ-9f-Syy"/>
+                            <outlet property="delegate" destination="wmD-o3-oQj" id="oek-LL-Ce5"/>
+                        </connections>
+                    </tableView>
+                    <tabBarItem key="tabBarItem" title="消息" id="SEb-rv-YdH"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VHM-iM-g90" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="940" y="805"/>
+        </scene>
     </scenes>
     <resources>
         <image name="avatar" width="450" height="476.25"/>
@@ -1828,8 +1909,8 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="voU-2e-4sJ"/>
-        <segue reference="xIF-lt-3ik"/>
-        <segue reference="8U0-dU-CZ9"/>
+        <segue reference="NfL-fo-jLw"/>
+        <segue reference="ahZ-Af-xlX"/>
         <segue reference="TFS-tO-vIX"/>
     </inferredMetricsTieBreakers>
 </document>

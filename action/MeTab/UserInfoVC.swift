@@ -141,6 +141,29 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         operationQueue.addOperation(fetchRecordsOp)
     }
     
+    var followRecord: CKRecord? = nil
+    
+    func queryFollowRecord(_ yourID: CKRecord.ID) {
+        guard let myInfoRecord = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord else {
+            return
+        }
+        
+        let query = CKQuery(recordType: "Follow", predicate: NSPredicate(format: "followed = %@ && creatorUserRecordID = %@", yourID, myInfoRecord.recordID))
+        let queryMessagesOp = CKQueryOperation(query: query)
+        
+        queryMessagesOp.recordFetchedBlock = { (record) in
+            DispatchQueue.main.sync {
+                self.followRecord = record
+                self.collectionView.reloadData()
+            }
+        }
+        queryMessagesOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+        }
+        queryMessagesOp.database = self.database
+        self.operationQueue.addOperation(queryMessagesOp)
+    }
+    
     func updateWithRecordID(_ userID: CKRecord.ID) {
         isFetchingData = true
         
@@ -237,10 +260,48 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         queryFullArtworkOp.addDependency(queryArtworkOp)
         self.operationQueue.addOperation(queryFullArtworkOp)
     }
+
     
     @IBAction func follow(_ sender: Any) {
-        if let userID = userID {
-            (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.follow(userID)
+        guard let yourID = userID, let myInfoRecord = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord else {
+            return
+        }
+        
+        if followRecord != nil {
+            let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [followRecord!.recordID])
+            
+            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
+                
+                DispatchQueue.main.sync {
+                    self.followRecord = nil
+                    self.collectionView.reloadData()
+                }
+            }
+            operation.database = database
+            operationQueue.addOperation(operation)
+        } else {
+            let followRecord = CKRecord(recordType: "Follow")
+            followRecord["followed"] = CKRecord.Reference(recordID: yourID, action: .none)
+            if let fileURL = (myInfoRecord["littleAvatar"] as? CKAsset)?.fileURL {
+                followRecord["avatar"] = CKAsset(fileURL: fileURL)
+            }
+            followRecord["nickName"] = myInfoRecord["nickName"] as? String
+            followRecord["sign"] = myInfoRecord["sign"] as? String
+            
+            let operation = CKModifyRecordsOperation(recordsToSave: [followRecord], recordIDsToDelete: nil)
+            
+            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
+                    let newRecord = records?.first else { return }
+                
+                DispatchQueue.main.sync {
+                    self.followRecord = newRecord
+                    self.collectionView.reloadData()
+                }
+            }
+            operation.database = database
+            operationQueue.addOperation(operation)
         }
     }
     
@@ -262,9 +323,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 headerV.messageButton.isHidden = true
             }
             
-            if let userID = userID, let isFollowing = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.isFollowing(userID) {
-                headerV.followButton.setTitle(isFollowing ? "取消关注" : "关注", for: .normal)
-            }
+            headerV.followButton.setTitle(followRecord != nil ? "取消关注" : "关注", for: .normal)
             
             let imageURL = (userRecord?["avatarImage"] as? CKAsset)?.fileURL
             let nickName = userRecord?["nickName"] as? String
