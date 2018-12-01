@@ -124,12 +124,11 @@ class FollowersVC: UITableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "show dialog" {
-//            if let dialogVC = segue.destination as? DialogVC, let selectedRow = self.tableView.indexPathForSelectedRow {
-//                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
-//                dialogVC.yourRecord = dialogInfos[selectedRow.row].dialogist
-//            }
-//        }
+        if segue.identifier == "follower to me" {
+            if let userInfoVC = segue.destination as? UserInfoVC, let selectedRow = self.tableView.indexPathForSelectedRow {
+                userInfoVC.userID = self.followerRecords[selectedRow.row].creatorUserRecordID
+            }
+        }
     }
 
 }

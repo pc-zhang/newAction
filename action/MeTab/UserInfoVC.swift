@@ -167,6 +167,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     func updateWithRecordID(_ userID: CKRecord.ID) {
         isFetchingData = true
         
+        queryFollowRecord(userID)
         fetchUserRecord(userID)
         
         var tmpArtworkRecords:[ArtWorkInfo] = []
@@ -267,42 +268,57 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             return
         }
         
-        if followRecord != nil {
-            let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [followRecord!.recordID])
-            
-            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
-                
-                DispatchQueue.main.sync {
-                    self.followRecord = nil
-                    self.collectionView.reloadData()
-                }
+        let query = CKQuery(recordType: "Follow", predicate: NSPredicate(format: "followed = %@ && creatorUserRecordID = %@", yourID, myInfoRecord.recordID))
+        let queryMessagesOp = CKQueryOperation(query: query)
+        
+        queryMessagesOp.recordFetchedBlock = { (record) in
+            DispatchQueue.main.sync {
+                self.followRecord = record
             }
-            operation.database = database
-            operationQueue.addOperation(operation)
-        } else {
-            let followRecord = CKRecord(recordType: "Follow")
-            followRecord["followed"] = CKRecord.Reference(recordID: yourID, action: .none)
-            if let fileURL = (myInfoRecord["littleAvatar"] as? CKAsset)?.fileURL {
-                followRecord["avatar"] = CKAsset(fileURL: fileURL)
-            }
-            followRecord["nickName"] = myInfoRecord["nickName"] as? String
-            followRecord["sign"] = myInfoRecord["sign"] as? String
-            
-            let operation = CKModifyRecordsOperation(recordsToSave: [followRecord], recordIDsToDelete: nil)
-            
-            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
-                    let newRecord = records?.first else { return }
-                
-                DispatchQueue.main.sync {
-                    self.followRecord = newRecord
-                    self.collectionView.reloadData()
-                }
-            }
-            operation.database = database
-            operationQueue.addOperation(operation)
         }
+        queryMessagesOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            if self.followRecord != nil {
+                let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [self.followRecord!.recordID])
+                
+                operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                    guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
+                    
+                    DispatchQueue.main.sync {
+                        self.followRecord = nil
+                        self.collectionView.reloadData()
+                    }
+                }
+                operation.database = self.database
+                self.operationQueue.addOperation(operation)
+            } else {
+                let followRecord = CKRecord(recordType: "Follow")
+                followRecord["followed"] = CKRecord.Reference(recordID: yourID, action: .none)
+                if let fileURL = (myInfoRecord["littleAvatar"] as? CKAsset)?.fileURL {
+                    followRecord["avatar"] = CKAsset(fileURL: fileURL)
+                }
+                followRecord["nickName"] = myInfoRecord["nickName"] as? String
+                followRecord["sign"] = myInfoRecord["sign"] as? String
+                
+                let operation = CKModifyRecordsOperation(recordsToSave: [followRecord], recordIDsToDelete: nil)
+                
+                operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                    guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
+                        let newRecord = records?.first else { return }
+                    
+                    DispatchQueue.main.sync {
+                        self.followRecord = newRecord
+                        self.collectionView.reloadData()
+                    }
+                }
+                operation.database = self.database
+                self.operationQueue.addOperation(operation)
+            }
+        }
+        queryMessagesOp.database = self.database
+        self.operationQueue.addOperation(queryMessagesOp)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
