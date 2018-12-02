@@ -194,8 +194,11 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             resignAllTextFirstResponder()
         }
         
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.popoverPresentationController?.sourceView = self.tableView.cellForRow(at: indexPath)
+        actionSheet.popoverPresentationController?.sourceRect = self.tableView.cellForRow(at: indexPath)?.bounds ?? .zero
+        
         if indexPath.row == 0 {
-            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "拍照", style: .default, handler: { (action) in
                 self.picker.sourceType = .camera
                 self.picker.cameraFlashMode = .off
@@ -213,7 +216,7 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             nickNameTextField.becomeFirstResponder()
         }
         if indexPath.row == 2 {
-            let actionSheet = UIAlertController(title: "选择性别", message: nil, preferredStyle: .actionSheet)
+            actionSheet.title = "选择性别"
             actionSheet.addAction(UIAlertAction(title: "男", style: .default, handler: { (action) in
                 self.sexLabel.text = action.title
             }))

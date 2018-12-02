@@ -114,31 +114,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         cancel(sender)
     }
     
-    func secondsToHoursMinutesSeconds (seconds : Int64) -> String {
-        let (h,m,s) = (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
-        let (Y,D,H) = (h/(365*24), (h%(365*24))/24, (h%(365*24))%24)
-        if Y/100>0 {
-            return "\(Y/100)世纪"
-        }
-        if Y>0 {
-            return "\(Y)年"
-        }
-        if D>0 {
-            return "\(D)天"
-        }
-        if H>0 {
-            return "\(H)时"
-        }
-        if m>0 {
-            return "\(m)分"
-        }
-        if s>=0 {
-            return "\(s)秒"
-        }
-        
-        return ""
-    }
-    
     func reloadVisibleRow(_ row: Int, type: Int) {
         let indexPath = IndexPath(row: row, section: 0)
 
@@ -146,7 +121,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             switch(type) {
             case 0:
                 if let secondsValue = artworkRecords[row].info?["seconds"] as? Int64 {
-                    (tableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsToHoursMinutesSeconds(seconds: secondsValue))"
+                    (tableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsValue.seconds2String())"
                 }
                 if let reviewsValue = artworkRecords[row].info?["reviews"] as? Int64 {
                     (tableView.cellForRow(at: indexPath) as? MainViewCell)?.reviewsLabel.text = "\(reviewsValue)"
@@ -299,7 +274,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         let infoRecord = artworkRecords[indexPath.row].info
         let artwork = artworkRecords[indexPath.row].artwork
         
-        playViewCell.secondsLabel.text = "\(secondsToHoursMinutesSeconds(seconds: infoRecord?["seconds"] ?? 0))"
+        playViewCell.secondsLabel.text = "\((infoRecord?["seconds"] as? Int64 ?? 0).seconds2String())"
         playViewCell.reviewsLabel.text = "\(infoRecord?["reviews"] ?? 0)"
         playViewCell.chorusLabel.text = "\(infoRecord?["chorus"] ?? 0)"
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
@@ -359,7 +334,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     }
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let playViewCell = cell as! MainViewCell
+        guard let playViewCell = cell as? MainViewCell else {
+            return
+        }
         
         playViewCell.secondsLabel.text = ""
         playViewCell.reviewsLabel.text = ""
@@ -524,4 +501,31 @@ class MainViewCell: UITableViewCell {
 
 public protocol SecondsDelegate : NSObjectProtocol {
     func addSeconds(_ cell: UITableViewCell)
+}
+
+extension Int64 {
+    func seconds2String() -> String {
+        let (h,m,s) = (self / 3600, (self % 3600) / 60, (self % 3600) % 60)
+        let (Y,D,H) = (h/(365*24), (h%(365*24))/24, (h%(365*24))%24)
+        if Y/100>0 {
+            return "\(Y/100)世纪"
+        }
+        if Y>0 {
+            return "\(Y)年"
+        }
+        if D>0 {
+            return "\(D)天"
+        }
+        if H>0 {
+            return "\(H)时"
+        }
+        if m>0 {
+            return "\(m)分"
+        }
+        if s>=0 {
+            return "\(s)秒"
+        }
+        
+        return ""
+    }
 }
