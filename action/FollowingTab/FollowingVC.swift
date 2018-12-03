@@ -193,9 +193,10 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.reviewsLabel.text = "\(infoRecord?["reviews"] ?? 0)"
         playViewCell.chorusLabel.text = "\(infoRecord?["chorus"] ?? 0)"
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
+        playViewCell.titleLabel.sizeToFit()
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
-            playViewCell.avatarV.image = UIImage(contentsOfFile: avatarImageAsset.fileURL.path)
+            playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
         }
         if let coverImageAsset = artwork?["cover"] as? CKAsset {
             playViewCell.coverV.image = UIImage(contentsOfFile: coverImageAsset.fileURL.path)
@@ -258,7 +259,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
         playViewCell.nickNameLabel.text = "@卓别林"
-        playViewCell.avatarV.image = #imageLiteral(resourceName: "avatar")
+        playViewCell.avatarV.setImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
         playViewCell.progressV.progress = 0
@@ -353,7 +354,7 @@ class FollowingViewCell: UITableViewCell {
     @IBOutlet weak var coverV: UIImageView!
     @IBOutlet weak var playerView: PlayerView!
     @IBOutlet weak var chorus: UIButton!
-    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var avatarV: UIButton!
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var secondsLabel: UILabel!

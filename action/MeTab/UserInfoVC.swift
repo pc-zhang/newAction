@@ -325,20 +325,8 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
             
-            if let isMyPage = isMyPage {
-                headerV.editButton.isHidden = !isMyPage
-                headerV.deleteArtworksButton.isHidden = !isMyPage
-                headerV.uploadButton.isHidden = !isMyPage
-                headerV.followButton.isHidden = isMyPage
-                headerV.messageButton.isHidden = isMyPage
-            } else {
-                headerV.editButton.isHidden = true
-                headerV.deleteArtworksButton.isHidden = true
-                headerV.uploadButton.isHidden = true
-                headerV.followButton.isHidden = true
-                headerV.messageButton.isHidden = true
-            }
-            
+            headerV.myInfo.isHidden = !(isMyPage ?? false)
+            headerV.herInfo.isHidden = isMyPage ?? true
             headerV.followButton.setTitle(followRecord != nil ? "取消关注" : "关注", for: .normal)
             
             let imageURL = (userRecord?["avatarImage"] as? CKAsset)?.fileURL
@@ -436,6 +424,9 @@ class UserInfoHeaderV: UICollectionReusableView {
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var followButton: UIButton!
     @IBOutlet weak var messageButton: UIButton!
+    
+    @IBOutlet weak var myInfo: UIStackView!
+    @IBOutlet weak var herInfo: UIStackView!
     
     weak open var delegate: HeaderViewDelegate?
     
