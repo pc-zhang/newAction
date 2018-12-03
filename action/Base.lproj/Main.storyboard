@@ -498,7 +498,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="想和偶像微信视频？快来试试我开发的IOS应用合拍神器吧！" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14O-Je-ieB">
-                                            <rect key="frame" x="28" y="303.5" width="358" height="35"/>
+                                            <rect key="frame" x="28" y="295" width="358" height="35"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="35" id="xDC-R8-rrZ"/>
                                             </constraints>
@@ -507,7 +507,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="地区：中国" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IJE-O0-OCC">
-                                            <rect key="frame" x="28" y="348.5" width="358" height="20"/>
+                                            <rect key="frame" x="28" y="340" width="358" height="20"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="20" id="LUP-v9-A4x"/>
                                             </constraints>
@@ -583,30 +583,24 @@
                                             </subviews>
                                         </stackView>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="HYB-gx-Ozi">
-                                            <rect key="frame" x="28" y="250" width="203" height="43.5"/>
+                                            <rect key="frame" x="28" y="250" width="198" height="35"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0VO-pq-bqu">
-                                                    <rect key="frame" x="0.0" y="0.0" width="44" height="40"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="39" height="29.5"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <state key="normal">
                                                         <attributedString key="attributedTitle">
-                                                            <fragment content="6">
+                                                            <fragment content="6关注">
                                                                 <attributes>
                                                                     <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    <font key="NSFont" size="24" name=".SFNSText"/>
-                                                                </attributes>
-                                                            </fragment>
-                                                            <fragment content="关注">
-                                                                <attributes>
-                                                                    <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    <font key="NSFont" size="15" name=".PingFangSC-Regular"/>
+                                                                    <font key="NSFont" size="15" name="STSong"/>
                                                                 </attributes>
                                                             </fragment>
                                                         </attributedString>
                                                     </state>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kZb-cc-Eg9">
-                                                    <rect key="frame" x="54" y="0.0" width="44" height="40"/>
+                                                    <rect key="frame" x="49" y="-8.5" width="44" height="40"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <state key="normal">
                                                         <attributedString key="attributedTitle">
@@ -626,7 +620,7 @@
                                                     </state>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3wW-fA-jfT">
-                                                    <rect key="frame" x="108" y="-2" width="95" height="45.5"/>
+                                                    <rect key="frame" x="103" y="-10.5" width="95" height="45.5"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <state key="normal">
                                                         <attributedString key="attributedTitle">
@@ -683,11 +677,14 @@
                                         <outlet property="deleteArtworksButton" destination="y6T-Nc-e4E" id="L4e-aW-kKI"/>
                                         <outlet property="editButton" destination="aox-tB-Kb2" id="QTi-Eq-R7P"/>
                                         <outlet property="followButton" destination="RMY-Da-H8Z" id="m81-Ul-CMp"/>
+                                        <outlet property="followersButton" destination="kZb-cc-Eg9" id="qku-7m-HsU"/>
+                                        <outlet property="followingsButton" destination="0VO-pq-bqu" id="wVr-po-W4h"/>
                                         <outlet property="herInfo" destination="Epl-fC-zuJ" id="m6C-jF-bV9"/>
                                         <outlet property="messageButton" destination="Kpi-ub-LWk" id="lyl-m1-dIY"/>
                                         <outlet property="myInfo" destination="HN2-bx-LCw" id="Yd4-f9-N2M"/>
                                         <outlet property="nickNameV" destination="bbz-Bg-qKv" id="AIT-4a-pOl"/>
                                         <outlet property="positionV" destination="IJE-O0-OCC" id="B6M-eH-CVT"/>
+                                        <outlet property="secondsButton" destination="3wW-fA-jfT" id="ph9-Dg-bkI"/>
                                         <outlet property="signV" destination="14O-Je-ieB" id="viS-J7-8Un"/>
                                         <outlet property="uploadButton" destination="1VK-Tv-nAb" id="etc-1j-LFo"/>
                                     </connections>

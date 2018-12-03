@@ -52,7 +52,7 @@ class ChorusVC : UIViewController, UICollectionViewDelegate, UICollectionViewDat
         query.sortDescriptors = [byChorusCount]
         
         let queryInfoOp = CKQueryOperation(query: query)
-        queryInfoOp.resultsLimit = 1000
+        queryInfoOp.resultsLimit = 999
         queryInfoOp.recordFetchedBlock = { (infoRecord) in
             var artWorkInfo = ArtWorkInfo()
             artWorkInfo.info = infoRecord

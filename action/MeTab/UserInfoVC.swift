@@ -14,6 +14,9 @@ import UIKit
 class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, HeaderViewDelegate {
     
     var isEditMode: Bool = false
+    var followingsCount = 0
+    var followersCount = 0
+    var secondsCount: Int64 = 0
     
     func deleteArtworksMode(_ isEditMode: Bool) {
         self.isEditMode = isEditMode
@@ -129,7 +132,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             
             DispatchQueue.main.sync {
                 self.userRecord = userRecord
-                if self.userRecord?.recordID.recordName == (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID.recordName {
+                if let myID = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID.recordName, self.userRecord?.recordID.recordName == myID {
                     self.isMyPage = true
                 } else {
                     self.isMyPage = false
@@ -139,6 +142,52 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         }
         fetchRecordsOp.database = database
         operationQueue.addOperation(fetchRecordsOp)
+        
+        
+        var tmpFollowers:[CKRecord] = []
+        let followerQuery = CKQuery(recordType: "Follow", predicate: NSPredicate(format: "followed = %@", userID))
+        let queryFollowersOp = CKQueryOperation(query: followerQuery)
+        queryFollowersOp.desiredKeys = []
+        queryFollowersOp.resultsLimit = 999
+        queryFollowersOp.recordFetchedBlock = { (followerRecord) in
+            tmpFollowers.append(followerRecord)
+        }
+        queryFollowersOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                self.followersCount = tmpFollowers.count
+                
+                let attribFollower = NSMutableAttributedString(string: "\(self.followersCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
+                attribFollower.append(NSMutableAttributedString(string: "粉丝", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
+                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followersButton.setAttributedTitle(attribFollower, for: .normal)
+            }
+        }
+        queryFollowersOp.database = self.database
+        operationQueue.addOperation(queryFollowersOp)
+        
+        var tmpFollowings:[CKRecord] = []
+        let followingQuery = CKQuery(recordType: "Follow", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
+        let queryFollowingsOp = CKQueryOperation(query: followingQuery)
+        queryFollowingsOp.desiredKeys = []
+        queryFollowingsOp.resultsLimit = 999
+        queryFollowingsOp.recordFetchedBlock = { (followRecord) in
+            tmpFollowings.append(followRecord)
+        }
+        queryFollowingsOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                self.followingsCount = tmpFollowings.count
+                let attribFollowing = NSMutableAttributedString(string: "\(self.followingsCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
+                attribFollowing.append(NSMutableAttributedString(string: "关注", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
+                
+                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followingsButton.setAttributedTitle(attribFollowing, for: .normal)
+                
+            }
+        }
+        queryFollowingsOp.database = self.database
+        operationQueue.addOperation(queryFollowingsOp)
     }
     
     var followRecord: CKRecord? = nil
@@ -177,7 +226,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         query.sortDescriptors = [byCreation]
         
         let queryInfoOp = CKQueryOperation(query: query)
-        queryInfoOp.resultsLimit = 1000
+        queryInfoOp.resultsLimit = 999
         queryInfoOp.recordFetchedBlock = { (infoRecord) in
             var artWorkInfo = ArtWorkInfo()
             artWorkInfo.info = infoRecord
@@ -190,6 +239,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             DispatchQueue.main.sync {
                 self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
+                self.secondsCount = tmpArtworkRecords.compactMap({ $0.info?["seconds"] as? Int64 }).reduce(0, +)
                 self.collectionView.reloadData()
                 
                 self.refreshControl.endRefreshing()
@@ -341,6 +391,15 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             }
             
             headerV.nickNameV.text = nickName
+            let attribFollowing = NSMutableAttributedString(string: "\(followingsCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
+            attribFollowing.append(NSMutableAttributedString(string: "关注", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
+            headerV.followingsButton.setAttributedTitle(attribFollowing, for: .normal)
+            let attribFollower = NSMutableAttributedString(string: "\(followersCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
+            attribFollower.append(NSMutableAttributedString(string: "粉丝", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
+            headerV.followersButton.setAttributedTitle(attribFollower, for: .normal)
+            let attribSeconds = NSMutableAttributedString(string: "\(secondsCount.seconds2String())", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
+            attribSeconds.append(NSMutableAttributedString(string: "时间", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
+            headerV.secondsButton.setAttributedTitle(attribSeconds, for: .normal)
             headerV.signV.text = sign
             headerV.delegate = self
         }
@@ -415,8 +474,6 @@ class UserInfoHeaderV: UICollectionReusableView {
     }
     
     @IBOutlet weak var nickNameV: UILabel!
-    @IBOutlet weak var idV: UILabel!
-    @IBOutlet weak var friendsV: UILabel!
     @IBOutlet weak var signV: UILabel!
     @IBOutlet weak var positionV: UILabel!
     @IBOutlet weak var deleteArtworksButton: UIButton!
@@ -424,6 +481,11 @@ class UserInfoHeaderV: UICollectionReusableView {
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var followButton: UIButton!
     @IBOutlet weak var messageButton: UIButton!
+    
+    @IBOutlet weak var followingsButton: UIButton!
+    @IBOutlet weak var followersButton: UIButton!
+    @IBOutlet weak var secondsButton: UIButton!
+    
     
     @IBOutlet weak var myInfo: UIStackView!
     @IBOutlet weak var herInfo: UIStackView!

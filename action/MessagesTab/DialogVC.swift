@@ -172,7 +172,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         let queryMessagesOp = CKQueryOperation(query: query)
         
         queryMessagesOp.desiredKeys = ["text", "receiver"]
-        queryMessagesOp.resultsLimit = 1000
+        queryMessagesOp.resultsLimit = 999
         queryMessagesOp.recordFetchedBlock = { (messageRecord) in
             tmpMessages.append(messageRecord)
         }
