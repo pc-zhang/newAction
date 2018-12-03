@@ -345,11 +345,6 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             } else {
                 let followRecord = CKRecord(recordType: "Follow")
                 followRecord["followed"] = CKRecord.Reference(recordID: yourID, action: .none)
-                if let fileURL = (myInfoRecord["littleAvatar"] as? CKAsset)?.fileURL {
-                    followRecord["avatar"] = CKAsset(fileURL: fileURL)
-                }
-                followRecord["nickName"] = myInfoRecord["nickName"] as? String
-                followRecord["sign"] = myInfoRecord["sign"] as? String
                 
                 let operation = CKModifyRecordsOperation(recordsToSave: [followRecord], recordIDsToDelete: nil)
                 
@@ -445,6 +440,18 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             if let dialogVC = segue.destination as? DialogVC {
 //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
                 dialogVC.yourRecord = userRecord
+            }
+        } else if segue.identifier == "me to followers" {
+            if let followersVC = segue.destination as? FollowersVC {
+                //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
+                followersVC.userID = self.userID
+                followersVC.isFollowers = true
+            }
+        } else if segue.identifier == "me to followings" {
+            if let followersVC = segue.destination as? FollowersVC {
+                //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
+                followersVC.userID = self.userID
+                followersVC.isFollowers = false
             }
         }
     }

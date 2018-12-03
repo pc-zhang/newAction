@@ -216,6 +216,12 @@ class MessagesVC: UITableViewController {
                 dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
                 dialogVC.yourRecord = dialogInfos[selectedRow.row].dialogist
             }
+        } else if segue.identifier == "messages to followers" {
+            if let followersVC = segue.destination as? FollowersVC {
+                //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
+                followersVC.userID = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID
+                followersVC.isFollowers = true
+            }
         }
     }
 
