@@ -152,9 +152,9 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         if let yourRecord = yourRecord {
             navigationItem.title = yourRecord["nickName"] as? String
         } else if let receiverID = (dialogRecord?["receiver"] as? CKRecord.Reference)?.recordID, receiverID == myRecord?.recordID {
-            navigationItem.title = dialogRecord?["receiverNickName"] as? String
-        } else {
             navigationItem.title = dialogRecord?["senderNickName"] as? String
+        } else {
+            navigationItem.title = dialogRecord?["receiverNickName"] as? String
         }
         
         fetchData(0)
