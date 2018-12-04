@@ -27,7 +27,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
     @IBOutlet weak var tableView: UITableView!
     
     override func awakeFromNib() {
-        tabBarItem.badgeValue = "3"
+//        tabBarItem.badgeValue = "3"
     }
     
     override func viewDidLoad() {

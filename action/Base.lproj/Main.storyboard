@@ -428,11 +428,11 @@
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="HVg-Ei-wGV" customClass="UserInfoVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="mLI-QQ-fiD">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="UGc-4P-H9Y">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <color key="backgroundColor" red="0.086212329569999996" green="0.067392162980000003" blue="0.1753771901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="15a-Sk-eN2">
                                     <size key="itemSize" width="138" height="188"/>
@@ -748,11 +748,11 @@
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="sbm-qe-tO6" customClass="MainVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="46c-dB-KeK">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="840" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lg0-AK-bRK">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <prototypes>
@@ -1033,7 +1033,7 @@
             <objects>
                 <viewController id="2cG-zd-X3K" customClass="DialogVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Y14-lo-bLz">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="G9k-9i-YJt">
@@ -1169,7 +1169,7 @@
             <objects>
                 <tableViewController hidesBottomBarWhenPushed="YES" id="I0d-lY-Fz5" customClass="EditUserInfoVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="static" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="wQS-RW-5Gg">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.086212329566478729" green="0.067392162978649139" blue="0.17537719011306763" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <sections>
@@ -1409,11 +1409,11 @@
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="GMQ-DF-KZ3" customClass="ActionVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="1lz-Rq-gsq">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-4H-gbm">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -1422,7 +1422,7 @@
                                 </connections>
                             </view>
                             <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cl7-RL-W8f" customClass="PlayerView" customModule="action" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -1431,7 +1431,7 @@
                                 </connections>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.25" maximumZoomScale="2" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bag-Bh-uVi" userLabel="Timeline2">
-                                <rect key="frame" x="0.0" y="615.5" width="414" height="96.5"/>
+                                <rect key="frame" x="0.0" y="572.5" width="414" height="90.5"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <gestureRecognizers/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="UPU-5b-0yR">
@@ -1442,7 +1442,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" reuseIdentifier="thumbnail cell" id="JUL-dL-fMr" customClass="ThumbnailCell" customModule="action" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="11" width="75" height="75"/>
+                                        <rect key="frame" x="0.0" y="8" width="75" height="75"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
@@ -1468,7 +1468,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="shot separator" id="G2c-BB-Gri">
-                                    <rect key="frame" x="75" y="0.0" width="2" height="96.5"/>
+                                    <rect key="frame" x="75" y="0.0" width="2" height="90.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </collectionReusableView>
@@ -1479,7 +1479,7 @@
                                 </connections>
                             </collectionView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacing="10" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wqS-Et-ZjY">
-                                <rect key="frame" x="0.0" y="742" width="414" height="54"/>
+                                <rect key="frame" x="0.0" y="693" width="414" height="54"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FdH-c3-Ni1">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="54"/>
@@ -1519,7 +1519,7 @@
                                 </subviews>
                             </stackView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="0vb-2N-rV9">
-                                <rect key="frame" x="110.5" y="138" width="193.5" height="39.5"/>
+                                <rect key="frame" x="116.5" y="138" width="181" height="37.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0vb-2N-rV9" secondAttribute="height" multiplier="5:1" id="jhN-AU-vxb"/>
                                 </constraints>
@@ -1531,14 +1531,14 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </segmentedControl>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1JG-lK-fvT">
-                                <rect key="frame" x="206" y="615.5" width="2" height="96.5"/>
+                                <rect key="frame" x="206" y="572.5" width="2" height="90.5"/>
                                 <color key="backgroundColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="2" id="82J-GQ-FEb"/>
                                 </constraints>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B3d-lg-LgM">
-                                <rect key="frame" x="171" y="724" width="72" height="72"/>
+                                <rect key="frame" x="171" y="675" width="72" height="72"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="B3d-lg-LgM" secondAttribute="height" id="g5R-md-G53"/>
@@ -1550,7 +1550,7 @@
                                 </connections>
                             </button>
                             <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Q3C-xP-8lJ">
-                                <rect key="frame" x="132" y="816" width="150" height="2"/>
+                                <rect key="frame" x="132" y="767" width="150" height="2"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="K18-BT-tfU"/>
                                     <constraint firstAttribute="height" constant="2" id="T5k-vq-YdT"/>
@@ -1639,7 +1639,7 @@
                                 <segue destination="EEy-vJ-4kQ" kind="unwind" identifier="action to main" unwindAction="doneBySegue:" id="yd5-4m-489"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="export" id="RM0-SD-IS5">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="RM0-SD-IS5">
                             <connections>
                                 <action selector="export:" destination="GMQ-DF-KZ3" id="J4P-r9-V0K"/>
                             </connections>
@@ -1696,11 +1696,11 @@
             <objects>
                 <viewController modalPresentationStyle="overFullScreen" id="Rbp-GA-i0m" customClass="ReviewsVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ieN-6n-Gtw">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bPP-n8-uhK">
-                                <rect key="frame" x="0.0" y="229.5" width="414" height="597.5"/>
+                                <rect key="frame" x="0.0" y="236" width="414" height="542"/>
                                 <color key="backgroundColor" red="0.086212329566478729" green="0.067392162978649139" blue="0.17537719011306763" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="review" rowHeight="76" id="Cxz-ZH-hu9" customClass="ReviewCell" customModule="action" customModuleProvider="target">
@@ -1783,7 +1783,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v6l-eo-irh">
-                                <rect key="frame" x="0.0" y="88" width="414" height="141.5"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="148"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -1791,7 +1791,7 @@
                                 </connections>
                             </view>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="说点啥呢？" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lRi-XD-4Pi">
-                                <rect key="frame" x="10" y="827" width="394" height="35"/>
+                                <rect key="frame" x="10" y="778" width="394" height="35"/>
                                 <color key="backgroundColor" red="0.15492013106669408" green="0.12143084881142709" blue="0.32514321168667171" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="vP6-2A-fYh"/>
@@ -1863,11 +1863,11 @@
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="yFa-ZD-vOg" customClass="ChorusVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Vrm-gk-xZw">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qvb-v8-wFL">
-                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="1BZ-5g-v9E">
                                     <size key="itemSize" width="138" height="188"/>
@@ -1947,7 +1947,7 @@
             <objects>
                 <tableViewController id="wmD-o3-oQj" customClass="FollowersVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="46j-WI-Tkb">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.086212329569999996" green="0.067392162980000003" blue="0.1753771901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
@@ -2031,15 +2031,14 @@
     </scenes>
     <resources>
         <image name="avatar" width="450" height="476.25"/>
-        <image name="export" width="58" height="58"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="lre-yu-s05"/>
-        <segue reference="vMh-Tu-ZOG"/>
-        <segue reference="bHc-Bw-6y1"/>
+        <segue reference="ctd-KH-Sha"/>
+        <segue reference="UHx-8D-gC1"/>
         <segue reference="YMX-aQ-4Vn"/>
         <segue reference="xIF-lt-3ik"/>
-        <segue reference="8U0-dU-CZ9"/>
-        <segue reference="KNK-Ag-qr5"/>
+        <segue reference="FKq-yC-dQs"/>
+        <segue reference="hsi-ZR-dGY"/>
     </inferredMetricsTieBreakers>
 </document>
