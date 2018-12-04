@@ -233,6 +233,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             tmpArtworkRecords.append(artWorkInfo)
         }
         queryInfoOp.queryCompletionBlock = { (cursor, error) in
+            DispatchQueue.main.sync {
+                self.refreshControl.endRefreshing()
+            }
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
             
@@ -241,8 +244,6 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 self.isFetchingData = false
                 self.secondsCount = tmpArtworkRecords.compactMap({ $0.info?["seconds"] as? Int64 }).reduce(0, +)
                 self.collectionView.reloadData()
-                
-                self.refreshControl.endRefreshing()
             }
         }
         queryInfoOp.database = self.database
@@ -438,7 +439,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             }
         } else if segue.identifier == "me to dialog" {
             if let dialogVC = segue.destination as? DialogVC {
-//                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
+                dialogVC.dialogRecord = nil
                 dialogVC.yourRecord = userRecord
             }
         } else if segue.identifier == "me to followers" {

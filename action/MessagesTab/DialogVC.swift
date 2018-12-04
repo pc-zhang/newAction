@@ -12,20 +12,16 @@ import CloudKit
 
 class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
-    private var userCacheOrNil: UserLocalCache? {
-        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil
-    }
-    
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
-    private var messages: [CKRecord] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
-    var cursor: CKQueryOperation.Cursor? = nil
-    var isFetchingData: Bool = false
     var yourRecord: CKRecord? = nil
-    var dialogID: CKRecord.ID? = nil
+    var dialogRecord: CKRecord? = nil
+    var myRecord: CKRecord? = {
+        return (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord
+    }()
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
@@ -44,39 +40,122 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
         return true
     }
     
-    func sendMessage(_ text: String) {
-        var myID: CKRecord.ID?
-        myID = userCacheOrNil!.myInfoRecord?.recordID
-        
-        guard let dialogID = dialogID, myID != nil else {
+    
+    func newDialog(_ text: String) {
+        guard let yourRecord = yourRecord, let myRecord = myRecord else {
             return
         }
         
-        let messageRecord = CKRecord(recordType: "Message")
-        messageRecord["receiver"] = CKRecord.Reference(recordID: yourRecord!.recordID, action: .deleteSelf)
-        messageRecord["text"] = text
-        messageRecord["dialog"] = CKRecord.Reference(recordID: dialogID, action: .none)
+        let newDialogRecord = CKRecord(recordType: "Dialog")
+        newDialogRecord["receiver"] = CKRecord.Reference(recordID: yourRecord.recordID, action: .none)
+        if let fileURL = (yourRecord["littleAvatar"] as? CKAsset)?.fileURL {
+            newDialogRecord["receiverAvatar"] = CKAsset(fileURL: fileURL)
+        }
+        if let fileURL = (myRecord["littleAvatar"] as? CKAsset)?.fileURL {
+            newDialogRecord["senderAvatar"] = CKAsset(fileURL: fileURL)
+        }
+        newDialogRecord["senderNickName"] = myRecord["nickName"] as? String
+        newDialogRecord["receiverNickName"] = yourRecord["nickName"] as? String
+        newDialogRecord["senders"] = [] as? [CKRecord.Reference]
+        newDialogRecord["texts"] = [] as? [String]
         
-        let operation = CKModifyRecordsOperation(recordsToSave: [messageRecord], recordIDsToDelete: nil)
+        let operation = CKModifyRecordsOperation(recordsToSave: [newDialogRecord], recordIDsToDelete: nil)
         
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: [messageRecord.recordID], alert: true) == nil,
-                let newRecord = records?[0] else { return }
-                DispatchQueue.main.async {
-                    self.messages.append(newRecord)
-                    self.isFetchingData = false
-                    self.tableView.reloadData()
-                    self.tableView.scrollToRow(at: IndexPath(row: self.messages.count-1, section: 0), at: .bottom, animated: false)
-                }
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
+                let newRecord = records?.first else { return }
+            
+            DispatchQueue.main.sync {
+                self.dialogRecord = newRecord
+                self.sendMessage(text)
+            }
         }
         operation.database = database
         operationQueue.addOperation(operation)
     }
     
+    
+    func sendMessage(_ text: String) {
+        guard let myRecord = myRecord else {
+            return
+        }
+        
+        if let dialogRecord = dialogRecord {
+            var senders = dialogRecord["senders"] as? [CKRecord.Reference] ?? []
+            var texts = dialogRecord["texts"] as? [String] ?? []
+            senders.append(CKRecord.Reference(recordID: myRecord.recordID, action: .none))
+            texts.append(text)
+            dialogRecord["senders"] = senders
+            dialogRecord["texts"] = texts
+            
+            let operation = CKModifyRecordsOperation(recordsToSave: [dialogRecord], recordIDsToDelete: nil)
+            
+            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                guard let newRecord = records?.first else {
+                    return
+                }
+                
+                if handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) != nil {
+                    
+                    DispatchQueue.main.sync {
+                        self.dialogRecord = newRecord
+                        self.sendMessage(text)
+                    }
+                    
+                    return
+                }
+                
+                DispatchQueue.main.sync {
+                    self.dialogRecord = newRecord
+                    self.tableView.reloadData()
+                    self.tableView.scrollToRow(at: IndexPath(row: self.tableView.numberOfRows(inSection: 0) - 1, section: 0), at: .bottom, animated: false)
+                }
+            }
+            operation.database = database
+            operationQueue.addOperation(operation)
+            
+            return
+        }
+        
+        guard let yourRecord = yourRecord else {
+            return
+        }
+        
+        let dialogists = [yourRecord.recordID, myRecord.recordID]
+        let query = CKQuery(recordType: "Dialog", predicate: NSPredicate(format: "receiver in %@ && creatorUserRecordID in %@", dialogists, dialogists))
+        
+        let queryMessagesOp = CKQueryOperation(query: query)
+        queryMessagesOp.recordFetchedBlock = { (dialogRecord) in
+            DispatchQueue.main.sync {
+                self.dialogRecord = dialogRecord
+                self.sendMessage(text)
+            }
+        }
+        queryMessagesOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                if self.dialogRecord == nil {
+                    self.newDialog(text)
+                }
+            }
+        }
+        queryMessagesOp.database = self.database
+        self.operationQueue.addOperation(queryMessagesOp)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = yourRecord?["nickName"] as? String
+        assert((yourRecord == nil && dialogRecord != nil) || (yourRecord != nil && dialogRecord == nil))
+        
+        if let yourRecord = yourRecord {
+            navigationItem.title = yourRecord["nickName"] as? String
+        } else if let receiverID = (dialogRecord?["receiver"] as? CKRecord.Reference)?.recordID, receiverID == myRecord?.recordID {
+            navigationItem.title = dialogRecord?["receiverNickName"] as? String
+        } else {
+            navigationItem.title = dialogRecord?["senderNickName"] as? String
+        }
         
         fetchData(0)
     }
@@ -89,7 +168,7 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     }
 
     @objc func newMessage(_ notification: Notification) {
-        if let dialogID = dialogID, (notification.object as? NewMessage)?.payload?.dialogID == dialogID {
+        if let dialogID = dialogRecord?.recordID, (notification.object as? NewMessage)?.payload?.dialogID == dialogID {
             fetchData(0)
         }
     }
@@ -105,15 +184,13 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+        return (dialogRecord?["texts"] as? [String])?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var myID: CKRecord.ID?
 
-        myID = userCacheOrNil!.myInfoRecord?.recordID
         var identifier = "my message"
-        if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
+        if let senderID = (dialogRecord?["senders"] as? [CKRecord.Reference])?[indexPath.row].recordID, let myID = myRecord?.recordID, senderID != myID {
             identifier = "your message"
         }
 
@@ -127,23 +204,36 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         if let cell = cell as? MessageCell {
-            var myID: CKRecord.ID?
-            myID = userCacheOrNil!.myInfoRecord?.recordID
             
-            var imageURL: URL?
-            imageURL = (userCacheOrNil!.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL
+            var receiverAvatar: UIImage? = nil
+            var senderAvatar: UIImage? = nil
+            var myAvatar: UIImage? = nil
+            var yourAvatar: UIImage? = nil
             
-            if (messages[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID == myID! {
-                if let path = (yourRecord?["littleAvatar"] as? CKAsset)?.fileURL.path {
-                    cell.avatarImageV.image = UIImage(contentsOfFile: path)
-                }
-            } else {
-                if let path = imageURL?.path {
-                    cell.avatarImageV.image = UIImage(contentsOfFile: path)
-                }
+            if let path = (dialogRecord?["receiverAvatar"] as? CKAsset)?.fileURL.path {
+                receiverAvatar = UIImage(contentsOfFile: path)
+            }
+            if let path = (dialogRecord?["senderAvatar"] as? CKAsset)?.fileURL.path {
+                senderAvatar = UIImage(contentsOfFile: path)
             }
             
-            cell.messageTextLabel.text = messages[indexPath.row]["text"] as? String
+            if let receiverID = (dialogRecord?["receiver"] as? CKRecord.Reference)?.recordID, receiverID != myRecord?.recordID {
+                myAvatar = senderAvatar
+                yourAvatar = receiverAvatar
+            } else {
+                myAvatar = receiverAvatar
+                yourAvatar = senderAvatar
+            }
+            
+            if cell.reuseIdentifier == "your message" {
+                cell.avatarImageV.image = yourAvatar
+            } else {
+                cell.avatarImageV.image = myAvatar
+            }
+            
+            if let texts = (dialogRecord?["texts"] as? [String]), texts.count > indexPath.row {
+                cell.messageTextLabel.text = texts[indexPath.row]
+            }
         }
     }
     
@@ -156,42 +246,46 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
     
     
     @IBAction func fetchData(_ sender: Any) {
-        guard let dialogID = dialogID else {
+        operationQueue.cancelAllOperations()
+        if let dialogRecord = dialogRecord {
+            let fetchRecordsOp = CKFetchRecordsOperation(recordIDs: [dialogRecord.recordID])
+            fetchRecordsOp.fetchRecordsCompletionBlock = {recordsByRecordID, error in
+                
+                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil,
+                    let newRecord = recordsByRecordID?[dialogRecord.recordID]  else { return }
+                
+                DispatchQueue.main.sync {
+                    self.dialogRecord = newRecord
+                    self.tableView.reloadData()
+                    self.tableView.scrollToRow(at: IndexPath(row: self.tableView.numberOfRows(inSection: 0) - 1, section: 0), at: .bottom, animated: false)
+                }
+            }
+            fetchRecordsOp.database = database
+            operationQueue.addOperation(fetchRecordsOp)
+            
             return
         }
         
-        messages = []
+        guard let yourRecord = yourRecord, let myRecord = myRecord else {
+            return
+        }
         
-        isFetchingData = true
-        var tmpMessages:[CKRecord] = []
+        let dialogists = [yourRecord.recordID, myRecord.recordID]
+        let query = CKQuery(recordType: "Dialog", predicate: NSPredicate(format: "receiver in %@ && creatorUserRecordID in %@", dialogists, dialogists))
         
-        let query = CKQuery(recordType: "Message", predicate: NSPredicate(format: "dialog = %@", dialogID))
-        
-        let byCreation = NSSortDescriptor(key: "creationDate", ascending: true)
-        query.sortDescriptors = [byCreation]
         let queryMessagesOp = CKQueryOperation(query: query)
-        
-        queryMessagesOp.desiredKeys = ["text", "receiver"]
-        queryMessagesOp.resultsLimit = 999
-        queryMessagesOp.recordFetchedBlock = { (messageRecord) in
-            tmpMessages.append(messageRecord)
+        queryMessagesOp.recordFetchedBlock = { (dialogRecord) in
+            DispatchQueue.main.sync {
+                self.dialogRecord = dialogRecord
+                self.tableView.reloadData()
+                self.tableView.scrollToRow(at: IndexPath(row: self.tableView.numberOfRows(inSection: 0) - 1, section: 0), at: .bottom, animated: false)
+            }
         }
         queryMessagesOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-            self.cursor = cursor
         }
         queryMessagesOp.database = self.database
         self.operationQueue.addOperation(queryMessagesOp)
-        
-        DispatchQueue.global().async {
-            self.operationQueue.waitUntilAllOperationsAreFinished()
-            DispatchQueue.main.async {
-                self.messages = tmpMessages
-                self.isFetchingData = false
-                self.tableView.reloadData()
-                self.tableView.scrollToRow(at: IndexPath(row: self.messages.count-1, section: 0), at: .bottom, animated: false)
-            }
-        }
     }
 
 }

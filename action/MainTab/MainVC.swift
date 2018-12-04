@@ -216,6 +216,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
             tmpArtworkRecords.append(artWorkInfo)
         }
         queryInfoOp.queryCompletionBlock = { (cursor, error) in
+            DispatchQueue.main.sync {
+                self.refreshControl.endRefreshing()
+            }
+            
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
             
@@ -226,7 +230,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 if self.tableView.numberOfRows(inSection: 0) > 0 {
                     self.tableView.scrollToRow(at: IndexPath(row: self.selectedRow ?? 0, section: 0), at: .middle, animated: false)
                 }
-                self.refreshControl.endRefreshing()
+                
             }
         }
         queryInfoOp.database = self.database

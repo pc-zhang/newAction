@@ -87,6 +87,9 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
                 tmpArtworkRecords.append(artWorkInfo)
             }
             queryInfoOp.queryCompletionBlock = { (cursor, error) in
+                DispatchQueue.main.sync {
+                    self.refresh.endRefreshing()
+                }
                 guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
                 self.cursor = cursor
                 
@@ -94,7 +97,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
                     self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                     self.isFetchingData = false
                     self.tableView.reloadData()
-                    self.refresh.endRefreshing()
                 }
             }
             queryInfoOp.database = self.database

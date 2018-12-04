@@ -9,27 +9,22 @@
 import UIKit
 import CloudKit
 
-fileprivate struct DialogInfo {
-    var isPrefetched: Bool = false
-    var dialogist: CKRecord? = nil
-    var lastMessage: CKRecord? = nil
-    var dialog: CKRecord? = nil
-}
-
 class MessagesVC: UITableViewController {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
-    private var dialogInfos: [DialogInfo] = []
+    private var dialogs: [CKRecord] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
-    var cursor: CKQueryOperation.Cursor? = nil
     var isFetchingData: Bool = false
     var artistID: CKRecord.ID? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl?.addTarget(self, action: #selector(type(of: self).fetchData(_:)), for: UIControl.Event.valueChanged)
 
         CKContainer.default().fetchUserRecordID { (recordID, error) in
             if let recordID = recordID {
@@ -60,7 +55,7 @@ class MessagesVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 1 : dialogInfos.count
+        return section == 0 ? 1 : dialogs.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -78,15 +73,18 @@ class MessagesVC: UITableViewController {
             return
         }
         
-        queryDialogOtherInfo(indexPath.row)
-        
         if let cell = cell as? DialogCell {
-            if let path = (dialogInfos[indexPath.row].dialogist?["littleAvatar"] as? CKAsset)?.fileURL.path {
+            if let artistID = artistID, artistID != (dialogs[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID, let path = (dialogs[indexPath.row]["receiverAvatar"] as? CKAsset)?.fileURL.path {
                 cell.avatarV.image = UIImage(contentsOfFile: path)
+                cell.nickNameLabel.text = dialogs[indexPath.row]["receiverNickName"] as? String
             }
-            cell.nickNameLabel.text = dialogInfos[indexPath.row].dialogist?["nickName"] as? String
-            cell.lastMessageLabel.text = dialogInfos[indexPath.row].lastMessage?["text"] as? String
-            if let date = dialogInfos[indexPath.row].lastMessage?.creationDate {
+            if let artistID = artistID, artistID == (dialogs[indexPath.row]["receiver"] as? CKRecord.Reference)?.recordID, let path = (dialogs[indexPath.row]["senderAvatar"] as? CKAsset)?.fileURL.path {
+                cell.avatarV.image = UIImage(contentsOfFile: path)
+                cell.nickNameLabel.text = dialogs[indexPath.row]["senderNickName"] as? String
+            }
+            
+            cell.lastMessageLabel.text = (dialogs[indexPath.row]["texts"] as? [String])?.last
+            if let date = dialogs[indexPath.row].modificationDate {
                 cell.lastMessageTimeLabel.text = dateFormatter.string(from: date)
             }
         }
@@ -101,64 +99,6 @@ class MessagesVC: UITableViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return dateFormatter
     }()
-    
-    func queryDialogOtherInfo(_ row: Int)
-    {
-        guard let dialogRecord = dialogInfos[row].dialog else {
-            return
-        }
-        
-        if dialogInfos[row].isPrefetched == true {
-            return
-        }
-        dialogInfos[row].isPrefetched = true
-        
-        if let dialogists = dialogRecord["dialogists"] as? [CKRecord.Reference], let artistID = artistID, let dialogistID = otherDialogist(dialogists, artistID) {
-            
-            let fetchArtistOp = CKFetchRecordsOperation(recordIDs: [dialogistID])
-            fetchArtistOp.desiredKeys = ["littleAvatar", "nickName"]
-            fetchArtistOp.fetchRecordsCompletionBlock = { (recordsByRecordID, error) in
-                guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-                
-                DispatchQueue.main.async {
-                    self.dialogInfos[row].dialogist = recordsByRecordID?[dialogistID]
-                    self.reloadVisibleRow(row)
-                }
-            }
-            fetchArtistOp.database = self.database
-            self.operationQueue.addOperation(fetchArtistOp)
-        }
-        
-        var lastMessage: CKRecord? = nil
-        let query = CKQuery(recordType: "Message", predicate: NSPredicate(format: "dialog = %@", dialogRecord.recordID))
-        let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
-        query.sortDescriptors = [byCreation]
-        let queryMessagesOp = CKQueryOperation(query: query)
-        queryMessagesOp.desiredKeys = ["text"]
-        queryMessagesOp.resultsLimit = 1
-        queryMessagesOp.recordFetchedBlock = { (messageRecord) in
-            lastMessage = messageRecord
-        }
-        queryMessagesOp.queryCompletionBlock = { (cursor, error) in
-            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-            
-            DispatchQueue.main.async {
-                self.dialogInfos[row].lastMessage = lastMessage
-                self.reloadVisibleRow(row)
-            }
-        }
-        queryMessagesOp.database = self.database
-        self.operationQueue.addOperation(queryMessagesOp)
-    }
-    
-    func reloadVisibleRow(_ row: Int) {
-        let indexPath = IndexPath(row: row, section: 1)
-        if dialogInfos[row].dialog != nil && dialogInfos[row].dialogist != nil && dialogInfos[row].lastMessage != nil {
-            if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
-                tableView.reloadRows(at: [indexPath], with: .fade)
-            }
-        }
-    }
     
     func otherDialogist(_ dialogists: [CKRecord.Reference], _ artistID: CKRecord.ID) -> CKRecord.ID? {
         let dialogistIDs = dialogists.compactMap { (dialogistRef) -> CKRecord.ID? in
@@ -177,44 +117,41 @@ class MessagesVC: UITableViewController {
             return
         }
         
+        operationQueue.cancelAllOperations()
         isFetchingData = true
-        var tmpdialogInfos:[DialogInfo] = []
+        dialogs = []
+        var tmpdialogs:[CKRecord] = []
         
-        let query = CKQuery(recordType: "Dialog", predicate: NSPredicate(format: "%@ in dialogists", artistID))
-        
-        let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
-        query.sortDescriptors = [byCreation]
+        let query = CKQuery(recordType: "Dialog", predicate: NSPredicate(format: "creatorUserRecordID = %@", artistID))
+        let byModify = NSSortDescriptor(key: "modificationDate", ascending: false)
+        query.sortDescriptors = [byModify]
         let queryDialogsOp = CKQueryOperation(query: query)
         
-        queryDialogsOp.desiredKeys = ["dialogists"]
-        queryDialogsOp.resultsLimit = 6
+        queryDialogsOp.resultsLimit = 99
         queryDialogsOp.recordFetchedBlock = { (dialogRecord) in
-            var dialogInfo = DialogInfo()
-            dialogInfo.dialog = dialogRecord
-            tmpdialogInfos.append(dialogInfo)
+            tmpdialogs.append(dialogRecord)
         }
         queryDialogsOp.queryCompletionBlock = { (cursor, error) in
+            DispatchQueue.main.sync {
+                self.refreshControl?.endRefreshing()
+            }
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
-            self.cursor = cursor
+            
+            DispatchQueue.main.sync {
+                self.dialogs.append(contentsOf: tmpdialogs)
+                self.tableView.reloadData()
+                self.isFetchingData = false
+            }
         }
         queryDialogsOp.database = self.database
         self.operationQueue.addOperation(queryDialogsOp)
-        
-        DispatchQueue.global().async {
-            self.operationQueue.waitUntilAllOperationsAreFinished()
-            DispatchQueue.main.async {
-                self.dialogInfos.append(contentsOf: tmpdialogInfos)
-                self.isFetchingData = false
-                self.tableView.reloadData()
-            }
-        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "show dialog" {
             if let dialogVC = segue.destination as? DialogVC, let selectedRow = self.tableView.indexPathForSelectedRow {
-                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
-                dialogVC.yourRecord = dialogInfos[selectedRow.row].dialogist
+                dialogVC.dialogRecord = dialogs[selectedRow.row]
+                dialogVC.yourRecord = nil
             }
         } else if segue.identifier == "messages to followers" {
             if let followersVC = segue.destination as? FollowersVC {

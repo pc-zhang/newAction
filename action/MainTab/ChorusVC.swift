@@ -59,6 +59,9 @@ class ChorusVC : UIViewController, UICollectionViewDelegate, UICollectionViewDat
             tmpArtworkRecords.append(artWorkInfo)
         }
         queryInfoOp.queryCompletionBlock = { (cursor, error) in
+            DispatchQueue.main.sync {
+                self.refreshControl.endRefreshing()
+            }
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
             
@@ -66,8 +69,6 @@ class ChorusVC : UIViewController, UICollectionViewDelegate, UICollectionViewDat
                 self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
                 self.collectionView.reloadData()
-                
-                self.refreshControl.endRefreshing()
             }
         }
         queryInfoOp.database = self.database
