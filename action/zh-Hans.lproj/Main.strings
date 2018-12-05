@@ -1,0 +1,222 @@
+
+/* Class = "UIButton"; normalTitle = "⏳"; ObjectID = "0RW-ep-vsx"; */
+"0RW-ep-vsx.normalTitle" = "⏳";
+
+/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[0] = "露脸"; ObjectID = "0vb-2N-rV9"; */
+"0vb-2N-rV9.segmentTitles[0]" = "露脸";
+
+/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[1] = "入戏"; ObjectID = "0vb-2N-rV9"; */
+"0vb-2N-rV9.segmentTitles[1]" = "入戏";
+
+/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[2] = "配音"; ObjectID = "0vb-2N-rV9"; */
+"0vb-2N-rV9.segmentTitles[2]" = "配音";
+
+/* Class = "UILabel"; text = "昨天12:41"; ObjectID = "10b-WZ-fkF"; */
+"10b-WZ-fkF.text" = "昨天12:41";
+
+/* Class = "UILabel"; text = "想和偶像微信视频？快来试试我开发的IOS应用合拍神器吧！"; ObjectID = "14O-Je-ieB"; */
+"14O-Je-ieB.text" = "想和偶像微信视频？快来试试我开发的IOS应用合拍神器吧！";
+
+/* Class = "UIButton"; normalTitle = "上传作品"; ObjectID = "1VK-Tv-nAb"; */
+"1VK-Tv-nAb.normalTitle" = "上传作品";
+
+/* Class = "UIButton"; normalTitle = "👥"; ObjectID = "2xW-pe-XR4"; */
+"2xW-pe-XR4.normalTitle" = "👥";
+
+/* Class = "UITabBarItem"; title = "首页"; ObjectID = "4CL-zx-BIe"; */
+"4CL-zx-BIe.title" = "首页";
+
+/* Class = "UILabel"; text = "合演"; ObjectID = "4DW-ZA-R6P"; */
+"4DW-ZA-R6P.text" = "合演";
+
+/* Class = "UIButton"; normalTitle = "🔗"; ObjectID = "5d8-XX-Mdd"; */
+"5d8-XX-Mdd.normalTitle" = "🔗";
+
+/* Class = "UIButton"; normalTitle = "💬"; ObjectID = "92f-Se-IDk"; */
+"92f-Se-IDk.normalTitle" = "💬";
+
+/* Class = "UILabel"; text = "在这个隆重的节日里，我想问问你们都是凭什么本事单身的呢？😀#光棍节惊喜请收下封建时代雷锋精神独立开发建设贷款累计罚款决定"; ObjectID = "99H-1s-13C"; */
+"99H-1s-13C.text" = "在这个隆重的节日里，我想问问你们都是凭什么本事单身的呢？😀#光棍节惊喜请收下封建时代雷锋精神独立开发建设贷款累计罚款决定";
+
+/* Class = "UILabel"; text = "30"; ObjectID = "A2Y-aU-DgI"; */
+"A2Y-aU-DgI.text" = "30";
+
+/* Class = "UIButton"; normalTitle = "🔴"; ObjectID = "B3d-lg-LgM"; */
+"B3d-lg-LgM.normalTitle" = "🔴";
+
+/* Class = "UILabel"; text = "描述"; ObjectID = "BQj-Tz-Ts9"; */
+"BQj-Tz-Ts9.text" = "描述";
+
+/* Class = "UILabel"; text = "乐乐"; ObjectID = "DcZ-cg-BaS"; */
+"DcZ-cg-BaS.text" = "乐乐";
+
+/* Class = "UIButton"; normalTitle = "🔗"; ObjectID = "DhF-f4-Ais"; */
+"DhF-f4-Ais.normalTitle" = "🔗";
+
+/* Class = "UITabBarItem"; title = "关注"; ObjectID = "FKk-Xa-3un"; */
+"FKk-Xa-3un.title" = "关注";
+
+/* Class = "UILabel"; text = "@卓别林"; ObjectID = "FXI-o7-Bkf"; */
+"FXI-o7-Bkf.text" = "@卓别林";
+
+/* Class = "UIButton"; normalTitle = "↩️"; ObjectID = "FdH-c3-Ni1"; */
+"FdH-c3-Ni1.normalTitle" = "↩️";
+
+/* Class = "UIButton"; normalTitle = "✂️"; ObjectID = "Fmg-3o-n37"; */
+"Fmg-3o-n37.normalTitle" = "✂️";
+
+/* Class = "UILabel"; text = "时间"; ObjectID = "GEx-S8-qyj"; */
+"GEx-S8-qyj.text" = "时间";
+
+/* Class = "UILabel"; text = "地区：中国"; ObjectID = "IJE-O0-OCC"; */
+"IJE-O0-OCC.text" = "地区：中国";
+
+/* Class = "UIButton"; normalTitle = "关注"; ObjectID = "Iy4-7Q-0rV"; */
+"Iy4-7Q-0rV.normalTitle" = "关注";
+
+/* Class = "UILabel"; text = "2018-9-2"; ObjectID = "Jsm-6o-lxv"; */
+"Jsm-6o-lxv.text" = "2018-9-2";
+
+/* Class = "UIButton"; normalTitle = "私信"; ObjectID = "Kpi-ub-LWk"; */
+"Kpi-ub-LWk.normalTitle" = "私信";
+
+/* Class = "UILabel"; text = "合演"; ObjectID = "MOz-H7-1tG"; */
+"MOz-H7-1tG.text" = "合演";
+
+/* Class = "UILabel"; text = "男"; ObjectID = "MxM-i3-6oo"; */
+"MxM-i3-6oo.text" = "男";
+
+/* Class = "UIButton"; normalTitle = "上传"; ObjectID = "Nj6-2v-Geo"; */
+"Nj6-2v-Geo.normalTitle" = "上传";
+
+/* Class = "UITabBarItem"; title = "消息"; ObjectID = "Nk7-Up-HrU"; */
+"Nk7-Up-HrU.title" = "消息";
+
+/* Class = "UILabel"; text = "性别"; ObjectID = "NvZ-ep-EAc"; */
+"NvZ-ep-EAc.text" = "性别";
+
+/* Class = "UILabel"; text = "入戏"; ObjectID = "Qtp-jc-LyY"; */
+"Qtp-jc-LyY.text" = "入戏";
+
+/* Class = "UIButton"; normalTitle = "关注"; ObjectID = "RMY-Da-H8Z"; */
+"RMY-Da-H8Z.normalTitle" = "关注";
+
+/* Class = "UITextField"; placeholder = "说点啥呢？"; ObjectID = "RSX-c4-Djz"; */
+"RSX-c4-Djz.placeholder" = "说点啥呢？";
+
+/* Class = "UITabBarItem"; title = "消息"; ObjectID = "SEb-rv-YdH"; */
+"SEb-rv-YdH.title" = "消息";
+
+/* Class = "UILabel"; text = "2018-9-2"; ObjectID = "SbX-zg-1Ee"; */
+"SbX-zg-1Ee.text" = "2018-9-2";
+
+/* Class = "UILabel"; text = "地区"; ObjectID = "ShV-qr-xY9"; */
+"ShV-qr-xY9.text" = "地区";
+
+/* Class = "UIButton"; normalTitle = "🔗"; ObjectID = "TzT-ss-mqt"; */
+"TzT-ss-mqt.normalTitle" = "🔗";
+
+/* Class = "UILabel"; text = "乐乐"; ObjectID = "WwI-tG-wjX"; */
+"WwI-tG-wjX.text" = "乐乐";
+
+/* Class = "UILabel"; text = "2年"; ObjectID = "aZS-yj-A1f"; */
+"aZS-yj-A1f.text" = "2年";
+
+/* Class = "UIButton"; normalTitle = "编辑资料"; ObjectID = "aox-tB-Kb2"; */
+"aox-tB-Kb2.normalTitle" = "编辑资料";
+
+/* Class = "UILabel"; text = "更换头像"; ObjectID = "b6G-Be-iSU"; */
+"b6G-Be-iSU.text" = "更换头像";
+
+/* Class = "UILabel"; text = "合拍神器"; ObjectID = "bbz-Bg-qKv"; */
+"bbz-Bg-qKv.text" = "合拍神器";
+
+/* Class = "UINavigationItem"; title = "dialog"; ObjectID = "cM4-f2-Rng"; */
+"cM4-f2-Rng.title" = "dialog";
+
+/* Class = "UILabel"; text = "对方发布的私信是否打扰到你，如果涉及诈骗或者"; ObjectID = "cWe-tZ-NRm"; */
+"cWe-tZ-NRm.text" = "对方发布的私信是否打扰到你，如果涉及诈骗或者";
+
+/* Class = "UILabel"; text = "时间"; ObjectID = "ebi-2L-itK"; */
+"ebi-2L-itK.text" = "时间";
+
+/* Class = "UIButton"; normalTitle = "保存本地"; ObjectID = "g66-eN-VYh"; */
+"g66-eN-VYh.normalTitle" = "保存本地";
+
+/* Class = "UIButton"; normalTitle = "🎭"; ObjectID = "gtK-eZ-yRD"; */
+"gtK-eZ-yRD.normalTitle" = "🎭";
+
+/* Class = "UILabel"; text = "对方发布的私信是否打扰到你，如果涉及诈骗或者"; ObjectID = "hLo-Nn-suk"; */
+"hLo-Nn-suk.text" = "对方发布的私信是否打扰到你，如果涉及诈骗或者";
+
+/* Class = "UILabel"; text = "@卓别林"; ObjectID = "idI-jg-6Of"; */
+"idI-jg-6Of.text" = "@卓别林";
+
+/* Class = "UITextView"; text = "说点儿啥呢？"; ObjectID = "kQe-Wb-4ta"; */
+"kQe-Wb-4ta.text" = "说点儿啥呢？";
+
+/* Class = "UILabel"; text = "在这个隆重的节日里，我想问问你们都是凭什么本事单身的呢？😀#光棍节惊喜请收下"; ObjectID = "kwi-6Q-DTt"; */
+"kwi-6Q-DTt.text" = "在这个隆重的节日里，我想问问你们都是凭什么本事单身的呢？😀#光棍节惊喜请收下";
+
+/* Class = "UILabel"; text = "0/120"; ObjectID = "lG7-44-dJy"; */
+"lG7-44-dJy.text" = "0/120";
+
+/* Class = "UITextField"; placeholder = "说点啥呢？"; ObjectID = "lRi-XD-4Pi"; */
+"lRi-XD-4Pi.placeholder" = "说点啥呢？";
+
+/* Class = "UILabel"; text = "对方发布的私信是否打扰到你，如果涉及诈骗或者"; ObjectID = "mG1-SY-MAh"; */
+"mG1-SY-MAh.text" = "对方发布的私信是否打扰到你，如果涉及诈骗或者";
+
+/* Class = "UIButton"; normalTitle = "↪️"; ObjectID = "meh-pb-YSI"; */
+"meh-pb-YSI.normalTitle" = "↪️";
+
+/* Class = "UILabel"; text = "合演"; ObjectID = "osb-Pc-08w"; */
+"osb-Pc-08w.text" = "合演";
+
+/* Class = "UILabel"; text = "乐乐"; ObjectID = "pTu-Ah-lXU"; */
+"pTu-Ah-lXU.text" = "乐乐";
+
+/* Class = "UIButton"; normalTitle = "💬"; ObjectID = "qzy-pq-1eA"; */
+"qzy-pq-1eA.normalTitle" = "💬";
+
+/* Class = "UITabBarItem"; title = "我的"; ObjectID = "rOY-BE-P8x"; */
+"rOY-BE-P8x.title" = "我的";
+
+/* Class = "UILabel"; text = "评论"; ObjectID = "roE-kA-U6c"; */
+"roE-kA-U6c.text" = "评论";
+
+/* Class = "UINavigationItem"; title = "编辑资料"; ObjectID = "t4M-8S-dh1"; */
+"t4M-8S-dh1.title" = "编辑资料";
+
+/* Class = "UILabel"; text = "昵称"; ObjectID = "uh0-hn-VkB"; */
+"uh0-hn-VkB.text" = "昵称";
+
+/* Class = "UIButton"; normalTitle = "🖇"; ObjectID = "v7m-B3-rKz"; */
+"v7m-B3-rKz.normalTitle" = "🖇";
+
+/* Class = "UILabel"; text = "粉丝"; ObjectID = "vdj-cY-a6K"; */
+"vdj-cY-a6K.text" = "粉丝";
+
+/* Class = "UIButton"; normalTitle = "⏳"; ObjectID = "viG-th-VUP"; */
+"viG-th-VUP.normalTitle" = "⏳";
+
+/* Class = "UITabBarItem"; title = "我的"; ObjectID = "wWa-3p-EDq"; */
+"wWa-3p-EDq.title" = "我的";
+
+/* Class = "UILabel"; text = "对方发布的私信是否打扰到你，如果涉及诈骗或者"; ObjectID = "wfp-8f-25G"; */
+"wfp-8f-25G.text" = "对方发布的私信是否打扰到你，如果涉及诈骗或者";
+
+/* Class = "UIButton"; normalTitle = "💬"; ObjectID = "xQL-hh-jul"; */
+"xQL-hh-jul.normalTitle" = "💬";
+
+/* Class = "UILabel"; text = "对方发布的私信是否打扰到你，如果涉及诈骗或者"; ObjectID = "xtd-Lm-MtH"; */
+"xtd-Lm-MtH.text" = "对方发布的私信是否打扰到你，如果涉及诈骗或者";
+
+/* Class = "UIButton"; normalTitle = "删除作品"; ObjectID = "y6T-Nc-e4E"; */
+"y6T-Nc-e4E.normalTitle" = "删除作品";
+
+/* Class = "UILabel"; text = "评论"; ObjectID = "yAo-6a-1gF"; */
+"yAo-6a-1gF.text" = "评论";
+
+/* Class = "UIButton"; normalTitle = "⏳"; ObjectID = "yye-oB-kQc"; */
+"yye-oB-kQc.normalTitle" = "⏳";
