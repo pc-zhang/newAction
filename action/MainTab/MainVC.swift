@@ -6,6 +6,8 @@
 //  Copyright © 2018年 tencent. All rights reserved.
 //
 
+// ExpressVPN, activate code: EDP7WQC4GPLOOIMVV78M5AN
+
 import UIKit
 import CloudKit
 import AVFoundation
