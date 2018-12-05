@@ -42,7 +42,7 @@ final class UserLocalCache {
         
         CKContainer.default().fetchUserRecordID { (recordID, error) in
             if let recordID = recordID {
-                self.subscripts(recordID)
+//                self.subscripts(recordID)
                 self.updateWithRecordID(recordID)
             }
         }
@@ -118,7 +118,6 @@ final class UserLocalCache {
         }
         operation.database = database
         operationQueue.addOperation(operation)
-        operationQueue.waitUntilAllOperationsAreFinished()
         
         return succeed
     }

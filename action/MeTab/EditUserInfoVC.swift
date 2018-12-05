@@ -66,20 +66,18 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     }
     
     func updateUI() {
-        var imageURL: URL?
-        var nickName: String?
-        var sex: String?
-        var location: String?
-        var sign: String?
-        
-            imageURL = (userCacheOrNil!.myInfoRecord?["avatarImage"] as? CKAsset)?.fileURL
-            nickName = userCacheOrNil!.myInfoRecord?["nickName"] as? String
-            sex = userCacheOrNil!.myInfoRecord?["sex"] as? String
-            location = userCacheOrNil!.myInfoRecord?["location"] as? String
-            sign = userCacheOrNil!.myInfoRecord?["sign"] as? String
+        let imageURL = (userCacheOrNil!.myInfoRecord?["avatarImage"] as? CKAsset)?.fileURL
+        let littleAvatarURL = (userCacheOrNil!.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL
+        let nickName = userCacheOrNil!.myInfoRecord?["nickName"] as? String
+        let sex = userCacheOrNil!.myInfoRecord?["sex"] as? String
+        let location = userCacheOrNil!.myInfoRecord?["location"] as? String
+        let sign = userCacheOrNil!.myInfoRecord?["sign"] as? String
         
         if let imageURL = imageURL {
             self.avatarAsset = CKAsset(fileURL: imageURL)
+        }
+        if let littleAvatarURL = littleAvatarURL {
+            self.littleAvatarAsset = CKAsset(fileURL: littleAvatarURL)
         }
         self.nickNameTextField.text = nickName
         self.sexLabel.text = sex
@@ -132,15 +130,16 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             
             spinner.stopAnimating()
             
-            if let succeed = succeed, succeed == true {
-                return true
-            }
-
-            let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
-            present(alert, animated: true)
-            
-            return false
+            return true
+//            if let succeed = succeed, succeed == true {
+//                return true
+//            }
+//
+//            let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
+//            present(alert, animated: true)
+//
+//            return false
             
         } else {
             let alert = UIAlertController(title: "昵称和地区不能为空", message: nil, preferredStyle: .alert)
