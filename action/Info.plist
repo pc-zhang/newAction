@@ -19,15 +19,17 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Needs your camera to perform a role</string>
+	<string>Needs to access your camera to perform a role</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Needs your microphone to perform a role</string>
+	<string>Needs to access your microphone to perform a role</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Needs your photo library to save your works</string>
+	<string>Needs to access your photo library to save your works</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needs to access your photo library to save your works</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
