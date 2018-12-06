@@ -752,6 +752,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             }
             
             player.play()
+            playButton.isHidden = true
             
             //todo: animate
             if isRecording {
@@ -776,6 +777,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         else {
             // Playing, so pause.
             player.pause()
+            playButton.isHidden = false
             seekTimer?.invalidate()
             recordTimer?.invalidate()
         }

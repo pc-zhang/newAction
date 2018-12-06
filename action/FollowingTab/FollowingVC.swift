@@ -195,7 +195,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.reviewsLabel.text = "\(infoRecord?["reviews"] ?? 0)"
         playViewCell.chorusLabel.text = "\(infoRecord?["chorus"] ?? 0)"
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
-        playViewCell.titleLabel.sizeToFit()
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
             playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
