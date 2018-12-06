@@ -382,8 +382,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             let sign = userRecord?["sign"] as? String
             
             if let imagePath = imageURL?.path {
-                let advTimeGif = UIImage(contentsOfFile: imagePath)
-                headerV.avatarV.image = advTimeGif
+                headerV.avatarV.setImage(UIImage(contentsOfFile: imagePath), for: .normal)
             }
             
             headerV.nickNameV.text = nickName
@@ -471,13 +470,13 @@ class GifViewCell: UICollectionViewCell {
 
 class UserInfoHeaderV: UICollectionReusableView {
     
-    @IBOutlet weak var avatarV: UIImageView! {
+    @IBOutlet weak var avatarV: UIButton! {
         didSet {
-            avatarV.contentMode = .scaleAspectFill
-            avatarV.layer.cornerRadius = avatarV.bounds.width/10
-            avatarV.layer.masksToBounds = true
-            avatarV.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
-            avatarV.layer.borderWidth = 1
+            avatarV.imageView?.contentMode = .scaleAspectFill
+            avatarV.imageView?.layer.cornerRadius = avatarV.bounds.width/10
+            avatarV.imageView?.layer.masksToBounds = true
+            avatarV.imageView?.layer.borderColor = #colorLiteral(red: 0.3529411765, green: 0.3450980392, blue: 0.4235294118, alpha: 1)
+            avatarV.imageView?.layer.borderWidth = 1
         }
     }
     
@@ -485,7 +484,6 @@ class UserInfoHeaderV: UICollectionReusableView {
     @IBOutlet weak var signV: UILabel!
     @IBOutlet weak var positionV: UILabel!
     @IBOutlet weak var deleteArtworksButton: UIButton!
-    @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var followButton: UIButton!
     @IBOutlet weak var messageButton: UIButton!

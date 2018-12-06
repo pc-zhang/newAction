@@ -478,7 +478,7 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WSa-Gv-vvM">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="whx-km-ug9">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="whx-km-ug9">
                                                     <rect key="frame" x="28" y="100" width="100" height="100"/>
                                                     <gestureRecognizers/>
                                                     <constraints>
@@ -486,11 +486,22 @@
                                                         <constraint firstAttribute="height" constant="100" id="yrm-zY-QWg"/>
                                                     </constraints>
                                                 </imageView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RWA-Co-rdQ">
+                                                    <rect key="frame" x="28" y="100" width="100" height="100"/>
+                                                    <state key="normal" image="avatar"/>
+                                                    <connections>
+                                                        <segue destination="I0d-lY-Fz5" kind="show" id="ay2-U2-G52"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <constraints>
+                                                <constraint firstItem="RWA-Co-rdQ" firstAttribute="centerX" secondItem="whx-km-ug9" secondAttribute="centerX" id="7iM-ub-wmG"/>
                                                 <constraint firstItem="whx-km-ug9" firstAttribute="leading" secondItem="WSa-Gv-vvM" secondAttribute="leadingMargin" constant="20" id="Az2-U6-Mku"/>
                                                 <constraint firstAttribute="height" constant="150" id="NVk-ku-QfZ"/>
+                                                <constraint firstItem="RWA-Co-rdQ" firstAttribute="centerY" secondItem="whx-km-ug9" secondAttribute="centerY" id="Vou-6A-gni"/>
+                                                <constraint firstItem="RWA-Co-rdQ" firstAttribute="height" secondItem="whx-km-ug9" secondAttribute="height" id="ZUK-bX-Snh"/>
+                                                <constraint firstItem="RWA-Co-rdQ" firstAttribute="width" secondItem="whx-km-ug9" secondAttribute="width" id="bAL-Q6-SGL"/>
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="合拍神器" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bbz-Bg-qKv">
@@ -521,23 +532,10 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="lastBaseline" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="HN2-bx-LCw">
-                                            <rect key="frame" x="176" y="135" width="230" height="30"/>
+                                            <rect key="frame" x="272" y="135" width="134" height="30"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aox-tB-Kb2">
-                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="30"/>
-                                                    <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="70" id="VD0-T1-O7H"/>
-                                                    </constraints>
-                                                    <state key="normal" title="编辑资料">
-                                                        <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </state>
-                                                    <connections>
-                                                        <segue destination="I0d-lY-Fz5" kind="show" id="Qlj-zy-vH8"/>
-                                                    </connections>
-                                                </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6T-Nc-e4E">
-                                                    <rect key="frame" x="80" y="0.0" width="70" height="30"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="62" height="30"/>
                                                     <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <state key="normal" title="删除作品">
                                                         <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -547,7 +545,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1VK-Tv-nAb">
-                                                    <rect key="frame" x="160" y="0.0" width="70" height="30"/>
+                                                    <rect key="frame" x="72" y="0.0" width="62" height="30"/>
                                                     <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <state key="normal" title="上传作品">
                                                         <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -557,16 +555,12 @@
                                                     </connections>
                                                 </button>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="y6T-Nc-e4E" firstAttribute="width" secondItem="aox-tB-Kb2" secondAttribute="width" id="ct4-Jn-Gtl"/>
-                                                <constraint firstItem="1VK-Tv-nAb" firstAttribute="width" secondItem="aox-tB-Kb2" secondAttribute="width" id="hpX-08-c8g"/>
-                                            </constraints>
                                         </stackView>
                                         <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" alignment="lastBaseline" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Epl-fC-zuJ">
-                                            <rect key="frame" x="256" y="135" width="150" height="30"/>
+                                            <rect key="frame" x="334" y="135" width="72" height="30"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMY-Da-H8Z">
-                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="30"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="31" height="30"/>
                                                     <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <state key="normal" title="关注">
                                                         <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -576,7 +570,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kpi-ub-LWk">
-                                                    <rect key="frame" x="80" y="0.0" width="70" height="30"/>
+                                                    <rect key="frame" x="41" y="0.0" width="31" height="30"/>
                                                     <color key="backgroundColor" red="0.23137254900000001" green="0.2156862745" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <state key="normal" title="私信">
                                                         <color key="titleColor" red="0.76470588240000004" green="0.76078431369999999" blue="0.79215686269999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -666,10 +660,8 @@
                                         </stackView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="RMY-Da-H8Z" firstAttribute="width" secondItem="aox-tB-Kb2" secondAttribute="width" id="7Aa-az-vpC"/>
                                         <constraint firstItem="HYB-gx-Ozi" firstAttribute="top" secondItem="bbz-Bg-qKv" secondAttribute="bottom" constant="10" id="7C7-oT-1TZ"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="bbz-Bg-qKv" secondAttribute="trailing" constant="20" id="8Kg-d0-TwR"/>
-                                        <constraint firstItem="Kpi-ub-LWk" firstAttribute="width" secondItem="aox-tB-Kb2" secondAttribute="width" id="CyN-pL-Pdr"/>
                                         <constraint firstItem="WSa-Gv-vvM" firstAttribute="leading" secondItem="l9h-QR-oyY" secondAttribute="leading" id="DjE-h9-0wv"/>
                                         <constraint firstItem="bbz-Bg-qKv" firstAttribute="leading" secondItem="l9h-QR-oyY" secondAttribute="leadingMargin" constant="20" id="Dl6-yD-0W8"/>
                                         <constraint firstItem="Epl-fC-zuJ" firstAttribute="trailing" secondItem="HN2-bx-LCw" secondAttribute="trailing" id="FUn-Vt-S3e"/>
@@ -690,9 +682,8 @@
                                         <constraint firstAttribute="trailingMargin" secondItem="14O-Je-ieB" secondAttribute="trailing" constant="20" id="snf-U9-QDk"/>
                                     </constraints>
                                     <connections>
-                                        <outlet property="avatarV" destination="whx-km-ug9" id="8UT-FB-zrz"/>
+                                        <outlet property="avatarV" destination="RWA-Co-rdQ" id="J80-3G-S4K"/>
                                         <outlet property="deleteArtworksButton" destination="y6T-Nc-e4E" id="L4e-aW-kKI"/>
-                                        <outlet property="editButton" destination="aox-tB-Kb2" id="QTi-Eq-R7P"/>
                                         <outlet property="followButton" destination="RMY-Da-H8Z" id="m81-Ul-CMp"/>
                                         <outlet property="followersButton" destination="kZb-cc-Eg9" id="qku-7m-HsU"/>
                                         <outlet property="followingsButton" destination="0VO-pq-bqu" id="wVr-po-W4h"/>
@@ -2033,12 +2024,12 @@
         <image name="avatar" width="450" height="476.25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="odh-eK-i01"/>
+        <segue reference="lre-yu-s05"/>
         <segue reference="vMh-Tu-ZOG"/>
         <segue reference="bHc-Bw-6y1"/>
-        <segue reference="YMX-aQ-4Vn"/>
-        <segue reference="NfL-fo-jLw"/>
-        <segue reference="ahZ-Af-xlX"/>
+        <segue reference="voU-2e-4sJ"/>
+        <segue reference="xIF-lt-3ik"/>
+        <segue reference="8U0-dU-CZ9"/>
         <segue reference="dii-3f-POH"/>
     </inferredMetricsTieBreakers>
 </document>
