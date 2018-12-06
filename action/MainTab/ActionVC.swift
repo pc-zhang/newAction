@@ -16,6 +16,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     // MARK: - UI Controls
     
+    @IBOutlet weak var playButton: UIImageView!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var timelineV: UICollectionView!

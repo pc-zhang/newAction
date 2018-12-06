@@ -443,7 +443,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
 
 
 class MainViewCell: UITableViewCell {
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         self.playerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainViewCell.tapPlayViewCell(_:))))
@@ -479,10 +479,12 @@ class MainViewCell: UITableViewCell {
             }
             
             player.play()
+            playButton.isHidden = true
         }
         else {
             // Playing, so pause.
             player.pause()
+            playButton.isHidden = false
         }
         
     }
@@ -504,6 +506,8 @@ class MainViewCell: UITableViewCell {
             avatarV.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         }
     }
+    @IBOutlet weak var playButton: UIImageView!
+    
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()

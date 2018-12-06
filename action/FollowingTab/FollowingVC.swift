@@ -344,15 +344,19 @@ class FollowingViewCell: UITableViewCell {
             }
             
             player.play()
+            playButton.isHidden = true
         }
         else {
             // Playing, so pause.
             player.pause()
+            playButton.isHidden = false
         }
         
     }
     
     // MARK: Properties
+    
+    @IBOutlet weak var playButton: UIImageView!
     @IBOutlet weak var coverV: UIImageView!
     @IBOutlet weak var playerView: PlayerView!
     @IBOutlet weak var chorus: UIButton!
