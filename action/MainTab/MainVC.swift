@@ -286,13 +286,13 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
-            playViewCell.avatarV.image = UIImage(contentsOfFile: avatarImageAsset.fileURL.path)
+            playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
         }
         if let coverImageAsset = artwork?["cover"] as? CKAsset {
             playViewCell.coverV.image = UIImage(contentsOfFile: coverImageAsset.fileURL.path)
         }
         if let nickName = artwork?["nickName"] as? String {
-            playViewCell.nickNameLabel.text = "@\(nickName)"
+            playViewCell.nickNameButton.setTitle("@\(nickName)", for: .normal)
         }
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
@@ -348,8 +348,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         playViewCell.reviewsLabel.text = ""
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
-        playViewCell.nickNameLabel.text = "@卓别林"
-        playViewCell.avatarV.image = #imageLiteral(resourceName: "avatar")
+        playViewCell.nickNameButton.setTitle("@卓别林", for: .normal)
+        playViewCell.avatarV.setImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
         playViewCell.progressV.progress = 0
@@ -491,13 +491,19 @@ class MainViewCell: UITableViewCell {
     @IBOutlet weak var coverV: UIImageView!
     @IBOutlet weak var playerView: PlayerView!
     @IBOutlet weak var chorus: UIButton!
-    @IBOutlet weak var avatarV: UIImageView!
-    @IBOutlet weak var nickNameLabel: UILabel!
+    @IBOutlet weak var nickNameButton: UIButton!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var secondsLabel: UILabel!
     @IBOutlet weak var reviewsLabel: UILabel!
     @IBOutlet weak var chorusLabel: UILabel!
     @IBOutlet weak var progressV: UIProgressView!
+    @IBOutlet weak var avatarV: UIButton! {
+        didSet {
+            avatarV.layer.cornerRadius = avatarV.bounds.height / 2
+            avatarV.layer.borderWidth = 1
+            avatarV.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        }
+    }
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()

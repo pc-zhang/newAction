@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         // Observe the .zoneCacheDidChange and .zoneDidSwitch to update the topic cache if needed.
         //
-        
+                
         // Register for remote notification.
         // The local caches rely on subscription notifications, so notifications have to be granted in this sample.
         //
