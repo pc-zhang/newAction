@@ -1614,7 +1614,6 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="cl7-RL-W8f" secondAttribute="trailing" id="1u0-GP-MEW"/>
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" id="5Ee-L9-wqv"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="trailing" secondItem="wqS-Et-ZjY" secondAttribute="trailing" id="5w1-gI-S4V"/>
                             <constraint firstItem="0vb-2N-rV9" firstAttribute="height" secondItem="sJZ-Nn-Cs3" secondAttribute="height" multiplier="1:20" id="79d-aw-ccO"/>
@@ -1627,28 +1626,29 @@
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerY" secondItem="bag-Bh-uVi" secondAttribute="centerY" id="9zf-qf-hdT"/>
                             <constraint firstItem="Q3C-xP-8lJ" firstAttribute="top" secondItem="B3d-lg-LgM" secondAttribute="bottom" constant="20" id="AU5-Fh-6PE"/>
                             <constraint firstItem="Nj6-2v-Geo" firstAttribute="centerY" secondItem="g66-eN-VYh" secondAttribute="centerY" id="B8Q-Yj-oWe"/>
-                            <constraint firstItem="F5p-4H-gbm" firstAttribute="centerX" secondItem="cl7-RL-W8f" secondAttribute="centerX" id="CJx-h8-hVy"/>
                             <constraint firstItem="bag-Bh-uVi" firstAttribute="height" secondItem="sJZ-Nn-Cs3" secondAttribute="height" multiplier="1:8" id="E0m-qI-iZc"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" id="EbZ-Zo-HHg"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" id="FAD-C7-cPn"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="150" id="Gdo-a2-CN7"/>
                             <constraint firstItem="g66-eN-VYh" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" constant="20" id="Kma-7W-RUk"/>
                             <constraint firstItem="Nj6-2v-Geo" firstAttribute="width" secondItem="g66-eN-VYh" secondAttribute="width" id="Ov8-WA-3v5"/>
-                            <constraint firstAttribute="bottom" secondItem="cl7-RL-W8f" secondAttribute="bottom" id="PXk-e6-u8x"/>
                             <constraint firstItem="wqS-Et-ZjY" firstAttribute="bottom" secondItem="B3d-lg-LgM" secondAttribute="bottom" id="PYO-Tm-nzp"/>
-                            <constraint firstItem="F5p-4H-gbm" firstAttribute="centerY" secondItem="cl7-RL-W8f" secondAttribute="centerY" id="PvF-Fe-Uww"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="trailing" secondItem="sJZ-Nn-Cs3" secondAttribute="trailing" id="QUo-kt-UGx"/>
+                            <constraint firstItem="cl7-RL-W8f" firstAttribute="width" secondItem="1lz-Rq-gsq" secondAttribute="width" id="S50-jh-wVc"/>
                             <constraint firstItem="kQe-Wb-4ta" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" constant="10" id="VqO-C7-Jkh"/>
+                            <constraint firstItem="F5p-4H-gbm" firstAttribute="bottom" secondItem="sJZ-Nn-Cs3" secondAttribute="bottom" id="YyZ-hj-9xx"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="height" secondItem="bag-Bh-uVi" secondAttribute="height" id="ZH3-pt-ZPv"/>
                             <constraint firstItem="g66-eN-VYh" firstAttribute="top" secondItem="kQe-Wb-4ta" secondAttribute="bottom" constant="20" id="a0Z-W3-ZVE"/>
                             <constraint firstItem="Nj6-2v-Geo" firstAttribute="height" secondItem="g66-eN-VYh" secondAttribute="height" id="afD-Qv-RXk"/>
                             <constraint firstItem="wqS-Et-ZjY" firstAttribute="top" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="30" id="cwD-DQ-txY"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="trailing" secondItem="kQe-Wb-4ta" secondAttribute="trailing" constant="10" id="hac-8R-iSy"/>
                             <constraint firstItem="B3d-lg-LgM" firstAttribute="centerX" secondItem="1lz-Rq-gsq" secondAttribute="centerX" id="hqv-Pc-gf0"/>
+                            <constraint firstItem="cl7-RL-W8f" firstAttribute="height" secondItem="1lz-Rq-gsq" secondAttribute="height" id="j5r-ga-PjL"/>
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerX" secondItem="bag-Bh-uVi" secondAttribute="centerX" id="kqJ-k2-da8"/>
-                            <constraint firstItem="F5p-4H-gbm" firstAttribute="height" secondItem="cl7-RL-W8f" secondAttribute="height" id="lXh-xI-Qqj"/>
                             <constraint firstItem="cl7-RL-W8f" firstAttribute="leading" secondItem="1lz-Rq-gsq" secondAttribute="leading" id="q12-31-VF8"/>
                             <constraint firstItem="kQe-Wb-4ta" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" constant="100" id="rrs-qb-Zhw"/>
                             <constraint firstItem="0vb-2N-rV9" firstAttribute="top" secondItem="sJZ-Nn-Cs3" secondAttribute="top" constant="50" id="tcT-XD-nzC"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="trailing" secondItem="Nj6-2v-Geo" secondAttribute="trailing" constant="20" id="vTA-C0-Fp7"/>
-                            <constraint firstItem="F5p-4H-gbm" firstAttribute="width" secondItem="cl7-RL-W8f" secondAttribute="width" id="wb2-D5-gNb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sJZ-Nn-Cs3"/>
                     </view>
@@ -1674,7 +1674,9 @@
                         <outlet property="audioLevel" destination="Q3C-xP-8lJ" id="Hm6-Vz-EXa"/>
                         <outlet property="middleLineV" destination="1JG-lK-fvT" id="11U-Zn-6Ox"/>
                         <outlet property="playButton" destination="uZS-ya-jDL" id="zde-zA-dMO"/>
+                        <outlet property="playerHeightConstraint" destination="j5r-ga-PjL" id="Xgt-eo-YBu"/>
                         <outlet property="playerV" destination="cl7-RL-W8f" id="qnY-gu-Kx1"/>
+                        <outlet property="playerWidthConstraint" destination="S50-jh-wVc" id="fYj-q4-lVF"/>
                         <outlet property="recordButton" destination="B3d-lg-LgM" id="U9C-Op-h7k"/>
                         <outlet property="saveLocalButton" destination="g66-eN-VYh" id="yvL-V1-qdF"/>
                         <outlet property="timelineV" destination="bag-Bh-uVi" id="sxd-dv-zLK"/>

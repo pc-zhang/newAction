@@ -467,8 +467,21 @@ class MainViewCell: UITableViewCell {
                 self.progressV.progress = Float(playerTime.seconds / duration.seconds)
             }
         })
+        
+        player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
 
     }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rate" {
+            if player.rate == 1  {
+                playButton.isHidden = true
+            }else{
+                playButton.isHidden = false
+            }
+        }
+    }
+    
     
     @IBAction func tapPlayViewCell(_ sender: Any) {
         if player.rate == 0 {
@@ -479,12 +492,10 @@ class MainViewCell: UITableViewCell {
             }
             
             player.play()
-            playButton.isHidden = true
         }
         else {
             // Playing, so pause.
             player.pause()
-            playButton.isHidden = false
         }
         
     }

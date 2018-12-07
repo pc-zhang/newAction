@@ -443,6 +443,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             picker.allowsEditing = false
             present(picker, animated: false)
         }
+    
+        player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
+        
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rate" {
+            if player.rate == 1  {
+                playButton.isHidden = true
+            }else{
+                playButton.isHidden = false
+            }
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -752,7 +765,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             }
             
             player.play()
-            playButton.isHidden = true
             
             //todo: animate
             if isRecording {
@@ -777,7 +789,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         else {
             // Playing, so pause.
             player.pause()
-            playButton.isHidden = false
             seekTimer?.invalidate()
             recordTimer?.invalidate()
         }
@@ -1269,6 +1280,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
     }
     
+    
+    @IBOutlet weak var playerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var playerWidthConstraint: NSLayoutConstraint!
+    
     override func viewDidLayoutSubviews() {
         let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
         if isRecording {
@@ -1276,19 +1291,23 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 let scale = safeArea.width / width
                 let offsetY = (safeArea.height - height * scale) / 2
                 _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
+                _previewView?.layoutIfNeeded()
             }
             
             switch(actionSegment.selectedSegmentIndex) {
             case 0:
-                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0/3)
+                playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0/3)
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 
             case 1:
-                playerV.frame = CGRect(x: 0, y: safeArea.origin.y, width: safeArea.width/3, height: safeArea.height/3)
+                playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0/3)
+                playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0/3)
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 
             case 2:
-                playerV.frame = safeArea
+                playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0)
+                playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0)
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
                 
             default:
@@ -1296,9 +1315,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             }
             
         } else {
-            playerV.frame = safeArea
+            playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0)
+            playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         }
+        
+        playerV.layoutIfNeeded()
+        
     }
     
     private var _recording: Bool = false {
@@ -1375,4 +1398,28 @@ class ThumbnailCell: UICollectionViewCell {
     @IBOutlet weak var imageV: UIImageView!
     
     var thumbnailTime: CMTime? = nil
+}
+
+extension NSLayoutConstraint {
+    
+    func setMultiplier(multiplier:CGFloat) -> NSLayoutConstraint {
+        
+        NSLayoutConstraint.deactivate([self])
+        
+        let newConstraint = NSLayoutConstraint(
+            item: firstItem,
+            attribute: firstAttribute,
+            relatedBy: relation,
+            toItem: secondItem,
+            attribute: secondAttribute,
+            multiplier: multiplier,
+            constant: constant)
+        
+        newConstraint.priority = priority
+        newConstraint.shouldBeArchived = shouldBeArchived
+        newConstraint.identifier = identifier
+        
+        NSLayoutConstraint.activate([newConstraint])
+        return newConstraint
+    }
 }

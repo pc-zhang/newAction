@@ -332,6 +332,18 @@ class FollowingViewCell: UITableViewCell {
             }
         })
         
+        player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
+        
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rate" {
+            if player.rate == 1  {
+                playButton.isHidden = true
+            }else{
+                playButton.isHidden = false
+            }
+        }
     }
     
     @IBAction func tapPlayViewCell(_ sender: Any) {
@@ -343,12 +355,10 @@ class FollowingViewCell: UITableViewCell {
             }
             
             player.play()
-            playButton.isHidden = true
         }
         else {
             // Playing, so pause.
             player.pause()
-            playButton.isHidden = false
         }
         
     }
