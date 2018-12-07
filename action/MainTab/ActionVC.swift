@@ -769,7 +769,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             //todo: animate
             if isRecording {
                 recordTimer?.invalidate()
-                recordTimer = Timer.scheduledTimer(withTimeInterval: recordTimeRange.end.seconds-currentTime+0.3, repeats: false, block: { (timer) in
+                recordTimer = Timer.scheduledTimer(withTimeInterval: recordTimeRange.end.seconds-currentTime+0.1, repeats: false, block: { (timer) in
                     self.timelineV.contentOffset.x = CGFloat(self.recordTimeRange.start.seconds / self.interval) * self.timelineV.bounds.height - self.timelineV.bounds.width/2
                     self.tapPlayView(0)
                     self.player.seek(to: self.recordTimeRange.start)

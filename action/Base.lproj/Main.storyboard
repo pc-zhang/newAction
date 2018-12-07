@@ -1450,7 +1450,7 @@
                                 </connections>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.25" maximumZoomScale="2" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bag-Bh-uVi" userLabel="Timeline2">
-                                <rect key="frame" x="0.0" y="615.5" width="414" height="96.5"/>
+                                <rect key="frame" x="0.0" y="600" width="414" height="112"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <gestureRecognizers/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="UPU-5b-0yR">
@@ -1461,7 +1461,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" reuseIdentifier="thumbnail cell" id="JUL-dL-fMr" customClass="ThumbnailCell" customModule="action" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="11" width="75" height="75"/>
+                                        <rect key="frame" x="0.0" y="18.5" width="75" height="75"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
@@ -1487,7 +1487,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="shot separator" id="G2c-BB-Gri">
-                                    <rect key="frame" x="75" y="0.0" width="2" height="96.5"/>
+                                    <rect key="frame" x="75" y="0.0" width="2" height="112"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </collectionReusableView>
@@ -1550,7 +1550,7 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </segmentedControl>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1JG-lK-fvT">
-                                <rect key="frame" x="206" y="615.5" width="2" height="96.5"/>
+                                <rect key="frame" x="206" y="600" width="2" height="112"/>
                                 <color key="backgroundColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="2" id="82J-GQ-FEb"/>
@@ -1624,7 +1624,7 @@
                             <constraint firstItem="1JG-lK-fvT" firstAttribute="centerY" secondItem="bag-Bh-uVi" secondAttribute="centerY" id="9zf-qf-hdT"/>
                             <constraint firstItem="Q3C-xP-8lJ" firstAttribute="top" secondItem="B3d-lg-LgM" secondAttribute="bottom" constant="20" id="AU5-Fh-6PE"/>
                             <constraint firstItem="Nj6-2v-Geo" firstAttribute="centerY" secondItem="g66-eN-VYh" secondAttribute="centerY" id="B8Q-Yj-oWe"/>
-                            <constraint firstItem="bag-Bh-uVi" firstAttribute="height" secondItem="sJZ-Nn-Cs3" secondAttribute="height" multiplier="1:8" id="E0m-qI-iZc"/>
+                            <constraint firstItem="bag-Bh-uVi" firstAttribute="height" secondItem="1lz-Rq-gsq" secondAttribute="height" multiplier="1:8" id="E0m-qI-iZc"/>
                             <constraint firstItem="F5p-4H-gbm" firstAttribute="top" secondItem="1lz-Rq-gsq" secondAttribute="top" id="EbZ-Zo-HHg"/>
                             <constraint firstItem="F5p-4H-gbm" firstAttribute="leading" secondItem="sJZ-Nn-Cs3" secondAttribute="leading" id="FAD-C7-cPn"/>
                             <constraint firstItem="sJZ-Nn-Cs3" firstAttribute="bottom" secondItem="bag-Bh-uVi" secondAttribute="bottom" constant="150" id="Gdo-a2-CN7"/>
@@ -2062,7 +2062,7 @@
         <segue reference="lre-yu-s05"/>
         <segue reference="vMh-Tu-ZOG"/>
         <segue reference="bHc-Bw-6y1"/>
-        <segue reference="YMX-aQ-4Vn"/>
+        <segue reference="voU-2e-4sJ"/>
         <segue reference="xIF-lt-3ik"/>
         <segue reference="8U0-dU-CZ9"/>
         <segue reference="dii-3f-POH"/>

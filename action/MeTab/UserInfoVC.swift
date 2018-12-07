@@ -426,7 +426,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = (collectionView.bounds.width - 2) / 3
+        let cellWidth = collectionView.bounds.width / 3 - 1
         return CGSize(width: cellWidth, height: cellWidth / 3.0 * 4)
     }
     
