@@ -396,6 +396,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             attribSeconds.append(NSMutableAttributedString(string: "时间", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
             headerV.secondsButton.setAttributedTitle(attribSeconds, for: .normal)
             headerV.signV.text = sign
+            headerV.sizeToFit()
             headerV.delegate = self
         }
         return headerV

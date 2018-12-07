@@ -246,18 +246,17 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         tableView.addSubview(refreshControl)
         tableView.estimatedRowHeight = tableView.bounds.height
         tableView.rowHeight = tableView.bounds.height
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        isAppearing = true
         
         if tableView.numberOfRows(inSection: 0) > 0 {
             tableView.scrollToRow(at: IndexPath(row: selectedRow ?? 0, section: 0), at: .top, animated: false)
         } else {
             fetchData(0)
         }
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isAppearing = true
         (tableView.visibleCells.first as? MainViewCell)?.player.play()
     }
     

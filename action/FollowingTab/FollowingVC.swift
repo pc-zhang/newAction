@@ -195,6 +195,9 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.reviewsLabel.text = "\(infoRecord?["reviews"] ?? 0)"
         playViewCell.chorusLabel.text = "\(infoRecord?["chorus"] ?? 0)"
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
+        if let date = artwork?.creationDate {
+            playViewCell.timeLabel.text = dateFormatter.string(from: date)
+        }
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
             playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
@@ -368,7 +371,6 @@ class FollowingViewCell: UITableViewCell {
     @IBOutlet weak var playButton: UIImageView!
     @IBOutlet weak var coverV: UIImageView!
     @IBOutlet weak var playerView: PlayerView!
-    @IBOutlet weak var chorus: UIButton!
     @IBOutlet weak var avatarV: UIButton!
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
@@ -376,6 +378,8 @@ class FollowingViewCell: UITableViewCell {
     @IBOutlet weak var reviewsLabel: UILabel!
     @IBOutlet weak var chorusLabel: UILabel!
     @IBOutlet weak var progressV: UIProgressView!
+    @IBOutlet weak var timeLabel: UILabel!
+    
     
     static let reuseIdentifier = "FollowingViewCell"
     var player = AVPlayer()

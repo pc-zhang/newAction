@@ -403,6 +403,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        playerV.player = player
+        playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+        
         timelineV.contentInset = UIEdgeInsets(top: 0, left: view.bounds.width/2, bottom: 0, right: view.bounds.width/2)
         timelineV.panGestureRecognizer.addTarget(self, action: #selector(type(of: self).pan))
         
@@ -770,7 +773,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             //todo: animate
             if isRecording {
                 recordTimer?.invalidate()
-                recordTimer = Timer.scheduledTimer(withTimeInterval: recordTimeRange.end.seconds-currentTime+0.3, repeats: false, block: { (timer) in
+                recordTimer = Timer.scheduledTimer(withTimeInterval: recordTimeRange.end.seconds-currentTime+0.39, repeats: false, block: { (timer) in
                    self.timelineV.contentOffset.x = CGFloat(self.recordTimeRange.start.seconds / self.interval) * self.timelineV.bounds.height - self.timelineV.bounds.width/2
                     self.tapPlayView(0)
                     self.player.seek(to: self.recordTimeRange.start)
@@ -1004,8 +1007,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     
                 }
                 
-                self.playerV.player = self.player
-                self.playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
                 
                 self.interval = self.composition!.duration.seconds / 5
                 // update timeline
@@ -1140,9 +1141,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 let transformer2 = AVMutableVideoCompositionLayerInstruction(assetTrack: secondVideoTrack)
                 
                 let renderSize2 = secondVideoTrack.naturalSize.applying(secondVideoTrack.preferredTransform)
-                let renderScale = videoComposition!.renderSize.width / renderSize2.width
-                let translateY = (renderSize2.height * renderScale - videoComposition!.renderSize.height) / 2
-                transformer2.setTransform(secondVideoTrack.preferredTransform.scaledBy(x: renderScale, y: renderScale).concatenating(CGAffineTransform(translationX: 0, y: -translateY)), at: instruction.timeRange.start)
+                let xScale = videoComposition!.renderSize.width / renderSize2.width
+                let yScale = videoComposition!.renderSize.height / renderSize2.height
+                if xScale >= yScale {
+                    let translateY = (renderSize2.height * xScale - videoComposition!.renderSize.height) / 2
+                    transformer2.setTransform(secondVideoTrack.preferredTransform.concatenating(CGAffineTransform(scaleX: xScale, y: xScale)).concatenating(CGAffineTransform(translationX: 0, y: -translateY)), at: instruction.timeRange.start)
+                } else {
+                    let translateX = (renderSize2.width * yScale - videoComposition!.renderSize.width) / 2
+                    transformer2.setTransform(secondVideoTrack.preferredTransform.concatenating(CGAffineTransform(scaleX: yScale, y: yScale)).concatenating(CGAffineTransform(translationX: -translateX, y: 0)), at: instruction.timeRange.start)
+                }
+                
                 instruction.layerInstructions = [transformer2]
             } else {
                 let transformer1 = AVMutableVideoCompositionLayerInstruction(assetTrack: firstVideoTrack)
@@ -1243,9 +1251,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var recordTimeRange = CMTimeRange.zero
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.portrait
-    }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.portrait
+//    }
     
     var _currentIdx = 0
     
@@ -1286,12 +1294,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var playerWidthConstraint: NSLayoutConstraint!
     
     override func viewDidLayoutSubviews() {
-        let safeArea = view.bounds //.inset(by: view.safeAreaInsets)
         if isRecording {
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
-                let scale = safeArea.width / width
-                let offsetY = (safeArea.height - height * scale) / 2
-                _previewView?.frame = CGRect(x: 0, y: offsetY, width: safeArea.width, height: height * scale)
+                let xScale = view.bounds.width / width
+                let yScale = view.bounds.height / height
+                if xScale <= yScale {
+                    let offsetY = (view.bounds.height - height * xScale) / 2
+                    _previewView?.frame = CGRect(x: 0, y: offsetY, width: view.bounds.width, height: height * xScale)
+                } else {
+                    let offsetX = (view.bounds.width - width * yScale) / 2
+                    _previewView?.frame = CGRect(x: offsetX, y: 0, width: width * yScale, height: view.bounds.height)
+                }
                 _previewView?.layoutIfNeeded()
             }
             

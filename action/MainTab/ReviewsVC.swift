@@ -30,7 +30,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     @IBOutlet weak var reviewTextFieldBottomHeight: NSLayoutConstraint!
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        reviewTextFieldBottomHeight.constant = 500
+        reviewTextFieldBottomHeight.constant = view.bounds.height / 2
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
