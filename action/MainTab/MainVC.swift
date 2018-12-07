@@ -18,13 +18,13 @@ struct ArtWorkInfo {
     var info: CKRecord? = nil
 }
 
-class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITableViewDataSourcePrefetching, SecondsDelegate {
+class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, SecondsDelegate {
     var userID: CKRecord.ID? = nil
     var chorusFromArtworkID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
-    private var artworkRecords: [ArtWorkInfo] = []
+    var artworkRecords: [ArtWorkInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
@@ -143,7 +143,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     
     func queryFullArtwork(_ row: Int)
     {
-        guard let infoRecord = artworkRecords[row].info else {
+        guard row < artworkRecords.count, row >= 0, let infoRecord = artworkRecords[row].info else {
             return
         }
 
@@ -229,10 +229,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
                 self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
                 self.tableView.reloadData()
-                if self.tableView.numberOfRows(inSection: 0) > 0 {
-                    self.tableView.scrollToRow(at: IndexPath(row: self.selectedRow ?? 0, section: 0), at: .middle, animated: false)
-                }
-                
             }
         }
         queryInfoOp.database = self.database
@@ -248,17 +244,25 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(type(of: self).fetchData(_:)), for: UIControl.Event.valueChanged)
         tableView.addSubview(refreshControl)
-        
-        fetchData(0)
+        tableView.estimatedRowHeight = tableView.bounds.height
+        tableView.rowHeight = tableView.bounds.height
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isAppearing = true
+        
+        if tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.scrollToRow(at: IndexPath(row: selectedRow ?? 0, section: 0), at: .top, animated: false)
+        } else {
+            fetchData(0)
+        }
+        
         (tableView.visibleCells.first as? MainViewCell)?.player.play()
     }
     
     override func viewDidLayoutSubviews() {
+        tableView.estimatedRowHeight = tableView.bounds.height
         tableView.rowHeight = tableView.bounds.height
     }
     
@@ -275,6 +279,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         queryFullArtwork(indexPath.row)
+        queryFullArtwork(indexPath.row + 1)
+        queryFullArtwork(indexPath.row - 1)
         
         let playViewCell = cell as! MainViewCell
         let infoRecord = artworkRecords[indexPath.row].info
@@ -296,13 +302,13 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         }
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
-        if let cursor = cursor, !isFetchingData, surplus < 1 {
+        if let cursor = cursor, !isFetchingData, surplus < 2 {
             isFetchingData = true
             let recordsCountBefore = artworkRecords.count
             var tmpArtworkRecords:[ArtWorkInfo] = []
             
             let queryArtworksOp = CKQueryOperation(cursor: cursor)
-            queryArtworksOp.resultsLimit = 1 - surplus
+            queryArtworksOp.resultsLimit = 2 - surplus
             queryArtworksOp.recordFetchedBlock = { (infoRecord) in
                 var artWorkInfo = ArtWorkInfo()
                 artWorkInfo.info = infoRecord
@@ -366,13 +372,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITa
         }
     }
     
-    // MARK: - UITableViewPrefetching
-    
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        for indexPath in indexPaths {
-            queryFullArtwork(indexPath.row)
-        }
-    }
     
     // MARK: - UITableViewDataSource
     

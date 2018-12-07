@@ -434,6 +434,12 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         if segue.identifier == "artworks segue" {
             if let artworksVC = segue.destination as? MainVC, let selectedItem = collectionView.indexPathsForSelectedItems?.first?.item {
                 artworksVC.userID = userID
+                artworksVC.cursor = cursor
+                artworksVC.artworkRecords = artworkRecords.map {
+                    var artworkInfo = ArtWorkInfo()
+                    artworkInfo.info = $0.info
+                    return artworkInfo
+                }
                 artworksVC.selectedRow = selectedItem
             }
         } else if segue.identifier == "me to dialog" {
