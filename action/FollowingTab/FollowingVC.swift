@@ -384,5 +384,5 @@ class FollowingViewCell: UITableViewCell {
     static let reuseIdentifier = "FollowingViewCell"
     var player = AVPlayer()
     var url : URL?
-    weak open var delegate: SecondsDelegate?
+    weak open var delegate: ArtworksTableViewDelegate?
 }

@@ -12,19 +12,27 @@ import UIKit
 import CloudKit
 import AVFoundation
 
+struct ActorInfo {
+    var isPrefetched: Bool = false
+    var artwork: CKRecord? = nil
+    var info: CKRecord? = nil
+}
+
 struct ArtWorkInfo {
     var isPrefetched: Bool = false
     var artwork: CKRecord? = nil
     var info: CKRecord? = nil
 }
 
-class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, SecondsDelegate {
+class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ArtworksTableViewDelegate, ActorTableViewDelegate, UITableViewDataSourcePrefetching {
+    
     var userID: CKRecord.ID? = nil
     var chorusFromArtworkID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var artworkRecords: [ArtWorkInfo] = []
+    var actors: [ActorInfo] = []
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
@@ -32,10 +40,49 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     var isFetchingData: Bool = false
     var refreshControl = UIRefreshControl()
     var isAppearing: Bool = false
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var artworksTableView: UITableView!
+    @IBOutlet weak var actorsTableView: UITableView!
+    
+    @IBOutlet weak var tableViewTrailingWidth: NSLayoutConstraint!
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    func changeActor(_ cell: UITableViewCell) {
+        guard let actorRow = actorsTableView.indexPath(for: cell)?.row, let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let mainCell = (artworksTableView.cellForRow(at: IndexPath(row: row, section: 0)) as? MainViewCell), let button = (cell as? ActorCell)?.actorButton else {
+            return
+        }
+        
+        artworkRecords[row].info = actors[actorRow].info
+        artworkRecords[row].artwork = actors[actorRow].artwork
+        artworkRecords[row].isPrefetched = false
+        artworksTableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
+        
+        let actor = UIButton()
+        view.addSubview(actor)
+        actor.frame = button.convert(button.frame, to: view)
+        actor.clipsToBounds = true
+        actor.layer.cornerRadius = actor.bounds.height / 2
+        actor.setBackgroundImage(button.currentBackgroundImage, for: .normal)
+        button.isHidden = true
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            var avatarFrame = mainCell.avatarV.convert(mainCell.avatarV.frame, to: self.view)
+            avatarFrame.origin.x += 85
+            actor.layer.frame = avatarFrame
+            self.tableViewTrailingWidth.constant = 0
+            self.view.layoutIfNeeded()
+        }) { (b) in
+            actor.removeFromSuperview()
+            button.isHidden = false
+        }
+
+        artworksTableView.isScrollEnabled = true
+    }
     
     func addSeconds(_ cell: UITableViewCell) {
-        guard let row = tableView.indexPath(for: cell)?.row, let infoRecord = artworkRecords[row].info else {
+        guard let row = artworksTableView.indexPath(for: cell)?.row, let infoRecord = artworkRecords[row].info else {
             return
         }
         secondsPlus(infoRecord) { newInfoRecord in
@@ -101,40 +148,36 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     
     @IBAction func done(bySegue: UIStoryboardSegue) {
         if bySegue.identifier == "review to main" {
-            if let row = tableView.indexPathsForVisibleRows?.first?.row {
+            if let row = artworksTableView.indexPathsForVisibleRows?.first?.row {
                 queryInfo(row)
             }
         }
         if bySegue.identifier == "action to main" {
-            if let row = tableView.indexPathsForVisibleRows?.first?.row {
+            if let row = artworksTableView.indexPathsForVisibleRows?.first?.row {
                 queryInfo(row)
             }
         }
-    }
-    
-    @IBAction func swipeRight(_ sender: Any) {
-        cancel(sender)
     }
     
     func reloadVisibleRow(_ row: Int, type: Int) {
         let indexPath = IndexPath(row: row, section: 0)
 
-        if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+        if artworksTableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
             switch(type) {
             case 0:
                 if let secondsValue = artworkRecords[row].info?["seconds"] as? Int64 {
-                    (tableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsValue.seconds2String())"
+                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsValue.seconds2String())"
                 }
                 if let reviewsValue = artworkRecords[row].info?["reviews"] as? Int64 {
-                    (tableView.cellForRow(at: indexPath) as? MainViewCell)?.reviewsLabel.text = "\(reviewsValue)"
+                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.reviewsLabel.text = "\(reviewsValue)"
                 }
                 if let chorusValue = artworkRecords[row].info?["chorus"] as? Int64 {
-                    (tableView.cellForRow(at: indexPath) as? MainViewCell)?.chorusLabel.text = "\(chorusValue)"
+                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.chorusLabel.text = "\(chorusValue)"
                 }
             default:
-                tableView.reloadRows(at: [indexPath], with: .none)
+                artworksTableView.reloadRows(at: [indexPath], with: .none)
                 if isAppearing {
-                    (tableView.visibleCells.first as? MainViewCell)?.player.play()
+                    (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
                 }
             }
         }
@@ -176,7 +219,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
                 let savedURL = ckasset.fileURL.appendingPathExtension("mov")
                 try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
                 DispatchQueue.main.sync {
-                    self.artworkRecords[row].artwork?["video"] = ckasset
+                    self.artworkRecords[row].artwork?["video"] = CKAsset(fileURL: savedURL)
                     self.reloadVisibleRow(row, type: 1)
                 }
             }
@@ -228,7 +271,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
             DispatchQueue.main.sync {
                 self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
-                self.tableView.reloadData()
+                self.artworksTableView.reloadData()
             }
         }
         queryInfoOp.database = self.database
@@ -243,12 +286,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(type(of: self).fetchData(_:)), for: UIControl.Event.valueChanged)
-        tableView.addSubview(refreshControl)
-        tableView.estimatedRowHeight = tableView.bounds.height
-        tableView.rowHeight = tableView.bounds.height
+        artworksTableView.addSubview(refreshControl)
+        artworksTableView.estimatedRowHeight = artworksTableView.bounds.height
+        artworksTableView.rowHeight = artworksTableView.bounds.height
         
-        if tableView.numberOfRows(inSection: 0) > 0 {
-            tableView.scrollToRow(at: IndexPath(row: selectedRow ?? 0, section: 0), at: .top, animated: false)
+        if artworksTableView.numberOfRows(inSection: 0) > 0 {
+            artworksTableView.scrollToRow(at: IndexPath(row: selectedRow ?? 0, section: 0), at: .top, animated: false)
         } else {
             fetchData(0)
         }
@@ -257,25 +300,102 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isAppearing = true
-        (tableView.visibleCells.first as? MainViewCell)?.player.play()
+        (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
     }
     
     override func viewDidLayoutSubviews() {
-        tableView.estimatedRowHeight = tableView.bounds.height
-        tableView.rowHeight = tableView.bounds.height
+        artworksTableView.estimatedRowHeight = artworksTableView.bounds.height
+        artworksTableView.rowHeight = artworksTableView.bounds.height
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         isAppearing = false
-        for cell in tableView.visibleCells {
+        for cell in artworksTableView.visibleCells {
             (cell as? MainViewCell)?.player.pause()
         }
     }
+    
+    func queryActorInfos(_ artworkID: CKRecord.ID) {
+        
+        var tmpActors:[ActorInfo] = []
+        
+        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", artworkID))
+        let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
+        query.sortDescriptors = [byChorusCount]
+        
+        let queryInfoOp = CKQueryOperation(query: query)
+        queryInfoOp.resultsLimit = 99
+        queryInfoOp.recordFetchedBlock = { (infoRecord) in
+            var tmpActor = ActorInfo()
+            tmpActor.info = infoRecord
+            tmpActors.append(tmpActor)
+        }
+        queryInfoOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                self.actors = tmpActors.map {$0}
+                self.isFetchingData = false
+                self.actorsTableView.reloadData()
+            }
+        }
+        queryInfoOp.database = self.database
+        self.operationQueue.addOperation(queryInfoOp)
+    }
+    
+    func queryAvatar(_ row: Int)
+    {
+        guard row < actors.count, row >= 0, let infoRecord = actors[row].info else {
+            return
+        }
+        
+        if actors[row].isPrefetched == true {
+            return
+        }
+        actors[row].isPrefetched = true
+        
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
+        
+        let queryArtworkOp = CKQueryOperation(query: query)
+        queryArtworkOp.desiredKeys = ["avatar"]
+        queryArtworkOp.recordFetchedBlock = { (artworkRecord) in
+            DispatchQueue.main.sync {
+                if row < self.actors.count {
+                    self.actors[row].artwork = artworkRecord
+                    self.actorsTableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
+                }
+            }
+        }
+        queryArtworkOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+        }
+        queryArtworkOp.database = self.database
+        self.operationQueue.addOperation(queryArtworkOp)
+        
+    }
 
     // MARK: - UITableViewDelegate
+
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        if tableView == actorsTableView {
+            for indexPath in indexPaths {
+                queryAvatar(indexPath.row)
+            }
+        }
+    }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if let actorCell = cell as? ActorCell {
+            queryAvatar(indexPath.row)
+            
+            if let avatarImageAsset = actors[indexPath.row].artwork?["avatar"] as? CKAsset {
+                actorCell.actorButton.setBackgroundImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
+            }
+            
+            return
+        }
         
         queryFullArtwork(indexPath.row)
         queryFullArtwork(indexPath.row + 1)
@@ -291,13 +411,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         playViewCell.titleLabel.text = "\(artwork?["title"] ?? "")"
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
-            playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
+            playViewCell.avatarV.setBackgroundImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
         }
         if let coverImageAsset = artwork?["cover"] as? CKAsset {
             playViewCell.coverV.image = UIImage(contentsOfFile: coverImageAsset.fileURL.path)
         }
         if let nickName = artwork?["nickName"] as? String {
             playViewCell.nickNameButton.setTitle("@\(nickName)", for: .normal)
+            playViewCell.followButton.isHidden = false
         }
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
@@ -326,7 +447,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
                     }
                     
                     self.isFetchingData = false
-                    self.tableView.insertRows(at: indexPaths, with: .none)
+                    self.artworksTableView.insertRows(at: indexPaths, with: .none)
                 }
             }
             queryArtworksOp.database = self.database
@@ -335,7 +456,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         }
 
         
-        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL.appendingPathExtension("mov")
+        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL
         if let url = playViewCell.url {
             let playerItem = AVPlayerItem(url: url)
             playViewCell.player.replaceCurrentItem(with: playerItem)
@@ -345,6 +466,11 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     }
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if let actorCell = cell as? ActorCell {
+            actorCell.actorButton.setBackgroundImage(nil, for: .normal)
+        }
+        
         guard let playViewCell = cell as? MainViewCell else {
             return
         }
@@ -354,10 +480,11 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
         playViewCell.nickNameButton.setTitle("@卓别林", for: .normal)
-        playViewCell.avatarV.setImage(#imageLiteral(resourceName: "avatar"), for: .normal)
+        playViewCell.avatarV.setBackgroundImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
         playViewCell.progressV.progress = 0
+        playViewCell.followButton.isHidden = true
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
@@ -367,6 +494,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         if let tableView = scrollView as? UITableView {
             if let playViewCell = tableView.visibleCells.first as? MainViewCell {
                 playViewCell.player.play()
+                actors = []
+                actorsTableView.reloadData()
             }
         }
     }
@@ -380,11 +509,19 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableView == actorsTableView {
+            return actors.count
+        }
         // #warning Incomplete implementation, return the number of rows
         return artworkRecords.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if tableView == actorsTableView, let cell = tableView.dequeueReusableCell(withIdentifier: "actor cell", for: indexPath) as? ActorCell {
+            cell.delegate = self
+            return cell
+        }
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainViewCell.reuseIdentifier, for: indexPath) as? MainViewCell else {
             fatalError("Expected `\(MainViewCell.self)` type for reuseIdentifier \(MainViewCell.reuseIdentifier). Check the configuration in Main.storyboard.")
@@ -397,22 +534,22 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "action segue" {
-            if let actionVC = segue.destination as? ActionVC, let currentCell = tableView.visibleCells.first as? MainViewCell, let currentIndex = tableView.indexPath(for: currentCell) {
+            if let actionVC = segue.destination as? ActionVC, let currentCell = artworksTableView.visibleCells.first as? MainViewCell, let currentIndex = artworksTableView.indexPath(for: currentCell) {
                 actionVC.url = currentCell.url
                 actionVC.infoRecord = artworkRecords[currentIndex.row].info
                 actionVC.artworkID = artworkRecords[currentIndex.row].artwork?.recordID
                 currentCell.player.pause()
             }
         } else if segue.identifier == "artist segue" {
-            if let userInfoVC = segue.destination as? UserInfoVC, let row = tableView.indexPathsForVisibleRows?.first?.row {
+            if let userInfoVC = segue.destination as? UserInfoVC, let row = artworksTableView.indexPathsForVisibleRows?.first?.row {
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
-        } else if segue.identifier == "reviews segue", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+        } else if segue.identifier == "reviews segue", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
             if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }
-        } else if segue.identifier == "main to chorus", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
+        } else if segue.identifier == "main to chorus", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
             if let chorusVC = segue.destination as? ChorusVC {
                 chorusVC.artworkID = artworkRecords[row].artwork?.recordID
             }
@@ -422,7 +559,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == "artist segue" {
-            if let row = self.tableView.indexPathsForVisibleRows?.first?.row, let userID = userID, let creatorUserRecordID = artworkRecords[row].artwork?.creatorUserRecordID, creatorUserRecordID == userID {
+            if let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row, let userID = userID, let creatorUserRecordID = artworkRecords[row].artwork?.creatorUserRecordID, creatorUserRecordID == userID {
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                 }
@@ -437,6 +574,62 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Seco
         navigationController?.popViewController(animated: true)
     }
     
+    
+    @IBAction func swipeRight(_ sender: Any) {
+        if tableViewTrailingWidth.constant == 85 {
+            UIView.animate(withDuration: 0.3) {
+                self.tableViewTrailingWidth.constant = 0
+                self.view.layoutIfNeeded()
+            }
+            
+            artworksTableView.isScrollEnabled = true
+            
+            return
+        }
+    }
+    
+    @IBAction func swipeLeft(_ sender: Any) {
+        guard  tableViewTrailingWidth.constant == 0, let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let artworkID = (artworkRecords[row].info?["chorusFrom"] as? CKRecord.Reference)?.recordID else {
+            return
+        }
+        queryActorInfos(artworkID)
+        
+        artworksTableView.isScrollEnabled = false
+        
+        UIView.animate(withDuration: 0.3) {
+            self.tableViewTrailingWidth.constant = 85
+            self.view.layoutIfNeeded()
+        }
+        
+    }
+    
+    @IBAction func showActors(_ sender: Any) {
+        if tableViewTrailingWidth.constant == 85 {
+            swipeRight(sender)
+            return
+        }
+        
+        if tableViewTrailingWidth.constant == 0 {
+            swipeLeft(sender)
+            return
+        }
+        
+    }
+    
+}
+
+class ActorCell: UITableViewCell {
+    
+    @IBOutlet weak var actorButton: UIButton! {
+        didSet {
+            actorButton.layer.cornerRadius = actorButton.bounds.height / 2
+        }
+    }
+    
+    @IBAction func changeActor(_ sender: Any) {
+        self.delegate?.changeActor(self)
+    }
+    weak open var delegate: ActorTableViewDelegate?
 }
 
 
@@ -516,16 +709,25 @@ class MainViewCell: UITableViewCell {
         }
     }
     @IBOutlet weak var playButton: UIImageView!
+    @IBOutlet weak var followButton: UIButton! {
+        didSet {
+            followButton.layer.cornerRadius = 8
+        }
+    }
     
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()
     var url : URL?
-    weak open var delegate: SecondsDelegate?
+    weak open var delegate: ArtworksTableViewDelegate?
 }
 
-public protocol SecondsDelegate : NSObjectProtocol {
+public protocol ArtworksTableViewDelegate : NSObjectProtocol {
     func addSeconds(_ cell: UITableViewCell)
+}
+
+public protocol ActorTableViewDelegate : NSObjectProtocol {
+    func changeActor(_ cell: UITableViewCell)
 }
 
 extension Int64 {

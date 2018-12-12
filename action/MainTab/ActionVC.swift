@@ -32,6 +32,12 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var saveLocalButton: UIButton!
     
+    @IBOutlet weak var cutButton: UIButton! {
+        didSet {
+            cutButton.transform = CGAffineTransform(rotationAngle: .pi)
+        }
+    }
+    
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     lazy var operationQueue: OperationQueue = {
