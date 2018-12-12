@@ -158,9 +158,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             DispatchQueue.main.sync {
                 self.followersCount = tmpFollowers.count
                 
-                let attribFollower = NSMutableAttributedString(string: "\(self.followersCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
-                attribFollower.append(NSMutableAttributedString(string: "粉丝", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
-                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followersButton.setAttributedTitle(attribFollower, for: .normal)
+                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followersButton.setTitle("\(self.followersCount)", for: .normal)
             }
         }
         queryFollowersOp.database = self.database
@@ -179,10 +177,8 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             
             DispatchQueue.main.sync {
                 self.followingsCount = tmpFollowings.count
-                let attribFollowing = NSMutableAttributedString(string: "\(self.followingsCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
-                attribFollowing.append(NSMutableAttributedString(string: "关注", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
                 
-                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followingsButton.setAttributedTitle(attribFollowing, for: .normal)
+                (self.collectionView.visibleSupplementaryViews(ofKind: "UICollectionElementKindSectionHeader").first as? UserInfoHeaderV)?.followingsButton.setTitle("\(self.followingsCount)", for: .normal)
                 
             }
         }
@@ -371,14 +367,10 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
             
-            headerV.myInfo.isHidden = !(isMyPage ?? false)
-            headerV.herInfo.isHidden = isMyPage ?? true
-            headerV.followButton.setTitle(followRecord != nil ? "取消关注" : "关注", for: .normal)
+            headerV.followButton.setTitle(followRecord != nil ? "已关注" : "+关注", for: .normal)
             
             let imageURL = (userRecord?["avatarImage"] as? CKAsset)?.fileURL
             let nickName = userRecord?["nickName"] as? String
-            let sex = userRecord?["sex"] as? String
-            let location = userRecord?["location"] as? String
             let sign = userRecord?["sign"] as? String
             
             if let imagePath = imageURL?.path {
@@ -386,21 +378,18 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             }
             
             headerV.nickNameV.text = nickName
-            let attribFollowing = NSMutableAttributedString(string: "\(followingsCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
-            attribFollowing.append(NSMutableAttributedString(string: "关注", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
-            headerV.followingsButton.setAttributedTitle(attribFollowing, for: .normal)
-            let attribFollower = NSMutableAttributedString(string: "\(followersCount)", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
-            attribFollower.append(NSMutableAttributedString(string: "粉丝", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
-            headerV.followersButton.setAttributedTitle(attribFollower, for: .normal)
-            let attribSeconds = NSMutableAttributedString(string: "\(secondsCount.seconds2String())", attributes: [.font: UIFont(name: "Helvetica", size: 24.0)!, .foregroundColor: UIColor.white])
-            attribSeconds.append(NSMutableAttributedString(string: "时间", attributes: [.font: UIFont(name: "Helvetica", size: 15.0)!, .foregroundColor: UIColor.white]))
-            headerV.secondsButton.setAttributedTitle(attribSeconds, for: .normal)
+            
+            headerV.followingsButton.setTitle("\(followingsCount)", for: .normal)
+            headerV.followersButton.setTitle("\(followersCount)", for: .normal)
+            headerV.secondsButton.setTitle("\(secondsCount.seconds2String())", for: .normal)
             headerV.signV.text = sign
-            headerV.sizeToFit()
+            headerV.signV.sizeToFit()
             headerV.delegate = self
+            
         }
         return headerV
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return artworkRecords.count
@@ -489,25 +478,28 @@ class UserInfoHeaderV: UICollectionReusableView {
     
     @IBOutlet weak var nickNameV: UILabel!
     @IBOutlet weak var signV: UILabel!
-    @IBOutlet weak var positionV: UILabel!
-    @IBOutlet weak var deleteArtworksButton: UIButton!
     @IBOutlet weak var uploadButton: UIButton!
-    @IBOutlet weak var followButton: UIButton!
-    @IBOutlet weak var messageButton: UIButton!
+    @IBOutlet weak var followButton: UIButton! {
+        didSet {
+            followButton.layer.cornerRadius = 14
+        }
+    }
+    @IBOutlet weak var otherButton: UIButton! {
+        didSet {
+            otherButton.layer.cornerRadius = otherButton.bounds.width / 2
+        }
+    }
+    
     
     @IBOutlet weak var followingsButton: UIButton!
     @IBOutlet weak var followersButton: UIButton!
     @IBOutlet weak var secondsButton: UIButton!
     
-    
-    @IBOutlet weak var myInfo: UIStackView!
-    @IBOutlet weak var herInfo: UIStackView!
-    
     weak open var delegate: HeaderViewDelegate?
     
     var isEditMode = false {
         didSet {
-            deleteArtworksButton.setTitle(!isEditMode ? "删除作品" : "完成删除", for: .normal)
+//            deleteArtworksButton.setTitle(!isEditMode ? "删除作品" : "完成删除", for: .normal)
         }
     }
     
@@ -534,3 +526,4 @@ class UserInfoHeaderV: UICollectionReusableView {
 public protocol HeaderViewDelegate : NSObjectProtocol {
     func deleteArtworksMode(_ isEditMode: Bool)
 }
+
