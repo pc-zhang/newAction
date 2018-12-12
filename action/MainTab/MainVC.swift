@@ -22,10 +22,12 @@ struct ArtWorkInfo {
     var isPrefetched: Bool = false
     var artwork: CKRecord? = nil
     var info: CKRecord? = nil
+    var followRecord: CKRecord? = nil
+    var isFollowRecordFetched: Bool = false
 }
 
 class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ArtworksTableViewDelegate, ActorTableViewDelegate, UITableViewDataSourcePrefetching {
-    
+
     var userID: CKRecord.ID? = nil
     var chorusFromArtworkID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
@@ -161,23 +163,38 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     func reloadVisibleRow(_ row: Int, type: Int) {
         let indexPath = IndexPath(row: row, section: 0)
+        
+        guard let playerCell = artworksTableView.cellForRow(at: indexPath) as? MainViewCell else {
+            return
+        }
 
         if artworksTableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
             switch(type) {
             case 0:
                 if let secondsValue = artworkRecords[row].info?["seconds"] as? Int64 {
-                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.secondsLabel.text = "\(secondsValue.seconds2String())"
+                    playerCell.secondsLabel.text = "\(secondsValue.seconds2String())"
                 }
                 if let reviewsValue = artworkRecords[row].info?["reviews"] as? Int64 {
-                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.reviewsLabel.text = "\(reviewsValue)"
+                    playerCell.reviewsLabel.text = "\(reviewsValue)"
                 }
                 if let chorusValue = artworkRecords[row].info?["chorus"] as? Int64 {
-                    (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.chorusLabel.text = "\(chorusValue)"
+                    playerCell.chorusLabel.text = "\(chorusValue)"
                 }
+                if artworkRecords[indexPath.row].isFollowRecordFetched {
+                    playerCell.followButton.isHidden = false
+                    if artworkRecords[indexPath.row].followRecord != nil {
+                        playerCell.followButton.setTitle("已关注", for: .normal)
+                    } else {
+                        playerCell.followButton.setTitle("+关注", for: .normal)
+                    }
+                } else {
+                    playerCell.followButton.isHidden = true
+                }
+                
             default:
                 artworksTableView.reloadData()
                 if isAppearing {
-                    (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
+                    playerCell.player.play()
                 }
             }
         }
@@ -194,6 +211,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             return
         }
         artworkRecords[row].isPrefetched = true
+        
+        if let artistID = infoRecord.creatorUserRecordID {
+            queryFollowRecord(artistID, row)
+        }
         
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
         
@@ -419,7 +440,16 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
         if let nickName = artwork?["nickName"] as? String {
             playViewCell.nickNameButton.setTitle("@\(nickName)", for: .normal)
+        }
+        if artworkRecords[indexPath.row].isFollowRecordFetched {
             playViewCell.followButton.isHidden = false
+            if artworkRecords[indexPath.row].followRecord != nil {
+                playViewCell.followButton.setTitle("已关注", for: .normal)
+            } else {
+                playViewCell.followButton.setTitle("+关注", for: .normal)
+            }
+        } else {
+            playViewCell.followButton.isHidden = true
         }
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
@@ -480,6 +510,69 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
+    }
+    
+    func follow(_ cell: UITableViewCell) {
+        guard let row = artworksTableView.indexPath(for: cell)?.row, artworkRecords[row].isFollowRecordFetched, let yourID = artworkRecords[row].info?.creatorUserRecordID else {
+            return
+        }
+        
+        if artworkRecords[row].followRecord != nil {
+            let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [artworkRecords[row].followRecord!.recordID])
+            
+            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
+                
+                DispatchQueue.main.sync {
+                    self.artworkRecords[row].followRecord = nil
+                    self.reloadVisibleRow(row, type: 0)
+                }
+            }
+            operation.database = self.database
+            self.operationQueue.addOperation(operation)
+        } else {
+            let followRecord = CKRecord(recordType: "Follow")
+            followRecord["followed"] = CKRecord.Reference(recordID: yourID, action: .none)
+            
+            let operation = CKModifyRecordsOperation(recordsToSave: [followRecord], recordIDsToDelete: nil)
+            
+            operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+                guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil,
+                    let newRecord = records?.first else { return }
+                
+                DispatchQueue.main.sync {
+                    self.artworkRecords[row].followRecord = newRecord
+                    self.reloadVisibleRow(row, type: 0)
+                }
+            }
+            operation.database = self.database
+            self.operationQueue.addOperation(operation)
+        }
+        
+    }
+    
+    func queryFollowRecord(_ yourID: CKRecord.ID, _ row: Int) {
+        guard let myInfoRecord = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord else {
+            return
+        }
+        
+        let query = CKQuery(recordType: "Follow", predicate: NSPredicate(format: "followed = %@ && creatorUserRecordID = %@", yourID, myInfoRecord.recordID))
+        let queryMessagesOp = CKQueryOperation(query: query)
+        
+        queryMessagesOp.recordFetchedBlock = { (record) in
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].followRecord = record
+                self.reloadVisibleRow(row, type: 0)
+            }
+        }
+        queryMessagesOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].isFollowRecordFetched = true
+            }
+        }
+        queryMessagesOp.database = self.database
+        self.operationQueue.addOperation(queryMessagesOp)
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -718,6 +811,10 @@ class MainViewCell: UITableViewCell {
         }
     }
     
+    @IBAction func follow(_ sender: Any) {
+        delegate?.follow(self)
+    }
+    
     
     static let reuseIdentifier = "TCPlayViewCell"
     var player = AVPlayer()
@@ -727,6 +824,7 @@ class MainViewCell: UITableViewCell {
 
 public protocol ArtworksTableViewDelegate : NSObjectProtocol {
     func addSeconds(_ cell: UITableViewCell)
+    func follow(_ cell: UITableViewCell)
 }
 
 public protocol ActorTableViewDelegate : NSObjectProtocol {
