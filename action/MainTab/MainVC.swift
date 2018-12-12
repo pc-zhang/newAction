@@ -40,9 +40,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     var isFetchingData: Bool = false
     var refreshControl = UIRefreshControl()
     var isAppearing: Bool = false
+
     @IBOutlet weak var artworksTableView: UITableView!
     @IBOutlet weak var actorsTableView: UITableView!
-    
     @IBOutlet weak var tableViewTrailingWidth: NSLayoutConstraint!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -57,7 +57,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         artworkRecords[row].info = actors[actorRow].info
         artworkRecords[row].artwork = actors[actorRow].artwork
         artworkRecords[row].isPrefetched = false
-        artworksTableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
+        artworksTableView.reloadSections(IndexSet(0...0), with: .fade)
         
         let actor = UIButton()
         view.addSubview(actor)
@@ -175,7 +175,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                     (artworksTableView.cellForRow(at: indexPath) as? MainViewCell)?.chorusLabel.text = "\(chorusValue)"
                 }
             default:
-                artworksTableView.reloadRows(at: [indexPath], with: .none)
+                artworksTableView.reloadData()
                 if isAppearing {
                     (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
                 }
@@ -233,10 +233,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     @IBAction func fetchData(_ sender: Any) {
-        artworkRecords = []
         operationQueue.cancelAllOperations()
+        artworkRecords = []
         isFetchingData = true
-        var tmpArtworkRecords:[ArtWorkInfo] = []
         
         var query: CKQuery
         if let userID = userID {
@@ -258,18 +257,20 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         queryInfoOp.recordFetchedBlock = { (infoRecord) in
             var artWorkInfo = ArtWorkInfo()
             artWorkInfo.info = infoRecord
-            tmpArtworkRecords.append(artWorkInfo)
+            self.artworkRecords.append(artWorkInfo)
         }
         queryInfoOp.queryCompletionBlock = { (cursor, error) in
             DispatchQueue.main.sync {
                 self.refreshControl.endRefreshing()
+                if let firstIndex = self.artworksTableView.indexPathsForVisibleRows?.first {
+                    self.artworksTableView.scrollToRow(at: firstIndex, at: .top, animated: false)
+                }
             }
             
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
             
             DispatchQueue.main.sync {
-                self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                 self.isFetchingData = false
                 self.artworksTableView.reloadData()
             }
@@ -424,8 +425,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         let surplus = artworkRecords.count - (indexPath.row + 1)
         if let cursor = cursor, !isFetchingData, surplus < 2 {
             isFetchingData = true
-            let recordsCountBefore = artworkRecords.count
-            var tmpArtworkRecords:[ArtWorkInfo] = []
             
             let queryArtworksOp = CKQueryOperation(cursor: cursor)
             queryArtworksOp.resultsLimit = 2 - surplus
@@ -433,7 +432,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 var artWorkInfo = ArtWorkInfo()
                 artWorkInfo.info = infoRecord
                 DispatchQueue.main.sync {
-                    tmpArtworkRecords.append(artWorkInfo)
+                    self.artworkRecords.append(artWorkInfo)
                 }
             }
             queryArtworksOp.queryCompletionBlock = { (cursor, error) in
@@ -441,20 +440,13 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 self.cursor = cursor
                 
                 DispatchQueue.main.sync {
-                    self.artworkRecords.append(contentsOf: tmpArtworkRecords)
-                    let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
-                        IndexPath(row: $0, section: 0)
-                    }
-                    
                     self.isFetchingData = false
-                    self.artworksTableView.insertRows(at: indexPaths, with: .none)
                 }
             }
             queryArtworksOp.database = self.database
             self.operationQueue.addOperation(queryArtworksOp)
             
         }
-
         
         playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL
         if let url = playViewCell.url {
@@ -464,7 +456,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
         
     }
-
+    
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         if let actorCell = cell as? ActorCell {
@@ -479,7 +471,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         playViewCell.reviewsLabel.text = ""
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
-        playViewCell.nickNameButton.setTitle("@卓别林", for: .normal)
+        playViewCell.nickNameButton.setTitle("", for: .normal)
         playViewCell.avatarV.setBackgroundImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
@@ -491,11 +483,19 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if let tableView = scrollView as? UITableView {
+        if let tableView = scrollView as? UITableView, tableView == artworksTableView {
             if let playViewCell = tableView.visibleCells.first as? MainViewCell {
                 playViewCell.player.play()
                 actors = []
                 actorsTableView.reloadData()
+            }
+            let recordsCountBefore = artworksTableView.numberOfRows(inSection: 0)
+            if recordsCountBefore < artworkRecords.count {
+                let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
+                    IndexPath(row: $0, section: 0)
+                }
+            
+                self.artworksTableView.insertRows(at: indexPaths, with: .none)
             }
         }
     }
@@ -592,7 +592,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         guard  tableViewTrailingWidth.constant == 0, let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let artworkID = (artworkRecords[row].info?["chorusFrom"] as? CKRecord.Reference)?.recordID else {
             return
         }
-        queryActorInfos(artworkID)
+        
+        if actors.count == 0 {
+            queryActorInfos(artworkID)
+        }
         
         artworksTableView.isScrollEnabled = false
         
