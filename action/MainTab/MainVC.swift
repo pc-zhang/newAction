@@ -46,6 +46,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     @IBOutlet weak var artworksTableView: UITableView!
     @IBOutlet weak var actorsTableView: UITableView!
     @IBOutlet weak var tableViewTrailingWidth: NSLayoutConstraint!
+    @IBOutlet weak var locationSegment: UIButton!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -303,9 +304,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(type(of: self).fetchData(_:)), for: UIControl.Event.valueChanged)
         artworksTableView.addSubview(refreshControl)
@@ -321,6 +319,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+       
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.setNavigationBarHidden(false, animated: true)
         isAppearing = true
         (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
@@ -636,6 +638,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             }
         } else if segue.identifier == "main to artist" {
             if let userInfoVC = segue.destination as? UserInfoVC, let row = artworksTableView.indexPathsForVisibleRows?.first?.row {
+                userInfoVC.hidesBottomBarWhenPushed = true
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
         } else if segue.identifier == "reviews segue", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {

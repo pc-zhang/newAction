@@ -126,13 +126,24 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.isTranslucent = false
         navigationController?.setNavigationBarHidden(false, animated: false)
+        
+        if collectionView.contentOffset.y < 100 {
+            navigationController?.navigationBar.alpha = 1
+            navigationItem.title = ""
+            followItem.alpha = 0
+            otherItem.alpha = 0
+        } else {
+            navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200 + 0.01
+            navigationItem.title = userRecord?["nickName"] as? String
+            followItem.alpha = 1
+            otherItem.alpha = 1
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200
     }
     
     deinit {
@@ -399,7 +410,6 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             }
             
             headerV.nickNameV.text = nickName
-            navigationItem.title = nickName
             
             headerV.followingsButton.setTitle("\(followingsCount)", for: .normal)
             headerV.followersButton.setTitle("\(followersCount)", for: .normal)
@@ -447,12 +457,27 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             return
         }
         
-        navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200
+        if collectionView.contentOffset.y < 100 {
+            navigationController?.navigationBar.alpha = 1
+            navigationItem.title = ""
+            followItem.alpha = 0
+            otherItem.alpha = 0
+        } else {
+            navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200 + 0.01
+            if navigationItem.title == "" {
+                navigationItem.title = userRecord?["nickName"] as? String
+            }
+            followItem.alpha = 1
+            otherItem.alpha = 1
+        }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "artworks segue" {
             if let artworksVC = segue.destination as? MainVC, let selectedItem = collectionView.indexPathsForSelectedItems?.first?.item {
+                artworksVC.hidesBottomBarWhenPushed = true
+                artworksVC.locationSegment.isHidden = true
                 artworksVC.userID = userID
                 artworksVC.cursor = cursor
                 artworksVC.artworkRecords = artworkRecords.map {
