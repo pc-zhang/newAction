@@ -323,7 +323,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setNavigationBarHidden(false, animated: false)
         isAppearing = true
         (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
     }

@@ -146,6 +146,10 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         super.viewDidAppear(animated)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

@@ -40,6 +40,10 @@ class MessagesVC: UITableViewController {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(type(of:self).newMessage(_:)),
@@ -58,6 +62,10 @@ class MessagesVC: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return indexPath.section == 0 ? 110 : 70
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -102,7 +110,7 @@ class MessagesVC: UITableViewController {
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.dateFormat = "MM-dd mm:ss"
         return dateFormatter
     }()
     
@@ -172,7 +180,11 @@ class MessagesVC: UITableViewController {
 
 
 class DialogCell: UITableViewCell {
-    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var avatarV: UIImageView! {
+        didSet {
+            avatarV.layer.cornerRadius = avatarV.layer.bounds.width / 2
+        }
+    }
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var lastMessageLabel: UILabel!
     @IBOutlet weak var lastMessageTimeLabel: UILabel!

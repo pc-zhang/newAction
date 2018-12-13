@@ -54,6 +54,19 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         }
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.bounds.height
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.bounds.height
+    }
+    
+    
     @objc open func fetchData()  {
         artworkRecords = []
         operationQueue.cancelAllOperations()
@@ -112,7 +125,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.dateFormat = "MM-dd HH:mm"
         return dateFormatter
     }()
     
@@ -202,7 +215,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         }
         
         if let avatarImageAsset = artwork?["avatar"] as? CKAsset {
-            playViewCell.avatarV.setImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
+            playViewCell.avatarV.setBackgroundImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
         }
         if let coverImageAsset = artwork?["cover"] as? CKAsset {
             playViewCell.coverV.image = UIImage(contentsOfFile: coverImageAsset.fileURL.path)
@@ -253,6 +266,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
             playViewCell.player.seek(to: .zero)
         }
         
+        tableView.setNeedsLayout()
+        
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -265,7 +280,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
         playViewCell.nickNameLabel.text = "@卓别林"
-        playViewCell.avatarV.setImage(#imageLiteral(resourceName: "avatar"), for: .normal)
+        playViewCell.avatarV.setBackgroundImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
         playViewCell.progressV.progress = 0
@@ -373,7 +388,11 @@ class FollowingViewCell: UITableViewCell {
     @IBOutlet weak var playButton: UIImageView!
     @IBOutlet weak var coverV: UIImageView!
     @IBOutlet weak var playerView: PlayerView!
-    @IBOutlet weak var avatarV: UIButton!
+    @IBOutlet weak var avatarV: UIButton! {
+        didSet {
+            avatarV.layer.cornerRadius = avatarV.bounds.height / 2
+        }
+    }
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var secondsLabel: UILabel!
