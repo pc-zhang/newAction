@@ -30,6 +30,18 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var followItem: UIButton! {
+        didSet {
+            followItem.layer.cornerRadius = 12
+        }
+    }
+    
+    @IBOutlet weak var otherItem: UIButton! {
+        didSet {
+            otherItem.layer.cornerRadius = otherItem.bounds.width / 2
+        }
+    }
+    
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var userID: CKRecord.ID?
@@ -113,6 +125,14 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200
     }
     
     deinit {
@@ -368,6 +388,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         if let headerV = headerV as? UserInfoHeaderV {
             
             headerV.followButton.setTitle(followRecord != nil ? "已关注" : "+关注", for: .normal)
+            followItem.setTitle(followRecord != nil ? "已关注" : "+关注", for: .normal)
             
             let imageURL = (userRecord?["avatarImage"] as? CKAsset)?.fileURL
             let nickName = userRecord?["nickName"] as? String
@@ -378,6 +399,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             }
             
             headerV.nickNameV.text = nickName
+            navigationItem.title = nickName
             
             headerV.followingsButton.setTitle("\(followingsCount)", for: .normal)
             headerV.followersButton.setTitle("\(followersCount)", for: .normal)
@@ -418,6 +440,14 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cellWidth = collectionView.bounds.width / 3 - 1
         return CGSize(width: cellWidth, height: cellWidth / 3.0 * 4)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let collectionView = scrollView as? UICollectionView else {
+            return
+        }
+        
+        navigationController?.navigationBar.alpha = collectionView.contentOffset.y / 200
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -478,7 +508,6 @@ class UserInfoHeaderV: UICollectionReusableView {
     
     @IBOutlet weak var nickNameV: UILabel!
     @IBOutlet weak var signV: UILabel!
-    @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var followButton: UIButton! {
         didSet {
             followButton.layer.cornerRadius = 14
@@ -489,6 +518,7 @@ class UserInfoHeaderV: UICollectionReusableView {
             otherButton.layer.cornerRadius = otherButton.bounds.width / 2
         }
     }
+    
     
     
     @IBOutlet weak var followingsButton: UIButton!

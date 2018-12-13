@@ -42,6 +42,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

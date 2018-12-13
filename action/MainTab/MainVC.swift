@@ -321,6 +321,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
         isAppearing = true
         (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
     }
@@ -633,7 +634,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 actionVC.artworkID = artworkRecords[currentIndex.row].artwork?.recordID
                 currentCell.player.pause()
             }
-        } else if segue.identifier == "artist segue" {
+        } else if segue.identifier == "main to artist" {
             if let userInfoVC = segue.destination as? UserInfoVC, let row = artworksTableView.indexPathsForVisibleRows?.first?.row {
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
@@ -651,7 +652,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if identifier == "artist segue" {
+        if identifier == "main to artist" {
             if let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row, let userID = userID, let creatorUserRecordID = artworkRecords[row].artwork?.creatorUserRecordID, creatorUserRecordID == userID {
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
