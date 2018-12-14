@@ -292,7 +292,11 @@ class DialogVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UI
 
 
 class MessageCell: UITableViewCell {
-    @IBOutlet weak var avatarImageV: UIImageView!
+    @IBOutlet weak var avatarImageV: UIImageView! {
+        didSet {
+            avatarImageV.layer.cornerRadius = avatarImageV.bounds.height / 2
+        }
+    }
     @IBOutlet weak var messageTextLabel: UILabel!
     
 }

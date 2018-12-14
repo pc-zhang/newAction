@@ -234,7 +234,11 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
 }
 
 class ReviewCell: UITableViewCell {
-    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var avatarV: UIImageView! {
+        didSet {
+            avatarV.layer.cornerRadius = avatarV.bounds.height / 2
+        }
+    }
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var reviewLabel: UILabel!
     @IBOutlet weak var createTimeLabel: UILabel!

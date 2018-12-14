@@ -65,7 +65,7 @@ class MessagesVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return indexPath.section == 0 ? 110 : 70
+        return indexPath.section == 0 ? 120 : 70
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -172,6 +172,7 @@ class MessagesVC: UITableViewController {
                 //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
                 followersVC.userID = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID
                 followersVC.isFollowers = true
+                followersVC.navigationItem.title = "粉丝"
             }
         }
     }

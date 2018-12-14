@@ -192,6 +192,7 @@ class FollowersVC: UITableViewController, UITableViewDataSourcePrefetching, Foll
         if segue.identifier == "follower to me" {
             if let userInfoVC = segue.destination as? UserInfoVC, let selectedRow = self.tableView.indexPathForSelectedRow {
                 userInfoVC.userID = self.followerRecords[selectedRow.row].artistRecord?.recordID
+                userInfoVC.hidesBottomBarWhenPushed = true
             }
         }
     }
@@ -241,10 +242,18 @@ class FollowersVC: UITableViewController, UITableViewDataSourcePrefetching, Foll
 
 class FollowerCell: UITableViewCell {
     
-    @IBOutlet weak var avatarV: UIImageView!
+    @IBOutlet weak var avatarV: UIImageView! {
+        didSet {
+            avatarV.layer.cornerRadius = avatarV.layer.bounds.width / 2
+        }
+    }
     @IBOutlet weak var nickNameLabel: UILabel!
     @IBOutlet weak var signLabel: UILabel!
-    @IBOutlet weak var followButton: UIButton!
+    @IBOutlet weak var followButton: UIButton! {
+        didSet {
+            followButton.layer.cornerRadius = 12
+        }
+    }
     
     @IBAction func follow(_ sender: Any) {
         delegate?.follow(self)

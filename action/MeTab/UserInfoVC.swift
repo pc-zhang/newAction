@@ -501,12 +501,14 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
                 followersVC.userID = self.userID
                 followersVC.isFollowers = true
+                followersVC.navigationItem.title = "粉丝"
             }
         } else if segue.identifier == "me to followings" {
             if let followersVC = segue.destination as? FollowersVC {
                 //                dialogVC.dialogID = dialogInfos[selectedRow.row].dialog?.recordID
                 followersVC.userID = self.userID
                 followersVC.isFollowers = false
+                followersVC.navigationItem.title = "关注"
             }
         }
     }
