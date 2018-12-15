@@ -11,7 +11,11 @@ import UIKit
 import AVFoundation
 import CloudKit
 
-class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public protocol ActorCollectionViewDelegate : NSObjectProtocol {
+    func changeActor(_ cell: UICollectionViewCell)
+}
+
+class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, ActorCollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -34,6 +38,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         super.viewDidLoad()
         
         tableView.estimatedRowHeight = view.bounds.height
+        tableView.rowHeight = view.bounds.height
         
         refresh.addTarget(self, action: #selector(fetchData), for: .valueChanged)
         tableView.addSubview(refresh)
@@ -88,9 +93,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         queryFollowersOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
-            var tmpArtworkRecords:[ArtWorkInfo] = []
-            
-            var query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
+            let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
             
@@ -99,7 +102,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
             queryInfoOp.recordFetchedBlock = { (infoRecord) in
                 var artWorkInfo = ArtWorkInfo()
                 artWorkInfo.info = infoRecord
-                tmpArtworkRecords.append(artWorkInfo)
+                self.artworkRecords.append(artWorkInfo)
             }
             queryInfoOp.queryCompletionBlock = { (cursor, error) in
                 DispatchQueue.main.sync {
@@ -109,7 +112,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
                 self.cursor = cursor
                 
                 DispatchQueue.main.sync {
-                    self.artworkRecords.append(contentsOf: tmpArtworkRecords)
                     self.isFetchingData = false
                     self.tableView.reloadData()
                 }
@@ -119,6 +121,84 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         }
         queryFollowersOp.database = self.database
         operationQueue.addOperation(queryFollowersOp)
+    }
+    
+    // MARK: - UICollectionViewDelegate
+    
+    func changeActor(_ cell: UICollectionViewCell) {
+        guard let collectionView = cell.superview as? NumberedCollectionView, let actorItem = collectionView.indexPath(for: cell)?.item, let followingCell = collectionView.superview?.superview as? FollowingViewCell, let row = collectionView.followingCellRow, row < artworkRecords.count, let actorButton = (cell as? FollowingActorCell)?.actorButton else {
+            return
+        }
+        
+        artworkRecords[row].info = artworkRecords[row].actors[actorItem].info
+        artworkRecords[row].artwork = artworkRecords[row].actors[actorItem].artwork
+        artworkRecords[row].isPrefetched = false
+        tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
+        
+        let actor = UIButton()
+        view.addSubview(actor)
+        actor.frame = cell.convert(actorButton.frame, to: view)
+        actor.clipsToBounds = true
+        actor.layer.cornerRadius = actor.bounds.height / 2
+        actor.setBackgroundImage(actorButton.currentBackgroundImage, for: .normal)
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            let avatarFrame = followingCell.convert(followingCell.avatarV.frame, to: self.view)
+            actor.layer.frame = avatarFrame
+        }) { (b) in
+            actor.removeFromSuperview()
+        }
+        
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let row = (collectionView as? NumberedCollectionView)?.followingCellRow, row < artworkRecords.count else {
+            return 0
+        }
+        
+        return artworkRecords[row].actors.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let actorCell = collectionView.dequeueReusableCell(withReuseIdentifier: "following actor cell", for: indexPath) as! FollowingActorCell
+        
+        actorCell.delegate = self
+        
+        return actorCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let row = (collectionView as? NumberedCollectionView)?.followingCellRow, row < artworkRecords.count else {
+            return
+        }
+        
+        if let actorCell = cell as? FollowingActorCell {
+            queryAvatar(indexPath.item, row)
+            
+            if let avatarImageAsset = artworkRecords[row].actors[indexPath.item].artwork?["avatar"] as? CKAsset {
+                actorCell.actorButton.setBackgroundImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
+            }
+            
+            return
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        guard let row = (collectionView as? NumberedCollectionView)?.followingCellRow, row < artworkRecords.count else {
+            return
+        }
+        
+        for indexPath in indexPaths {
+            queryAvatar(indexPath.item, row)
+        }
     }
     
     // MARK: - UITableViewDelegate
@@ -150,9 +230,42 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         }
     }
     
+    func queryAvatar(_ item: Int, _ artworksRow: Int)
+    {
+        guard item < artworkRecords[artworksRow].actors.count, item >= 0, let infoRecord = artworkRecords[artworksRow].actors[item].info else {
+            return
+        }
+        
+        if artworkRecords[artworksRow].actors[item].isPrefetched == true {
+            return
+        }
+        artworkRecords[artworksRow].actors[item].isPrefetched = true
+        
+        let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
+        
+        let queryArtworkOp = CKQueryOperation(query: query)
+        queryArtworkOp.desiredKeys = ["avatar"]
+        queryArtworkOp.recordFetchedBlock = { (artworkRecord) in
+            DispatchQueue.main.sync {
+                if item < self.artworkRecords[artworksRow].actors.count {
+                    self.artworkRecords[artworksRow].actors[item].artwork = artworkRecord
+                    if let collectionView = (self.tableView.cellForRow(at: IndexPath(row: artworksRow, section: 0)) as? FollowingViewCell)?.collectionView, collectionView.followingCellRow != nil {
+                        collectionView.reloadData()
+                    }
+                }
+            }
+        }
+        queryArtworkOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+        }
+        queryArtworkOp.database = self.database
+        self.operationQueue.addOperation(queryArtworkOp)
+        
+    }
+    
     func queryFullArtwork(_ row: Int)
     {
-        guard let infoRecord = artworkRecords[row].info else {
+        guard row < artworkRecords.count, row >= 0, let infoRecord = artworkRecords[row].info, let artworkID = (artworkRecords[row].info?["chorusFrom"] as? CKRecord.Reference)?.recordID else {
             return
         }
         
@@ -160,6 +273,31 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
             return
         }
         artworkRecords[row].isPrefetched = true
+        
+        var tmpActors:[ActorInfo] = []
+        let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", artworkID))
+        let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
+        queryChorus.sortDescriptors = [byChorusCount]
+        
+        let queryChorusOp = CKQueryOperation(query: queryChorus)
+        queryChorusOp.resultsLimit = 99
+        queryChorusOp.recordFetchedBlock = { (infoRecord) in
+            var tmpActor = ActorInfo()
+            tmpActor.info = infoRecord
+            tmpActors.append(tmpActor)
+        }
+        queryChorusOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].actors = tmpActors.map {$0}
+                if let collectionView = (self.tableView.cellForRow(at: IndexPath(row: row, section: 0)) as? FollowingViewCell)?.collectionView, collectionView.followingCellRow != nil {
+                    collectionView.reloadData()
+                }
+            }
+        }
+        queryChorusOp.database = self.database
+        self.operationQueue.addOperation(queryChorusOp)
         
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
         
@@ -185,7 +323,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
                 let savedURL = ckasset.fileURL.appendingPathExtension("mov")
                 try? FileManager.default.moveItem(at: ckasset.fileURL, to: savedURL)
                 DispatchQueue.main.sync {
-                    self.artworkRecords[row].artwork?["video"] = ckasset
+                    self.artworkRecords[row].artwork?["video"] = CKAsset(fileURL: savedURL)
                     self.reloadVisibleRow(row, type: 1)
                 }
             }
@@ -201,6 +339,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         queryFullArtwork(indexPath.row)
+        queryFullArtwork(indexPath.row-1)
+        queryFullArtwork(indexPath.row+1)
         
         let playViewCell = cell as! FollowingViewCell
         let infoRecord = artworkRecords[indexPath.row].info
@@ -223,6 +363,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         if let nickName = artwork?["nickName"] as? String {
             playViewCell.nickNameLabel.text = "@\(nickName)"
         }
+        playViewCell.collectionView.followingCellRow = indexPath.row
+        playViewCell.collectionView.reloadData()
         
         let surplus = artworkRecords.count - (indexPath.row + 1)
         if let cursor = cursor, !isFetchingData, surplus < 1 {
@@ -259,11 +401,13 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         }
         
         
-        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL.appendingPathExtension("mov")
+        playViewCell.url = (artworkRecords[indexPath.row].artwork?["video"] as? CKAsset)?.fileURL
         if let url = playViewCell.url {
             let playerItem = AVPlayerItem(url: url)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
+            
+            tableView.scrollRectToVisible(CGRect(origin: CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y + 1), size: tableView.bounds.size), animated: true)
         }
         
         tableView.setNeedsLayout()
@@ -279,16 +423,33 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate 
         playViewCell.reviewsLabel.text = ""
         playViewCell.chorusLabel.text = ""
         playViewCell.titleLabel.text = ""
-        playViewCell.nickNameLabel.text = "@卓别林"
+        playViewCell.nickNameLabel.text = ""
         playViewCell.avatarV.setBackgroundImage(#imageLiteral(resourceName: "avatar"), for: .normal)
         playViewCell.url = nil
         playViewCell.coverV.image = nil
         playViewCell.progressV.progress = 0
+        playViewCell.collectionView.followingCellRow = nil
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if tableView == (scrollView as? UITableView), let firstCell = tableView.visibleCells.first as? FollowingViewCell, let lastCell = tableView.visibleCells.last as? FollowingViewCell, firstCell != lastCell {
+            let center = firstCell.convert(firstCell.playerView.center, to: view)
+            if center.y > 0 {
+                if firstCell.player.rate == 0 {
+                    firstCell.player.play()
+                    lastCell.player.pause()
+                }
+            } else {
+                if lastCell.player.rate == 0 {
+                    firstCell.player.pause()
+                    lastCell.player.play()
+                }
+            }
+        }
+    }
     
     // MARK: - UITableViewDataSource
     
@@ -400,10 +561,29 @@ class FollowingViewCell: UITableViewCell {
     @IBOutlet weak var chorusLabel: UILabel!
     @IBOutlet weak var progressV: UIProgressView!
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var collectionView: NumberedCollectionView!
     
     
     static let reuseIdentifier = "FollowingViewCell"
     var player = AVPlayer()
     var url : URL?
     weak open var delegate: ArtworksTableViewDelegate?
+}
+
+class NumberedCollectionView : UICollectionView {
+    var followingCellRow: Int? = nil
+}
+
+class FollowingActorCell: UICollectionViewCell {
+    
+    @IBOutlet weak var actorButton: UIButton! {
+        didSet {
+            actorButton.layer.cornerRadius = 20
+        }
+    }
+    
+    @IBAction func changeActor(_ sender: Any) {
+        self.delegate?.changeActor(self)
+    }
+    weak open var delegate: ActorCollectionViewDelegate?
 }

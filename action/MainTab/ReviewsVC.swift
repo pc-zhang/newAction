@@ -186,7 +186,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.dateFormat = "MM-dd mm:ss"
         return dateFormatter
     }()
     

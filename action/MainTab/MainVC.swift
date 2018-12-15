@@ -24,6 +24,7 @@ struct ArtWorkInfo {
     var info: CKRecord? = nil
     var followRecord: CKRecord? = nil
     var isFollowRecordFetched: Bool = false
+    var actors: [ActorInfo] = []
 }
 
 class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ArtworksTableViewDelegate, ActorTableViewDelegate, UITableViewDataSourcePrefetching {
@@ -34,7 +35,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
     var artworkRecords: [ArtWorkInfo] = []
-    var actors: [ActorInfo] = []
+    
     lazy var operationQueue: OperationQueue = {
         return OperationQueue()
     }()
@@ -57,14 +58,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             return
         }
         
-        artworkRecords[row].info = actors[actorRow].info
-        artworkRecords[row].artwork = actors[actorRow].artwork
+        artworkRecords[row].info = artworkRecords[row].actors[actorRow].info
+        artworkRecords[row].artwork = artworkRecords[row].actors[actorRow].artwork
         artworkRecords[row].isPrefetched = false
         artworksTableView.reloadSections(IndexSet(0...0), with: .fade)
         
         let actor = UIButton()
         view.addSubview(actor)
-        actor.frame = button.convert(button.frame, to: view)
+        actor.frame = cell.convert(button.frame, to: view)
         actor.clipsToBounds = true
         actor.layer.cornerRadius = actor.bounds.height / 2
         actor.setBackgroundImage(button.currentBackgroundImage, for: .normal)
@@ -341,7 +342,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
     }
     
-    func queryActorInfos(_ artworkID: CKRecord.ID) {
+    func queryActorInfos(_ artworkID: CKRecord.ID, _ row: Int) {
         
         var tmpActors:[ActorInfo] = []
         
@@ -360,8 +361,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
             DispatchQueue.main.sync {
-                self.actors = tmpActors.map {$0}
-                self.isFetchingData = false
+                self.artworkRecords[row].actors = tmpActors.map {$0}
                 self.actorsTableView.reloadData()
             }
         }
@@ -371,14 +371,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     func queryAvatar(_ row: Int)
     {
-        guard row < actors.count, row >= 0, let infoRecord = actors[row].info else {
+        guard let artworksRow = artworksTableView.indexPathsForVisibleRows?.first?.row, row < artworkRecords[artworksRow].actors.count, row >= 0, let infoRecord = artworkRecords[artworksRow].actors[row].info else {
             return
         }
         
-        if actors[row].isPrefetched == true {
+        if artworkRecords[artworksRow].actors[row].isPrefetched == true {
             return
         }
-        actors[row].isPrefetched = true
+        artworkRecords[artworksRow].actors[row].isPrefetched = true
         
         let query = CKQuery(recordType: "Artwork", predicate: NSPredicate(format: "info = %@", infoRecord.recordID))
         
@@ -386,8 +386,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         queryArtworkOp.desiredKeys = ["avatar"]
         queryArtworkOp.recordFetchedBlock = { (artworkRecord) in
             DispatchQueue.main.sync {
-                if row < self.actors.count {
-                    self.actors[row].artwork = artworkRecord
+                if row < self.artworkRecords[artworksRow].actors.count {
+                    self.artworkRecords[artworksRow].actors[row].artwork = artworkRecord
                     self.actorsTableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
                 }
             }
@@ -415,7 +415,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         if let actorCell = cell as? ActorCell {
             queryAvatar(indexPath.row)
             
-            if let avatarImageAsset = actors[indexPath.row].artwork?["avatar"] as? CKAsset {
+            if let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let avatarImageAsset = artworkRecords[row].actors[indexPath.row].artwork?["avatar"] as? CKAsset {
                 actorCell.actorButton.setBackgroundImage(UIImage(contentsOfFile: avatarImageAsset.fileURL.path), for: .normal)
             }
             
@@ -582,7 +582,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         if let tableView = scrollView as? UITableView, tableView == artworksTableView {
             if let playViewCell = tableView.visibleCells.first as? MainViewCell {
                 playViewCell.player.play()
-                actors = []
                 actorsTableView.reloadData()
             }
             let recordsCountBefore = artworksTableView.numberOfRows(inSection: 0)
@@ -606,7 +605,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == actorsTableView {
-            return actors.count
+            if let row = artworksTableView.indexPathsForVisibleRows?.first?.row, row < artworkRecords.count {
+                return artworkRecords[row].actors.count
+            }
+            return 0
         }
         // #warning Incomplete implementation, return the number of rows
         return artworkRecords.count
@@ -690,8 +692,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             return
         }
         
-        if actors.count == 0 {
-            queryActorInfos(artworkID)
+        if artworkRecords[row].actors.count == 0 {
+            queryActorInfos(artworkID, row)
         }
         
         artworksTableView.isScrollEnabled = false
