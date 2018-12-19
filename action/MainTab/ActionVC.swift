@@ -277,6 +277,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                         myInfoRecord["seconds"] = 0
                         myInfoRecord["reviews"] = 0
                         myInfoRecord["chorus"] = 0
+                        myInfoRecord["reports"] = 0
                         
                         let artworkRecord = CKRecord(recordType: "Artwork")
                         artworkRecord["video"] = CKAsset(fileURL: exporter.outputURL!)

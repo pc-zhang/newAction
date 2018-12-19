@@ -30,7 +30,6 @@ struct ArtWorkInfo {
 class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ArtworksTableViewDelegate, ActorTableViewDelegate, UITableViewDataSourcePrefetching {
 
     var userID: CKRecord.ID? = nil
-    var chorusFromArtworkID: CKRecord.ID? = nil
     var selectedRow: Int? = nil
     let container: CKContainer = CKContainer.default()
     let database: CKDatabase = CKContainer.default().publicCloudDatabase
@@ -86,11 +85,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         artworksTableView.isScrollEnabled = true
     }
     
-    func addSeconds(_ cell: UITableViewCell) {
-        guard let row = artworksTableView.indexPath(for: cell)?.row, let infoRecord = artworkRecords[row].info else {
+    func addSeconds() {
+        guard let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let infoRecord = artworkRecords[row].info, let seconds = (artworksTableView.cellForRow(at: IndexPath(row: row, section: 0)) as? MainViewCell)?.player.currentItem?.duration.seconds else {
             return
         }
-        secondsPlus(infoRecord) { newInfoRecord in
+        
+        secondsPlus(infoRecord, Int64(seconds)) { newInfoRecord in
             DispatchQueue.main.sync {
                 self.artworkRecords[row].info = newInfoRecord
                 self.reloadVisibleRow(row, type: 0)
@@ -98,21 +98,80 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
     }
     
-    func secondsPlus(_ secondsRecord: CKRecord, _ succeedHandler: @escaping (_ secondsRecord: CKRecord) -> Void) {
-        guard let secondsCount = secondsRecord["seconds"] as? Int64 else {
+    func addReports() {
+        guard let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let infoRecord = artworkRecords[row].info else {
             return
         }
         
-        secondsRecord["seconds"] = secondsCount + 10
+        reportsPlus(infoRecord) { newInfoRecord in
+            DispatchQueue.main.sync {
+                self.artworkRecords[row].info = newInfoRecord
+                self.reloadVisibleRow(row, type: 0)
+            }
+        }
+    }
+    
+    @IBAction func action(_ sender: Any) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let operation = CKModifyRecordsOperation(recordsToSave: [secondsRecord], recordIDsToDelete: nil)
+        if true {
+            actionSheet.addAction(UIAlertAction(title: "举报", style: .destructive, handler: { (action) in
+                self.addReports()
+            }))
+            actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+            
+            present(actionSheet, animated: true)
+        }
+        
+    }
+    
+    
+    func secondsPlus(_ infoRecord: CKRecord, _ seconds: Int64, _ succeedHandler: @escaping (_ secondsRecord: CKRecord) -> Void) {
+        guard let secondsCount = infoRecord["seconds"] as? Int64 else {
+            return
+        }
+        
+        infoRecord["seconds"] = secondsCount + seconds
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [infoRecord], recordIDsToDelete: nil)
         
         operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
                 
                 if let newRecord = records?.first {
                     DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                        self.secondsPlus(newRecord, succeedHandler)
+                        self.secondsPlus(newRecord, seconds, succeedHandler)
+                    })
+                }
+                
+                return
+            }
+            
+            if let newRecord = records?.first {
+                succeedHandler(newRecord)
+            }
+            
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+    }
+    
+    func reportsPlus(_ infoRecord: CKRecord, _ succeedHandler: @escaping (_ secondsRecord: CKRecord) -> Void) {
+        guard let reportsCount = infoRecord["reports"] as? Int64 else {
+            return
+        }
+        
+        infoRecord["reports"] = reportsCount + 1
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [infoRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
+                
+                if let newRecord = records?.first {
+                    DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                        self.reportsPlus(newRecord, succeedHandler)
                     })
                 }
                 
@@ -266,12 +325,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
-        } else if let chorusFromArtworkID = chorusFromArtworkID {
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", chorusFromArtworkID))
-            let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
-            query.sortDescriptors = [byChorusCount]
         } else {
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(value: true))
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "reports < 5"))
             let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
             query.sortDescriptors = [byChorusCount]
         }
@@ -317,6 +372,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         } else {
             fetchData(0)
         }
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -491,6 +550,17 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
     }
     
+    @objc func playerDidFinishPlaying(note: NSNotification) {
+        guard let player = (artworksTableView.visibleCells.first as? MainViewCell)?.player else {
+            return
+        }
+        
+        player.seek(to: .zero)
+        player.play()
+        
+        addSeconds()
+    }
+    
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         if let actorCell = cell as? ActorCell {
@@ -514,6 +584,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
+        
     }
     
     func follow(_ cell: UITableViewCell) {
@@ -654,10 +725,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }
-        } else if segue.identifier == "main to chorus", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
-            if let chorusVC = segue.destination as? ChorusVC {
-                chorusVC.artworkID = artworkRecords[row].artwork?.recordID
-            }
         }
         
     }
@@ -761,16 +828,12 @@ class MainViewCell: UITableViewCell {
         
         player.addBoundaryTimeObserver(forTimes: times, queue: nil, using: {
             let playerTime = self.player.currentTime()
-            guard playerTime.isValid else {
+            guard playerTime.isValid, let duration = self.player.currentItem?.duration, duration.isValid else {
                 return
             }
             
-            if Int(playerTime.seconds) % 10 == 0, Int(playerTime.seconds) == Int(playerTime.seconds+0.9) {
-                self.delegate?.addSeconds(self)
-            }
-            if let duration = self.player.currentItem?.duration, duration.isValid {
-                self.progressV.progress = Float(playerTime.seconds / duration.seconds)
-            }
+            self.progressV.progress = Float(playerTime.seconds / duration.seconds)
+            
         })
         
         player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
@@ -841,7 +904,6 @@ class MainViewCell: UITableViewCell {
 }
 
 public protocol ArtworksTableViewDelegate : NSObjectProtocol {
-    func addSeconds(_ cell: UITableViewCell)
     func follow(_ cell: UITableViewCell)
 }
 

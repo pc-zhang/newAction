@@ -1178,6 +1178,9 @@
                         </button>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="action" id="ajB-8q-bSr">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="action:" destination="sbm-qe-tO6" id="oXT-Lh-Lhx"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -2259,7 +2262,7 @@
         <segue reference="hsi-ZR-dGY"/>
         <segue reference="Jas-5O-cXv"/>
         <segue reference="bHc-Bw-6y1"/>
-        <segue reference="n0C-TR-tWW"/>
+        <segue reference="YMX-aQ-4Vn"/>
         <segue reference="xwi-wC-4c4"/>
         <segue reference="ni2-Pl-wfM"/>
     </inferredMetricsTieBreakers>

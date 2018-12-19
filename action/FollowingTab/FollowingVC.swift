@@ -479,10 +479,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }
-        } else if segue.identifier == "following to chorus", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
-            if let chorusVC = segue.destination as? ChorusVC {
-                chorusVC.artworkID = artworkRecords[row].artwork?.recordID
-            }
         }
         
     }
@@ -507,9 +503,6 @@ class FollowingViewCell: UITableViewCell {
                 return
             }
             
-            if Int(playerTime.seconds) % 10 == 0, Int(playerTime.seconds) == Int(playerTime.seconds+0.9) {
-                self.delegate?.addSeconds(self)
-            }
             if let duration = self.player.currentItem?.duration, duration.isValid {
                 self.progressV.progress = Float(playerTime.seconds / duration.seconds)
             }
