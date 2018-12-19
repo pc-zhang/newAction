@@ -322,11 +322,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         var query: CKQuery
         if let userID = userID {
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@ && reports < 5", userID))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
         } else {
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "reports < 5"))
+            let yesterday = Date().addingTimeInterval(-86400)
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creationDate > %@ && reports < 5", yesterday as NSDate))
             let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
             query.sortDescriptors = [byChorusCount]
         }
@@ -406,7 +407,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         var tmpActors:[ActorInfo] = []
         
-        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", artworkID))
+        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
         let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
         query.sortDescriptors = [byChorusCount]
         

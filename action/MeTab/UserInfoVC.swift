@@ -255,7 +255,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         
         var tmpArtworkRecords:[ArtWorkInfo] = []
         
-        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@", userID))
+        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@ && reports < 5", userID))
         let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
         query.sortDescriptors = [byCreation]
         

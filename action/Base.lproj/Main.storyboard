@@ -1890,11 +1890,11 @@
             <objects>
                 <viewController modalPresentationStyle="overFullScreen" id="Rbp-GA-i0m" customClass="ReviewsVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ieN-6n-Gtw">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="724"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bPP-n8-uhK">
-                                <rect key="frame" x="0.0" y="172.33333333333329" width="375" height="482.66666666666674"/>
+                                <rect key="frame" x="0.0" y="201.66666666666669" width="375" height="541.33333333333326"/>
                                 <color key="backgroundColor" red="0.086212329566478729" green="0.067392162978649139" blue="0.17537719011306763" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="review" rowHeight="76" id="Cxz-ZH-hu9" customClass="ReviewCell" customModule="action" customModuleProvider="target">
@@ -1977,7 +1977,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v6l-eo-irh">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="172.33333333333334"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="157.66666666666666"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -1985,7 +1985,7 @@
                                 </connections>
                             </view>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="说点啥呢？" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lRi-XD-4Pi">
-                                <rect key="frame" x="10" y="655" width="355" height="35"/>
+                                <rect key="frame" x="10" y="743" width="355" height="35"/>
                                 <color key="backgroundColor" red="0.15492013106669408" green="0.12143084881142709" blue="0.32514321168667171" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="vP6-2A-fYh"/>
@@ -2034,10 +2034,9 @@
         <!--Navigation Controller-->
         <scene sceneID="pAq-Sb-Ozy">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="overFullScreen" id="gDY-HM-455" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="overFullScreen" navigationBarHidden="YES" id="gDY-HM-455" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="L0d-gc-R1Z">
-                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="barTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2259,7 +2258,7 @@
         <image name="play" width="210" height="212"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="hsi-ZR-dGY"/>
+        <segue reference="mXV-vf-QgJ"/>
         <segue reference="Jas-5O-cXv"/>
         <segue reference="bHc-Bw-6y1"/>
         <segue reference="YMX-aQ-4Vn"/>

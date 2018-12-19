@@ -93,7 +93,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         queryFollowersOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
-            let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
+            let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@ && reports < 5", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
             
@@ -275,7 +275,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         artworkRecords[row].isPrefetched = true
         
         var tmpActors:[ActorInfo] = []
-        let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@", artworkID))
+        let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
         let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
         queryChorus.sortDescriptors = [byChorusCount]
         
