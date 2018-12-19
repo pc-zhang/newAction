@@ -230,6 +230,10 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
 //            }
         }
     }
+    
+    @IBAction func dismissMe(_ sender: Any) {
+        presentingViewController?.dismiss(animated: true, completion: nil)
+    }
 
 }
 

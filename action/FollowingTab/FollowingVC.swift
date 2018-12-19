@@ -475,7 +475,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
         } else if segue.identifier == "following to reviews", let row = self.tableView.indexPathsForVisibleRows?.first?.row {
-            if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {
+            if let reviewsVC = segue.destination as? ReviewsVC {
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }

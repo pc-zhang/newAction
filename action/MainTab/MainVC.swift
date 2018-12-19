@@ -377,6 +377,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
                                                name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        
+        let eulaAgreed = UserDefaults.standard.bool(forKey: "eulaAgreed")
+        
+        if !eulaAgreed {
+            performSegue(withIdentifier: "eula", sender: self)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -722,7 +728,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
         } else if segue.identifier == "main to reviews", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
-            if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {
+            if let reviewsVC = segue.destination as? ReviewsVC {
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
             }
