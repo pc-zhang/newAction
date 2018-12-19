@@ -204,7 +204,7 @@
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ktv-tB-zih">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <connections>
                                                                             <action selector="changeActor:" destination="aPE-Kf-YkU" eventType="touchUpInside" id="9hl-sb-8Xt"/>
@@ -542,7 +542,7 @@
                                         <size key="customSize" width="138" height="188"/>
                                         <connections>
                                             <outlet property="imageV" destination="SL6-tq-GLT" id="CnK-yl-BuN"/>
-                                            <segue destination="sbm-qe-tO6" kind="show" identifier="artworks segue" id="xwi-wC-4c4"/>
+                                            <segue destination="sbm-qe-tO6" kind="show" identifier="me to main" id="xwi-wC-4c4"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -567,7 +567,7 @@
                                             <color key="textColor" red="0.72549019609999998" green="0.72156862749999995" blue="0.75686274509999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMY-Da-H8Z">
+                                        <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMY-Da-H8Z">
                                             <rect key="frame" x="201" y="181" width="99" height="33"/>
                                             <color key="backgroundColor" red="0.9994998574256897" green="0.06852344423532486" blue="0.0042680306360125542" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
@@ -580,6 +580,18 @@
                                             </state>
                                             <connections>
                                                 <action selector="follow:" destination="HVg-Ei-wGV" eventType="touchUpInside" id="9uu-oq-Oz7"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k6n-lz-H6W">
+                                            <rect key="frame" x="201" y="181" width="99" height="33"/>
+                                            <color key="backgroundColor" red="0.99949985740000002" green="0.068523444239999995" blue="0.004268030636" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                            <state key="normal" title="拍戏">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="action:" destination="HVg-Ei-wGV" eventType="touchUpInside" id="s1p-y8-o08"/>
+                                                <action selector="follow:" destination="HVg-Ei-wGV" eventType="touchUpInside" id="hNy-C3-5ov"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sBW-EU-nda">
@@ -714,16 +726,20 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="RWA-Co-rdQ" firstAttribute="leading" secondItem="l9h-QR-oyY" secondAttribute="leadingMargin" constant="7" id="21Y-aw-L7M"/>
+                                        <constraint firstItem="k6n-lz-H6W" firstAttribute="centerX" secondItem="RMY-Da-H8Z" secondAttribute="centerX" id="2Fa-g0-mXw"/>
                                         <constraint firstItem="14O-Je-ieB" firstAttribute="top" secondItem="ZJR-SW-41D" secondAttribute="bottom" constant="15" id="3Vw-30-6VB"/>
                                         <constraint firstItem="sBW-EU-nda" firstAttribute="height" secondItem="RMY-Da-H8Z" secondAttribute="height" id="4Xm-vX-aFm"/>
                                         <constraint firstItem="sBW-EU-nda" firstAttribute="bottom" secondItem="RWA-Co-rdQ" secondAttribute="bottom" id="8bW-4E-oRH"/>
                                         <constraint firstItem="2V0-Rg-yx6" firstAttribute="top" secondItem="14O-Je-ieB" secondAttribute="bottom" constant="15" id="8oV-kJ-Fv4"/>
+                                        <constraint firstItem="k6n-lz-H6W" firstAttribute="width" secondItem="RMY-Da-H8Z" secondAttribute="width" id="CwZ-aU-B0x"/>
                                         <constraint firstItem="RWA-Co-rdQ" firstAttribute="top" secondItem="2jS-Hk-FNE" secondAttribute="top" constant="2" id="GkN-2O-bd7"/>
                                         <constraint firstItem="Fwa-km-zHN" firstAttribute="leading" secondItem="RWA-Co-rdQ" secondAttribute="trailing" constant="18" id="KUI-Jf-A4t"/>
                                         <constraint firstItem="bbz-Bg-qKv" firstAttribute="leading" secondItem="RWA-Co-rdQ" secondAttribute="trailing" constant="18" id="Kef-cD-FDk"/>
                                         <constraint firstItem="14O-Je-ieB" firstAttribute="leading" secondItem="l9h-QR-oyY" secondAttribute="leadingMargin" constant="7" id="Mix-F8-U7g"/>
                                         <constraint firstItem="bbz-Bg-qKv" firstAttribute="top" secondItem="RWA-Co-rdQ" secondAttribute="top" id="OHS-Nh-7dp"/>
+                                        <constraint firstItem="k6n-lz-H6W" firstAttribute="centerY" secondItem="RMY-Da-H8Z" secondAttribute="centerY" id="OJn-FA-me3"/>
                                         <constraint firstItem="2jS-Hk-FNE" firstAttribute="trailing" secondItem="Fwa-km-zHN" secondAttribute="trailing" constant="13" id="P1j-Zc-DFZ"/>
+                                        <constraint firstItem="k6n-lz-H6W" firstAttribute="height" secondItem="RMY-Da-H8Z" secondAttribute="height" id="RlV-vJ-0Pw"/>
                                         <constraint firstItem="2jS-Hk-FNE" firstAttribute="trailing" secondItem="ZJR-SW-41D" secondAttribute="trailing" id="SCc-EI-zdm"/>
                                         <constraint firstItem="2V0-Rg-yx6" firstAttribute="leading" secondItem="l9h-QR-oyY" secondAttribute="leading" id="T0o-L1-08q"/>
                                         <constraint firstItem="RMY-Da-H8Z" firstAttribute="bottom" secondItem="RWA-Co-rdQ" secondAttribute="bottom" id="U7g-qp-rOT"/>
@@ -738,6 +754,7 @@
                                     </constraints>
                                     <viewLayoutGuide key="safeArea" id="2jS-Hk-FNE"/>
                                     <connections>
+                                        <outlet property="actionButton" destination="k6n-lz-H6W" id="g89-qk-fvo"/>
                                         <outlet property="avatarV" destination="RWA-Co-rdQ" id="J80-3G-S4K"/>
                                         <outlet property="followButton" destination="RMY-Da-H8Z" id="m81-Ul-CMp"/>
                                         <outlet property="followersButton" destination="RLz-r9-O9u" id="te9-tZ-zcW"/>
@@ -801,6 +818,7 @@
                         <outlet property="collectionView" destination="UGc-4P-H9Y" id="tqH-Ql-rUJ"/>
                         <outlet property="followItem" destination="tXo-rm-0CA" id="Ncu-zr-Ech"/>
                         <outlet property="otherItem" destination="NC6-Oy-ttL" id="iqM-JG-8BC"/>
+                        <segue destination="GMQ-DF-KZ3" kind="show" identifier="me to action" animates="NO" id="n0C-TR-tWW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ptJ-Av-JTk" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -817,7 +835,7 @@
         <!--MainVC-->
         <scene sceneID="bis-Yv-L5e">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="sbm-qe-tO6" customClass="MainVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="sbm-qe-tO6" customClass="MainVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="46c-dB-KeK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -883,7 +901,7 @@
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>
-                                                                                <segue destination="GMQ-DF-KZ3" kind="show" identifier="action segue" animates="NO" id="YMX-aQ-4Vn"/>
+                                                                                <segue destination="GMQ-DF-KZ3" kind="show" identifier="main to action" animates="NO" id="YMX-aQ-4Vn"/>
                                                                             </connections>
                                                                         </button>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="入戏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qtp-jc-LyY">
@@ -943,7 +961,7 @@
                                                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </state>
                                                                             <connections>
-                                                                                <segue destination="gDY-HM-455" kind="presentation" identifier="reviews segue" id="bHc-Bw-6y1"/>
+                                                                                <segue destination="gDY-HM-455" kind="presentation" identifier="main to reviews" id="bHc-Bw-6y1"/>
                                                                             </connections>
                                                                         </button>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2Y-aU-DgI">
@@ -1687,7 +1705,7 @@
                                 </subviews>
                             </stackView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="0vb-2N-rV9">
-                                <rect key="frame" x="101.33333333333333" y="138" width="172.33333333333337" height="35.666666666666657"/>
+                                <rect key="frame" x="95.666666666666671" y="94" width="183.66666666666663" height="37.666666666666657"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0vb-2N-rV9" secondAttribute="height" multiplier="5:1" id="jhN-AU-vxb"/>
                                 </constraints>
@@ -1815,7 +1833,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="actionSegment" destination="0vb-2N-rV9" id="2kD-5y-MXu"/>
                         <outlet property="audioLevel" destination="Q3C-xP-8lJ" id="Hm6-Vz-EXa"/>
@@ -2039,7 +2056,7 @@
             <objects>
                 <tableViewController title="关注" hidesBottomBarWhenPushed="YES" id="wmD-o3-oQj" customClass="FollowersVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="46j-WI-Tkb">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="724"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="sectionIndexColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2134,7 +2151,7 @@
                         <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="barTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="barTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2240,8 +2257,9 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="hsi-ZR-dGY"/>
-        <segue reference="odh-eK-i01"/>
+        <segue reference="Jas-5O-cXv"/>
         <segue reference="bHc-Bw-6y1"/>
+        <segue reference="n0C-TR-tWW"/>
         <segue reference="xwi-wC-4c4"/>
         <segue reference="ni2-Pl-wfM"/>
     </inferredMetricsTieBreakers>

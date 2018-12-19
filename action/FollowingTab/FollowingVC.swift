@@ -438,15 +438,17 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         if tableView == (scrollView as? UITableView), let firstCell = tableView.visibleCells.first as? FollowingViewCell, let lastCell = tableView.visibleCells.last as? FollowingViewCell, firstCell != lastCell {
             let center = firstCell.convert(firstCell.playerView.center, to: view)
             if center.y > 0 {
-                if firstCell.player.rate == 0 {
-                    firstCell.player.play()
-                    lastCell.player.pause()
+                if firstCell.player.currentTime() == firstCell.player.currentItem?.duration {
+                    firstCell.player.seek(to: .zero)
                 }
+                firstCell.player.play()
+                lastCell.player.pause()
             } else {
-                if lastCell.player.rate == 0 {
-                    firstCell.player.pause()
-                    lastCell.player.play()
+                if lastCell.player.currentTime() == lastCell.player.currentItem?.duration {
+                    lastCell.player.seek(to: .zero)
                 }
+                firstCell.player.pause()
+                lastCell.player.play()
             }
         }
     }

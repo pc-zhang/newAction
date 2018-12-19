@@ -61,7 +61,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         artworkRecords[row].info = artworkRecords[row].actors[actorRow].info
         artworkRecords[row].artwork = artworkRecords[row].actors[actorRow].artwork
         artworkRecords[row].isPrefetched = false
-        artworksTableView.reloadSections(IndexSet(0...0), with: .fade)
+        syncTableViewWithArtworkRecords()
+        artworksTableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .fade)
         
         let actor = UIButton()
         view.addSubview(actor)
@@ -584,14 +585,19 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 playViewCell.player.play()
                 actorsTableView.reloadData()
             }
-            let recordsCountBefore = artworksTableView.numberOfRows(inSection: 0)
-            if recordsCountBefore < artworkRecords.count {
-                let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
-                    IndexPath(row: $0, section: 0)
-                }
             
-                self.artworksTableView.insertRows(at: indexPaths, with: .none)
+            syncTableViewWithArtworkRecords()
+        }
+    }
+    
+    func syncTableViewWithArtworkRecords() {
+        let recordsCountBefore = artworksTableView.numberOfRows(inSection: 0)
+        if recordsCountBefore < artworkRecords.count {
+            let indexPaths = (recordsCountBefore ..< self.artworkRecords.count).map {
+                IndexPath(row: $0, section: 0)
             }
+            
+            self.artworksTableView.insertRows(at: indexPaths, with: .none)
         }
     }
     
@@ -631,9 +637,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "action segue" {
-            if let actionVC = segue.destination as? ActionVC, let currentCell = artworksTableView.visibleCells.first as? MainViewCell, let currentIndex = artworksTableView.indexPath(for: currentCell) {
-                actionVC.url = currentCell.url
+        if segue.identifier == "main to action" {
+            if let actionVC = segue.destination as? ActionVC, let currentCell = artworksTableView.visibleCells.first as? MainViewCell, let currentIndex = artworksTableView.indexPath(for: currentCell), let url = currentCell.url {
+                actionVC.url = url
                 actionVC.infoRecord = artworkRecords[currentIndex.row].info
                 actionVC.artworkID = artworkRecords[currentIndex.row].artwork?.recordID
                 currentCell.player.pause()
@@ -643,7 +649,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 userInfoVC.hidesBottomBarWhenPushed = true
                 userInfoVC.userID = artworkRecords[row].info?.creatorUserRecordID
             }
-        } else if segue.identifier == "reviews segue", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
+        } else if segue.identifier == "main to reviews", let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
             if let reviewsVC = (segue.destination as? UINavigationController)?.topViewController as? ReviewsVC {
                 reviewsVC.artworkID = artworkRecords[row].artwork?.recordID
                 reviewsVC.infoRecord = artworkRecords[row].info
@@ -662,6 +668,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                 }
+                return false
+            }
+        } else if identifier == "main to action" {
+            if let currentCell = artworksTableView.visibleCells.first as? MainViewCell, currentCell.url != nil {
+                return true
+            } else {
                 return false
             }
         }

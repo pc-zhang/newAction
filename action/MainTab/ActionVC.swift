@@ -12,7 +12,7 @@ import AVFoundation
 import CoreServices
 import CloudKit
 
-class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextViewDelegate {
+class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextViewDelegate {
     
     // MARK: - UI Controls
     
@@ -444,17 +444,18 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         
         if let url = url {
             addClip(url)
-        } else {
-            let picker = UIImagePickerController()
-            picker.sourceType = .savedPhotosAlbum
-            picker.mediaTypes = [kUTTypeMovie as String]
-            picker.delegate = self
-            picker.allowsEditing = false
-            present(picker, animated: false)
         }
     
         player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -925,20 +926,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     func capturePipeline(_ capturePipeline: RosyWriterCapturePipeline, recordingDidFailWithError error: Error) {
         recordingStopped()
         showError(error)
-    }
-    
-    // MARK: UIImagePickerControllerDelegate, UINavigationControllerDelegate
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-//        picker.presentingViewController?.dismiss(animated: true, completion: nil)
-        cancel(0)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-            addClip(videoURL)
-        }
-        picker.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
     

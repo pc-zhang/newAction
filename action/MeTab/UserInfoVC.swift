@@ -9,9 +9,10 @@
 import Foundation
 import CloudKit
 import UIKit
+import MobileCoreServices
+import CoreMedia
 
-
-class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, HeaderViewDelegate {
+class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, UIImagePickerControllerDelegate, HeaderViewDelegate, UINavigationControllerDelegate {
     
     var isEditMode: Bool = false
     var followingsCount = 0
@@ -140,6 +141,8 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             followItem.alpha = 1
             otherItem.alpha = 1
         }
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -294,7 +297,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     func queryFullArtwork(_ row: Int)
     {
-        guard let infoRecord = artworkRecords[row].info else {
+        guard row < artworkRecords.count, let infoRecord = artworkRecords[row].info else {
             return
         }
         
@@ -402,6 +405,14 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         let headerV = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserInfo Header", for: indexPath)
         if let headerV = headerV as? UserInfoHeaderV {
             
+            if (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID == userRecord?.recordID {
+                headerV.actionButton.isHidden = false
+                headerV.followButton.isHidden = true
+            } else {
+                headerV.actionButton.isHidden = true
+                headerV.followButton.isHidden = false
+            }
+            
             headerV.followButton.setTitle(followRecord != nil ? "已关注" : "+关注", for: .normal)
             followItem.setTitle(followRecord != nil ? "已关注" : "+关注", for: .normal)
             
@@ -437,6 +448,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard indexPath.item < artworkRecords.count else {
+            return
+        }
         queryFullArtwork(indexPath.item)
         if let thumbnail = artworkRecords[indexPath.item].artwork?["thumbnail"] as? CKAsset, let imageData = try? Data(contentsOf: thumbnail.fileURL), let cell = cell as? GifViewCell {
             cell.imageV.image = UIImage.gifImageWithData(imageData)
@@ -478,7 +492,7 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "artworks segue" {
+        if segue.identifier == "me to main" {
             if let artworksVC = segue.destination as? MainVC, let selectedItem = collectionView.indexPathsForSelectedItems?.first?.item {
                 artworksVC.hidesBottomBarWhenPushed = true
                 artworksVC.locationSegment.isHidden = true
@@ -510,7 +524,48 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
                 followersVC.isFollowers = false
                 followersVC.navigationItem.title = "关注"
             }
+        } else if segue.identifier == "me to action" {
+            if let actionVC = segue.destination as? ActionVC {
+                actionVC.url = actionURL
+            }
         }
+    }
+    
+    
+    @IBAction func action(_ sender: Any) {
+        actionURL = nil
+        if true {
+            let picker = UIImagePickerController()
+            picker.sourceType = .savedPhotosAlbum
+            picker.mediaTypes = [kUTTypeMovie as String]
+            picker.delegate = self
+            picker.allowsEditing = false
+            present(picker, animated: true)
+        }
+    }
+    
+    // MARK: UIImagePickerControllerDelegate, UINavigationControllerDelegate
+    
+    var actionURL: URL? = nil
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        dismiss(animated: false) {
+            DispatchQueue.main.async {
+            self.actionURL = videoURL
+            self.performSegue(withIdentifier: "me to action", sender: self)
+            }
+        }
+        
     }
 }
 
@@ -544,6 +599,12 @@ class UserInfoHeaderV: UICollectionReusableView {
             followButton.layer.cornerRadius = 14
         }
     }
+    @IBOutlet weak var actionButton: UIButton! {
+        didSet {
+            actionButton.layer.cornerRadius = 14
+        }
+    }
+    
     @IBOutlet weak var otherButton: UIButton! {
         didSet {
             otherButton.layer.cornerRadius = otherButton.bounds.width / 2
