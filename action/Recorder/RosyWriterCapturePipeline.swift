@@ -212,7 +212,7 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             self.applicationWillEnterForeground()
         }
         
-        if selectedSegmentIndex == 1 || selectedSegmentIndex == 2 {
+        if selectedSegmentIndex == 1 {
             /* Audio */
             let audioDevice = AVCaptureDevice.default(for: .audio)!
             let audioIn = try! AVCaptureDeviceInput(device: audioDevice)
@@ -232,10 +232,8 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             
             // Get the recommended compression settings after configuring the session/device.
             _audioCompressionSettings = audioOut.recommendedAudioSettingsForAssetWriter(writingTo: AVFileType.mov) as! [String: Any]
-        } // RECORD_AUDIO
-        
-        /* Video */
-        if selectedSegmentIndex == 0 || selectedSegmentIndex == 1 {
+        } else if selectedSegmentIndex == 0 {
+            /* Video */
             guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
                 fatalError("AVCaptureDevice of type AVMediaTypeVideo unavailable!")
             }
@@ -579,11 +577,9 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
 
         let recorder = MovieRecorder(url: _recordingURL, delegate: self, callbackQueue: callbackQueue)
         
-        if selectedSegmentIndex == 1 || selectedSegmentIndex == 2 {
+        if selectedSegmentIndex == 1 {
             recorder.addAudioTrackWithSourceFormatDescription(self.outputAudioFormatDescription!, settings: _audioCompressionSettings)
-        }// RECORD_AUDIO
-        
-        if selectedSegmentIndex == 0 || selectedSegmentIndex == 1 {
+        } else if selectedSegmentIndex == 0 {
             // Front camera recording shouldn't be mirrored
             let videoTransform = self.transformFromVideoBufferOrientationToOrientation(self.recordingOrientation, withAutoMirroring: true)
         recorder.addVideoTrackWithSourceFormatDescription(self.outputVideoFormatDescription!, transform: videoTransform, settings: _videoCompressionSettings)

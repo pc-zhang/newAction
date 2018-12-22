@@ -5,11 +5,9 @@
 /* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[0] = "露脸"; ObjectID = "0vb-2N-rV9"; */
 "0vb-2N-rV9.segmentTitles[0]" = "露脸";
 
-/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[1] = "入戏"; ObjectID = "0vb-2N-rV9"; */
-"0vb-2N-rV9.segmentTitles[1]" = "入戏";
+/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[1] = "配音"; ObjectID = "0vb-2N-rV9"; */
+"0vb-2N-rV9.segmentTitles[1]" = "配音";
 
-/* Class = "UISegmentedControl"; 0vb-2N-rV9.segmentTitles[2] = "配音"; ObjectID = "0vb-2N-rV9"; */
-"0vb-2N-rV9.segmentTitles[2]" = "配音";
 
 /* Class = "UILabel"; text = "昨天12:41"; ObjectID = "10b-WZ-fkF"; */
 "10b-WZ-fkF.text" = "昨天12:41";

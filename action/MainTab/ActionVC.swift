@@ -22,7 +22,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     @IBOutlet weak var timelineV: UICollectionView!
     @IBOutlet weak var actionSegment: UISegmentedControl! {
         didSet {
-            actionSegment.selectedSegmentIndex = 1
+            actionSegment.selectedSegmentIndex = 0
         }
     }
     @IBOutlet weak var audioLevel: UIProgressView!
@@ -1309,11 +1309,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 
             case 1:
-                playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0/3)
-                playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0/3)
-                playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-                
-            case 2:
                 playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0)
                 playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0)
                 playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -1334,7 +1329,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     private var _recording: Bool = false {
         didSet {
-            if _recording && (actionSegment.selectedSegmentIndex == 1 || actionSegment.selectedSegmentIndex == 2) {
+            if _recording && actionSegment.selectedSegmentIndex == 1 {
                 player.volume = 0
             } else {
                 player.volume = 1

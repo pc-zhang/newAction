@@ -375,9 +375,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
         
         
-        NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
-                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
-        
         let eulaAgreed = UserDefaults.standard.bool(forKey: "eulaAgreed")
         
         if !eulaAgreed {
@@ -394,6 +391,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         navigationController?.setNavigationBarHidden(false, animated: false)
         isAppearing = true
         (artworksTableView.visibleCells.first as? MainViewCell)?.player.play()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -407,6 +407,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         for cell in artworksTableView.visibleCells {
             (cell as? MainViewCell)?.player.pause()
         }
+        
+        NotificationCenter.default.removeObserver(self)
     }
     
     func queryActorInfos(_ artworkID: CKRecord.ID, _ row: Int) {
@@ -564,6 +566,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         player.seek(to: .zero)
         player.play()
+        swipeLeft(0)
         
         addSeconds()
     }
