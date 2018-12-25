@@ -369,7 +369,29 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     func reviewsFly() {
-        return
+        guard let cell = artworksTableView.visibleCells.first as? MainViewCell, let duration = cell.player.currentItem?.duration.seconds else {
+            return
+        }
+        
+        let length : CGFloat = CGFloat(view.bounds.width) / CGFloat(5) * CGFloat(duration) / CGFloat(reviewRecords.count)
+        var i: CGFloat = 0
+        for review in reviewRecords {
+            let text = review["text"] as? String
+            let labelV = UILabel(frame: CGRect(x: view.bounds.width + 50 + i * length, y: 100 +  CGFloat(arc4random_uniform(UInt32(view.bounds.height - 300))), width: 10, height: 10))
+            labelV.text = text
+            labelV.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            labelV.font = UIFont.boldSystemFont(ofSize: 25)
+            labelV.sizeToFit()
+            view.addSubview(labelV)
+            
+            UIView.animate(withDuration: duration, animations: {
+                labelV.layer.position.x = labelV.layer.position.x - self.view.bounds.width - labelV.bounds.width - CGFloat(self.reviewRecords.count) * length
+            }) { (succeed) in
+                labelV.removeFromSuperview()
+            }
+            
+            i += 1
+        }
     }
     
     func sendReview(_ artworkID: CKRecord.ID, _ infoRecord: CKRecord, _ text: String) {
@@ -387,7 +409,6 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil, let newRecord = records?[0] else { return }
             DispatchQueue.main.sync {
                 self.reviewRecords.insert(newRecord, at: 0)
-                self.reviewsFly()
             }
         }
         operation.database = self.database
@@ -395,6 +416,19 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         self.operationQueue.addOperation(operation)
         
         reviewsPlus(infoRecord)
+        
+        let labelV = UILabel(frame: CGRect(x: view.bounds.width, y: 100 +  CGFloat(arc4random_uniform(UInt32(view.bounds.height - 300))), width: 10, height: 10))
+        labelV.text = text
+        labelV.textColor = #colorLiteral(red: 0.9994998574, green: 0.06852344424, blue: 0.004268030636, alpha: 1)
+        labelV.font = UIFont.boldSystemFont(ofSize: 25)
+        labelV.sizeToFit()
+        view.addSubview(labelV)
+        
+        UIView.animate(withDuration: 8, animations: {
+            labelV.layer.position.x = labelV.layer.position.x - self.view.bounds.width - labelV.bounds.width
+        }) { (succeed) in
+            labelV.removeFromSuperview()
+        }
     }
     
     func reviewsPlus(_ infoRecord: CKRecord) {
