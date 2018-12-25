@@ -34,11 +34,12 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
 //        tabBarItem.badgeValue = "3"
     }
     
+    var rowHeight : CGFloat = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.estimatedRowHeight = view.bounds.height - 90
-        tableView.rowHeight = view.bounds.height - 90
+        rowHeight = view.bounds.height - 90
         
         refresh.addTarget(self, action: #selector(fetchData), for: .valueChanged)
         tableView.addSubview(refresh)
@@ -85,7 +86,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         queryFollowersOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             
-            let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@ && reports < 5", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
+            let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID in %@ && reports < 500", followRecords.compactMap {($0["followed"] as? CKRecord.Reference)?.recordID}))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
             
@@ -292,7 +293,7 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         artworkRecords[row].isPrefetched = true
         
         var tmpActors:[ActorInfo] = []
-        let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
+        let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 500", artworkID))
 
         queryChorus.sortDescriptors = [NSSortDescriptor(key: "seconds", ascending: false)]
         
@@ -351,6 +352,14 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         queryFullArtworkOp.database = self.database
         queryFullArtworkOp.addDependency(queryArtworkOp)
         self.operationQueue.addOperation(queryFullArtworkOp)
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return rowHeight
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return rowHeight
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

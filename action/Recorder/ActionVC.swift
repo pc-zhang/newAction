@@ -222,6 +222,14 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     @IBAction func saveLocalOrUpload(_ sender: Any) {
+        if (sender as? UIButton) == self.uploadButton, let duration = composition?.tracks(withMediaType: .video).first?.timeRange.duration.seconds, duration > 60 {
+            let alert = UIAlertController(title: "请您上传60秒之内的视频", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
+            present(alert, animated: true)
+            
+            return
+        }
+        
         // Create the export session with the composition and set the preset to the highest quality.
         let compatiblePresets = AVAssetExportSession.exportPresets(compatibleWith: composition!)
         let exporter = AVAssetExportSession(asset: composition!, presetName: AVAssetExportPreset960x540)!

@@ -117,8 +117,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         if isPopings {
             actionSheet.addAction(UIAlertAction(title: "弹幕关", style: .default, handler: { (action) in
                 self.isPopings = false
-                self.view.layer.removeAllAnimations()
-                self.view.layoutIfNeeded()
+                self.nukeAllAnimations()
             }))
         } else {
             actionSheet.addAction(UIAlertAction(title: "弹幕开", style: .default, handler: { (action) in
@@ -379,13 +378,18 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     
     var isPopings = true
     
+    func nukeAllAnimations() {
+        self.view.subviews.forEach({$0.layer.removeAllAnimations()})
+        self.view.layer.removeAllAnimations()
+        self.view.layoutIfNeeded()
+    }
+    
     func reviewsFly() {
         guard isPopings == true, let cell = artworksTableView.visibleCells.first as? MainViewCell, let duration = cell.player.currentItem?.duration.seconds else {
             return
         }
         
-        self.view.layer.removeAllAnimations()
-        self.view.layoutIfNeeded()
+        nukeAllAnimations()
         
         let length : CGFloat = CGFloat(view.bounds.width) / CGFloat(5) * CGFloat(duration) / CGFloat(reviewRecords.count)
         var i: CGFloat = 0
@@ -486,12 +490,12 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         
         var query: CKQuery
         if let userID = userID {
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@ && reports < 5", userID))
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creatorUserRecordID = %@ && reports < 500", userID))
             let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
             query.sortDescriptors = [byCreation]
         } else {
             let yesterday = Date().addingTimeInterval(-86400)
-            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creationDate > %@ && reports < 5", yesterday as NSDate))
+            query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "creationDate > %@ && reports < 500", yesterday as NSDate))
             let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
             query.sortDescriptors = [byChorusCount]
         }
@@ -575,13 +579,14 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         }
         
         NotificationCenter.default.removeObserver(self)
+        nukeAllAnimations()
     }
     
     func queryActorInfos(_ artworkID: CKRecord.ID, _ row: Int) {
         
         var tmpActors:[ActorInfo] = []
         
-        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
+        let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 500", artworkID))
 
         query.sortDescriptors = [NSSortDescriptor(key: "seconds", ascending: false)]
         
@@ -646,6 +651,9 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard indexPath.row < artworkRecords.count else {
+            return
+        }
         
         if let actorCell = cell as? ActorCell {
             queryAvatar(indexPath.row)
@@ -765,6 +773,7 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         playViewCell.player.pause()
         playViewCell.player.replaceCurrentItem(with: nil)
         
+        nukeAllAnimations()
     }
     
     func follow(_ cell: UITableViewCell) {

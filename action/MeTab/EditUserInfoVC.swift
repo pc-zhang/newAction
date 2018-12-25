@@ -70,7 +70,6 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         let littleAvatarURL = (userCacheOrNil!.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL
         let nickName = userCacheOrNil!.myInfoRecord?["nickName"] as? String
         let sex = userCacheOrNil!.myInfoRecord?["sex"] as? String
-        let location = userCacheOrNil!.myInfoRecord?["location"] as? String
         let sign = userCacheOrNil!.myInfoRecord?["sign"] as? String
         
         if let imageURL = imageURL {
@@ -81,14 +80,12 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
         }
         self.nickNameTextField.text = nickName
         self.sexLabel.text = sex
-        self.locationTextField.text = location
         self.signTextV.text = sign
         self.textVCharCountLabel.text = "\(self.signTextV.text.count)/120"
     }
 
     @IBOutlet weak var signTextV: UITextView! 
     @IBOutlet weak var nickNameTextField: UITextField!
-    @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var textVCharCountLabel: UILabel!
     
     @IBOutlet weak var sexLabel: UILabel!
@@ -115,8 +112,8 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         resignAllTextFirstResponder()
-        if nickNameTextField.text != "" && locationTextField.text != "" {
-            guard let avatarAsset = avatarAsset, let littleAvatarAsset = littleAvatarAsset, let nickName = nickNameTextField?.text, let sex = sexLabel?.text, let location = locationTextField?.text, let sign = signTextV?.text else {
+        if nickNameTextField.text != ""{
+            guard let avatarAsset = avatarAsset, let littleAvatarAsset = littleAvatarAsset, let nickName = nickNameTextField?.text, let sex = sexLabel?.text, let sign = signTextV?.text else {
                 let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
                 present(alert, animated: true)
@@ -126,23 +123,14 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             
             spinner.startAnimating()
 
-            let succeed = userCacheOrNil?.changeUserInfo(avatarAsset: avatarAsset, littleAvatarAsset: littleAvatarAsset, nickName: nickName, sex: sex, location: location, sign: sign)
+            let succeed = userCacheOrNil?.changeUserInfo(avatarAsset: avatarAsset, littleAvatarAsset: littleAvatarAsset, nickName: nickName, sex: sex, location: "中国", sign: sign)
             
             spinner.stopAnimating()
             
             return true
-//            if let succeed = succeed, succeed == true {
-//                return true
-//            }
-//
-//            let alert = UIAlertController(title: "保存失败", message: nil, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
-//            present(alert, animated: true)
-//
-//            return false
             
         } else {
-            let alert = UIAlertController(title: "昵称和地区不能为空", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "昵称不能为空", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
             present(alert, animated: true)
             
@@ -227,9 +215,6 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
             present(actionSheet, animated: true)
         }
         if indexPath.row == 3 {
-            locationTextField.becomeFirstResponder()
-        }
-        if indexPath.row == 4 {
             signTextV.becomeFirstResponder()
         }
         
@@ -238,7 +223,6 @@ class EditUserInfoVC : UITableViewController, UITextFieldDelegate, UITextViewDel
     
     func resignAllTextFirstResponder() {
         nickNameTextField.resignFirstResponder()
-        locationTextField.resignFirstResponder()
         signTextV.resignFirstResponder()
     }
     
