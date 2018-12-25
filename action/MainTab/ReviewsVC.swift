@@ -9,7 +9,7 @@
 import UIKit
 import CloudKit
 
-fileprivate struct ReviewInfo {
+struct ReviewInfo {
     var isPrefetched: Bool = false
     var review: CKRecord? = nil
 }
@@ -142,7 +142,7 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         let queryReviewsOp = CKQueryOperation(query: query)
         
         queryReviewsOp.desiredKeys = ["text", "avatar", "nickName"]
-        queryReviewsOp.resultsLimit = 6
+        queryReviewsOp.resultsLimit = 99
         queryReviewsOp.recordFetchedBlock = { (reviewRecord) in
             var reviewInfo = ReviewInfo()
             reviewInfo.review = reviewRecord
@@ -151,18 +151,15 @@ class ReviewsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         queryReviewsOp.queryCompletionBlock = { (cursor, error) in
             guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
             self.cursor = cursor
-        }
-        queryReviewsOp.database = self.database
-        self.operationQueue.addOperation(queryReviewsOp)
-        
-        DispatchQueue.global().async {
-            self.operationQueue.waitUntilAllOperationsAreFinished()
-            DispatchQueue.main.async {
+            
+            DispatchQueue.main.sync {
                 self.reviewInfos.append(contentsOf: tmpReviewInfos)
                 self.isFetchingData = false
                 self.tableView.reloadData()
             }
         }
+        queryReviewsOp.database = self.database
+        self.operationQueue.addOperation(queryReviewsOp)
     }
     
     // MARK: - Table view data source

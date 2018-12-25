@@ -128,22 +128,19 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     @IBAction func review(_ sender: Any) {
+        guard let row = artworksTableView.indexPathsForVisibleRows?.first?.row, let artworkID = artworkRecords[row].artwork?.recordID, let infoRecord = artworkRecords[row].info else {
+            return
+        }
+        
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        actionSheet.addAction(UIAlertAction(title: "明明可以靠颜值，却偏偏靠实力！", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "其实，你是一个演员", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "人戏不分，本色出演", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "举手投足皆是戏，忽正忽邪尚有余", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "把角色演成自己，把自己演到失忆。", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "角色虽小，却难掩真情流露", style: .default, handler: { (action) in
-        }))
-        actionSheet.addAction(UIAlertAction(title: "一顾倾人城，再顾倾人国", style: .default, handler: { (action) in
-        }))
+        let reviewTexts = ["明明可以靠颜值，却偏偏靠实力！", "其实，你是一个演员", "人戏不分，本色出演", "举手投足皆是戏，忽正忽邪尚有余", "把角色演成自己，把自己演到失忆。", "角色虽小，却难掩真情流露", "一顾倾人城，再顾倾人国", ]
+        
+        for review in reviewTexts {
+            actionSheet.addAction(UIAlertAction(title: review, style: .default, handler: { (action) in
+                self.sendReview(artworkID, infoRecord, review)
+            }))
+        }
         
         actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
         }))
@@ -340,6 +337,98 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         queryFullArtworkOp.database = self.database
         queryFullArtworkOp.addDependency(queryArtworkOp)
         self.operationQueue.addOperation(queryFullArtworkOp)
+    }
+    
+    private var reviewRecords: [CKRecord] = []
+    
+    func queryReviews(_ artworkID: CKRecord.ID) {
+        reviewRecords = []
+        
+        let query = CKQuery(recordType: "Review", predicate: NSPredicate(format: "artwork = %@", artworkID))
+        
+        let byCreation = NSSortDescriptor(key: "creationDate", ascending: false)
+        query.sortDescriptors = [byCreation]
+        let queryReviewsOp = CKQueryOperation(query: query)
+        
+        queryReviewsOp.desiredKeys = ["text", "avatar", "nickName"]
+        queryReviewsOp.resultsLimit = 99
+        queryReviewsOp.recordFetchedBlock = { (reviewRecord) in
+            DispatchQueue.main.sync {
+                self.reviewRecords.append(reviewRecord)
+            }
+        }
+        queryReviewsOp.queryCompletionBlock = { (cursor, error) in
+            guard handleCloudKitError(error, operation: .fetchRecords, affectedObjects: nil) == nil else { return }
+            
+            DispatchQueue.main.sync {
+                self.reviewsFly()
+            }
+        }
+        queryReviewsOp.database = self.database
+        self.operationQueue.addOperation(queryReviewsOp)
+    }
+    
+    func reviewsFly() {
+        return
+    }
+    
+    func sendReview(_ artworkID: CKRecord.ID, _ infoRecord: CKRecord, _ text: String) {
+        let reviewRecord = CKRecord(recordType: "Review")
+        reviewRecord["artwork"] = CKRecord.Reference(recordID: artworkID, action: .deleteSelf)
+        reviewRecord["text"] = text
+        reviewRecord["nickName"] = (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["nickName"] as? String
+        if let url = ((UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?["littleAvatar"] as? CKAsset)?.fileURL {
+            reviewRecord["avatar"] = CKAsset(fileURL: url)
+        }
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [reviewRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil, let newRecord = records?[0] else { return }
+            DispatchQueue.main.sync {
+                self.reviewRecords.insert(newRecord, at: 0)
+                self.reviewsFly()
+            }
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+        
+        reviewsPlus(infoRecord)
+    }
+    
+    func reviewsPlus(_ infoRecord: CKRecord) {
+        guard let reviewsCount = infoRecord["reviews"] as? Int64 else {
+            return
+        }
+        
+        infoRecord["reviews"] = reviewsCount + 1
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: [infoRecord], recordIDsToDelete: nil)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil) == nil else {
+                
+                if let newRecord = records?.first {
+                    DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                        self.reviewsPlus(newRecord)
+                    })
+                }
+                
+                return
+            }
+            
+            DispatchQueue.main.sync {
+                if let row = self.artworksTableView.indexPathsForVisibleRows?.first?.row {
+                    self.reloadVisibleRow(row, type: 0)
+                }
+            }
+            
+        }
+        operation.database = self.database
+        
+        self.operationQueue.addOperation(operation)
+        
     }
     
     @IBAction func fetchData(_ sender: Any) {
@@ -584,6 +673,10 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
             let playerItem = AVPlayerItem(url: url)
             playViewCell.player.replaceCurrentItem(with: playerItem)
             playViewCell.player.seek(to: .zero)
+            
+            if let artworkID = artworkRecords[indexPath.row].artwork?.recordID {
+                queryReviews(artworkID)
+            }
         }
         
     }

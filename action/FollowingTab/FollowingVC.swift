@@ -451,38 +451,25 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         playViewCell.player.replaceCurrentItem(with: nil)
     }
     
-    var flag = false
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if tableView == (scrollView as? UITableView), let firstCell = tableView.visibleCells.first as? FollowingViewCell, let lastCell = tableView.visibleCells.last as? FollowingViewCell, firstCell != lastCell {
             let center = firstCell.convert(firstCell.playerView.center, to: view)
-            if (center.y > 0) == flag {
-                return
-            }
-            flag = center.y > 0
             if center.y > 0 {
                 if firstCell.player.currentTime() == firstCell.player.currentItem?.duration {
                     firstCell.player.seek(to: .zero)
                 }
-                if firstCell.player.rate == 0 {
-                    firstCell.player.play()
-                }
-                if lastCell.player.rate == 1 {
-                    lastCell.player.pause()
-                }
+                firstCell.player.play()
+                lastCell.player.pause()
             } else {
                 if lastCell.player.currentTime() == lastCell.player.currentItem?.duration {
                     lastCell.player.seek(to: .zero)
                 }
-                if firstCell.player.rate == 1 {
-                    firstCell.player.pause()
-                }
-                if lastCell.player.rate == 0 {
-                    lastCell.player.play()
-                }
+                firstCell.player.pause()
+                lastCell.player.play()
             }
         }
     }
+
     
     // MARK: - UITableViewDataSource
     
