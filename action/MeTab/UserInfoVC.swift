@@ -284,6 +284,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     @IBAction func deleteArtwork(_ longPressGesture: UILongPressGestureRecognizer) {
+        if (UIApplication.shared.delegate as? AppDelegate)?.userCacheOrNil?.myInfoRecord?.recordID != userRecord?.recordID {
+            return
+        }
         let p = longPressGesture.location(in: self.collectionView)
         let indexPath = self.collectionView.indexPathForItem(at: p)
         if indexPath == nil {
