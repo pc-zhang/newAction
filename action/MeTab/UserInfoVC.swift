@@ -12,16 +12,13 @@ import UIKit
 import MobileCoreServices
 import CoreMedia
 
-class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, UIImagePickerControllerDelegate, HeaderViewDelegate, UINavigationControllerDelegate {
+class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     
     var isEditMode: Bool = false
     var followingsCount = 0
     var followersCount = 0
     var secondsCount: Int64 = 0
     
-    func deleteArtworksMode(_ isEditMode: Bool) {
-        self.isEditMode = isEditMode
-    }
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
@@ -56,42 +53,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
     var refreshControl = UIRefreshControl()
     var isMyPage: Bool? = nil
     
-    @IBAction func swipeRight(_ sender: Any) {
-        cancel(0)
-    }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if isEditMode {
-            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            actionSheet.addAction(UIAlertAction(title: "删除作品", style: .destructive, handler: { (action) in
-                guard let cell = sender as? UICollectionViewCell, let index = self.collectionView.indexPath(for: cell), let infoRecord = self.artworkRecords[index.item].info else {
-                    return
-                }
-                
-                var recordIDsToDelete = [infoRecord.recordID]
-                
-                if let artworkRecord = self.artworkRecords[index.item].artwork {
-                    recordIDsToDelete.append(artworkRecord.recordID)
-                }
-                
-                let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDsToDelete)
-                
-                operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
-                    guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
-                    DispatchQueue.main.async {
-                        self.artworkRecords.remove(at: index.item)
-                        self.collectionView.deleteItems(at: [index])
-                    }
-                }
-                operation.database = self.database
-                self.operationQueue.addOperation(operation)
-            }))
-            actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
-            
-            present(actionSheet, animated: true)
-        }
-        
-        return isEditMode ? false : true
+        return true
     }
     
     override func viewDidLoad() {
@@ -295,6 +259,48 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         navigationController?.popViewController(animated: true)
     }
     
+    func deleteArtworkAtIndexPath(_ index: IndexPath) {
+        guard let infoRecord = self.artworkRecords[index.item].info else {
+            return
+        }
+        
+        var recordIDsToDelete = [infoRecord.recordID]
+        
+        if let artworkRecord = self.artworkRecords[index.item].artwork {
+            recordIDsToDelete.append(artworkRecord.recordID)
+        }
+        
+        let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDsToDelete)
+        
+        operation.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            guard handleCloudKitError(error, operation: .modifyRecords, affectedObjects: nil, alert: true) == nil else { return }
+            DispatchQueue.main.sync {
+                self.artworkRecords.remove(at: index.item)
+                self.collectionView.deleteItems(at: [index])
+            }
+        }
+        operation.database = self.database
+        self.operationQueue.addOperation(operation)
+    }
+    
+    @IBAction func deleteArtwork(_ longPressGesture: UILongPressGestureRecognizer) {
+        let p = longPressGesture.location(in: self.collectionView)
+        let indexPath = self.collectionView.indexPathForItem(at: p)
+        if indexPath == nil {
+            return
+        }
+        
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "删除", style: .destructive, handler: { (action) in
+            self.deleteArtworkAtIndexPath(indexPath!)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
+        }))
+        
+        present(actionSheet, animated: true)
+    }
+    
     func queryFullArtwork(_ row: Int)
     {
         guard row < artworkRecords.count, let infoRecord = artworkRecords[row].info else {
@@ -431,8 +437,6 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
             headerV.secondsButton.setTitle("\(secondsCount.seconds2String())", for: .normal)
             headerV.signV.text = sign
             headerV.signV.sizeToFit()
-            headerV.delegate = self
-            
         }
         return headerV
     }
@@ -617,19 +621,6 @@ class UserInfoHeaderV: UICollectionReusableView {
     @IBOutlet weak var followersButton: UIButton!
     @IBOutlet weak var secondsButton: UIButton!
     
-    weak open var delegate: HeaderViewDelegate?
-    
-    var isEditMode = false {
-        didSet {
-//            deleteArtworksButton.setTitle(!isEditMode ? "删除作品" : "完成删除", for: .normal)
-        }
-    }
-    
-    @IBAction func deleteArtworks(_ sender: Any) {
-        isEditMode = !isEditMode
-        delegate?.deleteArtworksMode(isEditMode)
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
@@ -644,8 +635,3 @@ class UserInfoHeaderV: UICollectionReusableView {
         
     }
 }
-
-public protocol HeaderViewDelegate : NSObjectProtocol {
-    func deleteArtworksMode(_ isEditMode: Bool)
-}
-

@@ -37,8 +37,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.estimatedRowHeight = view.bounds.height
-        tableView.rowHeight = view.bounds.height
+        tableView.estimatedRowHeight = view.bounds.height - 90
+        tableView.rowHeight = view.bounds.height - 90
         
         refresh.addTarget(self, action: #selector(fetchData), for: .valueChanged)
         tableView.addSubview(refresh)
@@ -61,14 +61,6 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return view.bounds.height
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return view.bounds.height
     }
     
     
@@ -121,6 +113,31 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         }
         queryFollowersOp.database = self.database
         operationQueue.addOperation(queryFollowersOp)
+    }
+    
+    @IBAction func review(_ sender: Any) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "明明可以靠颜值，却偏偏靠实力！", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "其实，你是一个演员", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "人戏不分，本色出演", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "举手投足皆是戏，忽正忽邪尚有余", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "把角色演成自己，把自己演到失忆。", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "角色虽小，却难掩真情流露", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "一顾倾人城，再顾倾人国", style: .default, handler: { (action) in
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
+        }))
+        
+        present(actionSheet, animated: true)
+        
     }
     
     // MARK: - UICollectionViewDelegate
@@ -276,8 +293,8 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         
         var tmpActors:[ActorInfo] = []
         let queryChorus = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
-        let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
-        queryChorus.sortDescriptors = [byChorusCount]
+
+        queryChorus.sortDescriptors = [NSSortDescriptor(key: "seconds", ascending: false)]
         
         let queryChorusOp = CKQueryOperation(query: queryChorus)
         queryChorusOp.resultsLimit = 99
@@ -434,21 +451,35 @@ class FollowingVC: UIViewController, UITableViewDataSource, UITableViewDelegate,
         playViewCell.player.replaceCurrentItem(with: nil)
     }
     
+    var flag = false
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if tableView == (scrollView as? UITableView), let firstCell = tableView.visibleCells.first as? FollowingViewCell, let lastCell = tableView.visibleCells.last as? FollowingViewCell, firstCell != lastCell {
             let center = firstCell.convert(firstCell.playerView.center, to: view)
+            if (center.y > 0) == flag {
+                return
+            }
+            flag = center.y > 0
             if center.y > 0 {
                 if firstCell.player.currentTime() == firstCell.player.currentItem?.duration {
                     firstCell.player.seek(to: .zero)
                 }
-                firstCell.player.play()
-                lastCell.player.pause()
+                if firstCell.player.rate == 0 {
+                    firstCell.player.play()
+                }
+                if lastCell.player.rate == 1 {
+                    lastCell.player.pause()
+                }
             } else {
                 if lastCell.player.currentTime() == lastCell.player.currentItem?.duration {
                     lastCell.player.seek(to: .zero)
                 }
-                firstCell.player.pause()
-                lastCell.player.play()
+                if firstCell.player.rate == 1 {
+                    firstCell.player.pause()
+                }
+                if lastCell.player.rate == 0 {
+                    lastCell.player.play()
+                }
             }
         }
     }

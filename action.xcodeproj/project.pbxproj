@@ -16,6 +16,86 @@
 		F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */; };
 		F04B914521B288E9000F5003 /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B914421B288E9000F5003 /* Followers.swift */; };
 		F04B914921CACF9F000F5003 /* EULAVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B914821CACF9E000F5003 /* EULAVC.swift */; };
+		F04B91C321CDFD2B000F5003 /* SettingsScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915321CDFD2A000F5003 /* SettingsScene.swift */; };
+		F04B91C421CDFD2B000F5003 /* CharactersScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915421CDFD2A000F5003 /* CharactersScene.swift */; };
+		F04B91C521CDFD2B000F5003 /* SceneOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915521CDFD2A000F5003 /* SceneOverlay.swift */; };
+		F04B91C621CDFD2B000F5003 /* ScoresScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915621CDFD2A000F5003 /* ScoresScene.swift */; };
+		F04B91C721CDFD2B000F5003 /* RoutingUtilityScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915721CDFD2A000F5003 /* RoutingUtilityScene.swift */; };
+		F04B91C821CDFD2B000F5003 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915821CDFD2A000F5003 /* GameScene.swift */; };
+		F04B91C921CDFD2B000F5003 /* TitleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915921CDFD2A000F5003 /* TitleScene.swift */; };
+		F04B91CA21CDFD2B000F5003 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915C21CDFD2A000F5003 /* ButtonNode.swift */; };
+		F04B91CB21CDFD2B000F5003 /* TriggleButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915D21CDFD2A000F5003 /* TriggleButtonNode.swift */; };
+		F04B91CC21CDFD2B000F5003 /* ToggleButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B915E21CDFD2A000F5003 /* ToggleButtonNode.swift */; };
+		F04B91CD21CDFD2B000F5003 /* PipeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916021CDFD2A000F5003 /* PipeNode.swift */; };
+		F04B91CE21CDFD2B000F5003 /* InfiniteSpriteScrollNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916121CDFD2A000F5003 /* InfiniteSpriteScrollNode.swift */; };
+		F04B91CF21CDFD2B000F5003 /* NyancatRainbowNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916321CDFD2A000F5003 /* NyancatRainbowNode.swift */; };
+		F04B91D021CDFD2B000F5003 /* NyancatNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916421CDFD2A000F5003 /* NyancatNode.swift */; };
+		F04B91D121CDFD2B000F5003 /* BirdNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916521CDFD2A000F5003 /* BirdNode.swift */; };
+		F04B91D221CDFD2B000F5003 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916721CDFD2A000F5003 /* GameViewController.swift */; };
+		F04B91D321CDFD2B000F5003 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916921CDFD2A000F5003 /* UserDefaults.swift */; };
+		F04B91D421CDFD2B000F5003 /* PhysicsCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916A21CDFD2A000F5003 /* PhysicsCategories.swift */; };
+		F04B91D521CDFD2B000F5003 /* GameSceneAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916C21CDFD2A000F5003 /* GameSceneAdapter.swift */; };
+		F04B91D621CDFD2B000F5003 /* CGFloat+MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916E21CDFD2A000F5003 /* CGFloat+MathUtils.swift */; };
+		F04B91D721CDFD2B000F5003 /* SKTexture+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B916F21CDFD2A000F5003 /* SKTexture+Gradient.swift */; };
+		F04B91D821CDFD2B000F5003 /* SKEmitterNode+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917021CDFD2A000F5003 /* SKEmitterNode+Utils.swift */; };
+		F04B91D921CDFD2B000F5003 /* SKSpriteNode+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917121CDFD2A000F5003 /* SKSpriteNode+GIF.swift */; };
+		F04B91DA21CDFD2B000F5003 /* Bool+PipeRandom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917221CDFD2A000F5003 /* Bool+PipeRandom.swift */; };
+		F04B91DB21CDFD2B000F5003 /* SKScene+ShaderTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917321CDFD2A000F5003 /* SKScene+ShaderTransition.swift */; };
+		F04B91DC21CDFD2B000F5003 /* SKScene+SpriteUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917421CDFD2A000F5003 /* SKScene+SpriteUploader.swift */; };
+		F04B91DD21CDFD2B000F5003 /* SKTextureAtlas+FrameUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917521CDFD2A000F5003 /* SKTextureAtlas+FrameUploader.swift */; };
+		F04B91DE21CDFD2B000F5003 /* PausedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917721CDFD2A000F5003 /* PausedState.swift */; };
+		F04B91DF21CDFD2B000F5003 /* GameOverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917821CDFD2A000F5003 /* GameOverState.swift */; };
+		F04B91E021CDFD2B000F5003 /* PlayingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917921CDFD2A000F5003 /* PlayingState.swift */; };
+		F04B91E121CDFD2B000F5003 /* PipeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B917B21CDFD2A000F5003 /* PipeFactory.swift */; };
+		F04B91E321CDFD2B000F5003 /* animated-nyancoin.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B917F21CDFD2A000F5003 /* animated-nyancoin.gif */; };
+		F04B91E421CDFD2B000F5003 /* animated-lifealope-nyan.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B918021CDFD2A000F5003 /* animated-lifealope-nyan.gif */; };
+		F04B91E521CDFD2B000F5003 /* animated-gamecat-nyan.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B918121CDFD2A000F5003 /* animated-gamecat-nyan.gif */; };
+		F04B91E621CDFD2C000F5003 /* animated-jazz-nyan.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B918221CDFD2A000F5003 /* animated-jazz-nyan.gif */; };
+		F04B91E721CDFD2C000F5003 /* animated-nyan-squirrel.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B918321CDFD2A000F5003 /* animated-nyan-squirrel.gif */; };
+		F04B91E821CDFD2C000F5003 /* animated-nyan-hip.gif in Resources */ = {isa = PBXBuildFile; fileRef = F04B918421CDFD2A000F5003 /* animated-nyan-hip.gif */; };
+		F04B91E921CDFD2C000F5003 /* SettingsScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918721CDFD2A000F5003 /* SettingsScene.sks */; };
+		F04B91EA21CDFD2C000F5003 /* ScoreScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918821CDFD2A000F5003 /* ScoreScene.sks */; };
+		F04B91EB21CDFD2C000F5003 /* TitleScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918921CDFD2A000F5003 /* TitleScene.sks */; };
+		F04B91EC21CDFD2C000F5003 /* SettingsScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918A21CDFD2A000F5003 /* SettingsScene iPad.sks */; };
+		F04B91ED21CDFD2C000F5003 /* ScoreScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918B21CDFD2A000F5003 /* ScoreScene iPad.sks */; };
+		F04B91EE21CDFD2C000F5003 /* CharactersScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918C21CDFD2A000F5003 /* CharactersScene.sks */; };
+		F04B91EF21CDFD2C000F5003 /* GameScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918D21CDFD2A000F5003 /* GameScene iPad.sks */; };
+		F04B91F021CDFD2C000F5003 /* TitleScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918E21CDFD2A000F5003 /* TitleScene iPad.sks */; };
+		F04B91F121CDFD2C000F5003 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B918F21CDFD2A000F5003 /* GameScene.sks */; };
+		F04B91F221CDFD2C000F5003 /* CharactersScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919021CDFD2A000F5003 /* CharactersScene iPad.sks */; };
+		F04B91F321CDFD2C000F5003 /* FailedScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919221CDFD2A000F5003 /* FailedScene.sks */; };
+		F04B91F421CDFD2C000F5003 /* PauseScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919321CDFD2A000F5003 /* PauseScene iPad.sks */; };
+		F04B91F521CDFD2C000F5003 /* FailedScene iPad.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919421CDFD2A000F5003 /* FailedScene iPad.sks */; };
+		F04B91F621CDFD2C000F5003 /* PauseScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919521CDFD2A000F5003 /* PauseScene.sks */; };
+		F04B91F721CDFD2C000F5003 /* PrePlayScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919721CDFD2A000F5003 /* PrePlayScene.sks */; };
+		F04B91F821CDFD2C000F5003 /* TouchToFlyScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919821CDFD2A000F5003 /* TouchToFlyScene.sks */; };
+		F04B91F921CDFD2C000F5003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F04B919921CDFD2A000F5003 /* Assets.xcassets */; };
+		F04B91FA21CDFD2C000F5003 /* RainParticleEffect.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919B21CDFD2A000F5003 /* RainParticleEffect.sks */; };
+		F04B91FB21CDFD2C000F5003 /* SnowParticleEffect.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919C21CDFD2A000F5003 /* SnowParticleEffect.sks */; };
+		F04B91FC21CDFD2C000F5003 /* Particles.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F04B919D21CDFD2A000F5003 /* Particles.xcassets */; };
+		F04B91FD21CDFD2C000F5003 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F04B919F21CDFD2A000F5003 /* Actions.sks */; };
+		F04B91FE21CDFD2C000F5003 /* retro_transition_fade_to_centre.fsh in Resources */ = {isa = PBXBuildFile; fileRef = F04B91A221CDFD2A000F5003 /* retro_transition_fade_to_centre.fsh */; };
+		F04B91FF21CDFD2C000F5003 /* retro_transition_fade_from_centre.fsh in Resources */ = {isa = PBXBuildFile; fileRef = F04B91A321CDFD2A000F5003 /* retro_transition_fade_from_centre.fsh */; };
+		F04B920021CDFD2C000F5003 /* retro_transition_fade_from_top_left.fsh in Resources */ = {isa = PBXBuildFile; fileRef = F04B91A421CDFD2A000F5003 /* retro_transition_fade_from_top_left.fsh */; };
+		F04B920121CDFD2C000F5003 /* retro_transition_fade_from_top.fsh in Resources */ = {isa = PBXBuildFile; fileRef = F04B91A521CDFD2A000F5003 /* retro_transition_fade_from_top.fsh */; };
+		F04B920221CDFD2C000F5003 /* Pixel Digivolve.otf in Resources */ = {isa = PBXBuildFile; fileRef = F04B91A721CDFD2A000F5003 /* Pixel Digivolve.otf */; };
+		F04B920321CDFD2C000F5003 /* clock-final-tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AA21CDFD2A000F5003 /* clock-final-tick.mp3 */; };
+		F04B920421CDFD2C000F5003 /* clock-tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AB21CDFD2A000F5003 /* clock-tick.mp3 */; };
+		F04B920521CDFD2C000F5003 /* click2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AC21CDFD2A000F5003 /* click2.mp3 */; };
+		F04B920621CDFD2C000F5003 /* click1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AD21CDFD2A000F5003 /* click1.mp3 */; };
+		F04B920721CDFD2C000F5003 /* switch3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AE21CDFD2A000F5003 /* switch3.mp3 */; };
+		F04B920821CDFD2C000F5003 /* switch2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91AF21CDFD2A000F5003 /* switch2.mp3 */; };
+		F04B920921CDFD2C000F5003 /* rollover1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B021CDFD2A000F5003 /* rollover1.mp3 */; };
+		F04B920A21CDFD2C000F5003 /* rollover2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B121CDFD2A000F5003 /* rollover2.mp3 */; };
+		F04B920B21CDFD2C000F5003 /* POL-catch-them-all-short.wav in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B421CDFD2A000F5003 /* POL-catch-them-all-short.wav */; };
+		F04B920C21CDFD2C000F5003 /* POL-flight-master-short.wav in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B521CDFD2A000F5003 /* POL-flight-master-short.wav */; };
+		F04B920D21CDFD2C000F5003 /* Hit_Hurt.wav in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B721CDFD2A000F5003 /* Hit_Hurt.wav */; };
+		F04B920E21CDFD2C000F5003 /* Coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = F04B91B821CDFD2A000F5003 /* Coin.wav */; };
+		F04B920F21CDFD2C000F5003 /* Touchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B91BA21CDFD2A000F5003 /* Touchable.swift */; };
+		F04B921021CDFD2C000F5003 /* GameSceneProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B91BB21CDFD2A000F5003 /* GameSceneProtocol.swift */; };
+		F04B921121CDFD2C000F5003 /* Playable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B91BC21CDFD2A000F5003 /* Playable.swift */; };
+		F04B921221CDFD2C000F5003 /* Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B91BD21CDFD2A000F5003 /* Updatable.swift */; };
+		F04B921321CDFD2C000F5003 /* ControlInputDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B91BF21CDFD2A000F5003 /* ControlInputDirection.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
 		F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D1217C50AD003ACC53 /* Main.storyboard */; };
 		F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0A401D4217C50AD003ACC53 /* action.xcdatamodeld */; };
@@ -57,6 +137,86 @@
 		F04B914621B7ED77000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		F04B914721B7ED78000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		F04B914821CACF9E000F5003 /* EULAVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EULAVC.swift; sourceTree = "<group>"; };
+		F04B915321CDFD2A000F5003 /* SettingsScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScene.swift; sourceTree = "<group>"; };
+		F04B915421CDFD2A000F5003 /* CharactersScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharactersScene.swift; sourceTree = "<group>"; };
+		F04B915521CDFD2A000F5003 /* SceneOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneOverlay.swift; sourceTree = "<group>"; };
+		F04B915621CDFD2A000F5003 /* ScoresScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresScene.swift; sourceTree = "<group>"; };
+		F04B915721CDFD2A000F5003 /* RoutingUtilityScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoutingUtilityScene.swift; sourceTree = "<group>"; };
+		F04B915821CDFD2A000F5003 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		F04B915921CDFD2A000F5003 /* TitleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScene.swift; sourceTree = "<group>"; };
+		F04B915C21CDFD2A000F5003 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
+		F04B915D21CDFD2A000F5003 /* TriggleButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TriggleButtonNode.swift; sourceTree = "<group>"; };
+		F04B915E21CDFD2A000F5003 /* ToggleButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButtonNode.swift; sourceTree = "<group>"; };
+		F04B916021CDFD2A000F5003 /* PipeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PipeNode.swift; sourceTree = "<group>"; };
+		F04B916121CDFD2A000F5003 /* InfiniteSpriteScrollNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteSpriteScrollNode.swift; sourceTree = "<group>"; };
+		F04B916321CDFD2A000F5003 /* NyancatRainbowNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NyancatRainbowNode.swift; sourceTree = "<group>"; };
+		F04B916421CDFD2A000F5003 /* NyancatNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NyancatNode.swift; sourceTree = "<group>"; };
+		F04B916521CDFD2A000F5003 /* BirdNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BirdNode.swift; sourceTree = "<group>"; };
+		F04B916721CDFD2A000F5003 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		F04B916921CDFD2A000F5003 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		F04B916A21CDFD2A000F5003 /* PhysicsCategories.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhysicsCategories.swift; sourceTree = "<group>"; };
+		F04B916C21CDFD2A000F5003 /* GameSceneAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneAdapter.swift; sourceTree = "<group>"; };
+		F04B916E21CDFD2A000F5003 /* CGFloat+MathUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+MathUtils.swift"; sourceTree = "<group>"; };
+		F04B916F21CDFD2A000F5003 /* SKTexture+Gradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKTexture+Gradient.swift"; sourceTree = "<group>"; };
+		F04B917021CDFD2A000F5003 /* SKEmitterNode+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKEmitterNode+Utils.swift"; sourceTree = "<group>"; };
+		F04B917121CDFD2A000F5003 /* SKSpriteNode+GIF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKSpriteNode+GIF.swift"; sourceTree = "<group>"; };
+		F04B917221CDFD2A000F5003 /* Bool+PipeRandom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+PipeRandom.swift"; sourceTree = "<group>"; };
+		F04B917321CDFD2A000F5003 /* SKScene+ShaderTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKScene+ShaderTransition.swift"; sourceTree = "<group>"; };
+		F04B917421CDFD2A000F5003 /* SKScene+SpriteUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKScene+SpriteUploader.swift"; sourceTree = "<group>"; };
+		F04B917521CDFD2A000F5003 /* SKTextureAtlas+FrameUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKTextureAtlas+FrameUploader.swift"; sourceTree = "<group>"; };
+		F04B917721CDFD2A000F5003 /* PausedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PausedState.swift; sourceTree = "<group>"; };
+		F04B917821CDFD2A000F5003 /* GameOverState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverState.swift; sourceTree = "<group>"; };
+		F04B917921CDFD2A000F5003 /* PlayingState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayingState.swift; sourceTree = "<group>"; };
+		F04B917B21CDFD2A000F5003 /* PipeFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PipeFactory.swift; sourceTree = "<group>"; };
+		F04B917F21CDFD2A000F5003 /* animated-nyancoin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-nyancoin.gif"; sourceTree = "<group>"; };
+		F04B918021CDFD2A000F5003 /* animated-lifealope-nyan.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-lifealope-nyan.gif"; sourceTree = "<group>"; };
+		F04B918121CDFD2A000F5003 /* animated-gamecat-nyan.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-gamecat-nyan.gif"; sourceTree = "<group>"; };
+		F04B918221CDFD2A000F5003 /* animated-jazz-nyan.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-jazz-nyan.gif"; sourceTree = "<group>"; };
+		F04B918321CDFD2A000F5003 /* animated-nyan-squirrel.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-nyan-squirrel.gif"; sourceTree = "<group>"; };
+		F04B918421CDFD2A000F5003 /* animated-nyan-hip.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "animated-nyan-hip.gif"; sourceTree = "<group>"; };
+		F04B918721CDFD2A000F5003 /* SettingsScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SettingsScene.sks; sourceTree = "<group>"; };
+		F04B918821CDFD2A000F5003 /* ScoreScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ScoreScene.sks; sourceTree = "<group>"; };
+		F04B918921CDFD2A000F5003 /* TitleScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScene.sks; sourceTree = "<group>"; };
+		F04B918A21CDFD2A000F5003 /* SettingsScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "SettingsScene iPad.sks"; sourceTree = "<group>"; };
+		F04B918B21CDFD2A000F5003 /* ScoreScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "ScoreScene iPad.sks"; sourceTree = "<group>"; };
+		F04B918C21CDFD2A000F5003 /* CharactersScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CharactersScene.sks; sourceTree = "<group>"; };
+		F04B918D21CDFD2A000F5003 /* GameScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "GameScene iPad.sks"; sourceTree = "<group>"; };
+		F04B918E21CDFD2A000F5003 /* TitleScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "TitleScene iPad.sks"; sourceTree = "<group>"; };
+		F04B918F21CDFD2A000F5003 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		F04B919021CDFD2A000F5003 /* CharactersScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "CharactersScene iPad.sks"; sourceTree = "<group>"; };
+		F04B919221CDFD2A000F5003 /* FailedScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FailedScene.sks; sourceTree = "<group>"; };
+		F04B919321CDFD2A000F5003 /* PauseScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "PauseScene iPad.sks"; sourceTree = "<group>"; };
+		F04B919421CDFD2A000F5003 /* FailedScene iPad.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = "FailedScene iPad.sks"; sourceTree = "<group>"; };
+		F04B919521CDFD2A000F5003 /* PauseScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PauseScene.sks; sourceTree = "<group>"; };
+		F04B919721CDFD2A000F5003 /* PrePlayScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PrePlayScene.sks; sourceTree = "<group>"; };
+		F04B919821CDFD2A000F5003 /* TouchToFlyScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TouchToFlyScene.sks; sourceTree = "<group>"; };
+		F04B919921CDFD2A000F5003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F04B919B21CDFD2A000F5003 /* RainParticleEffect.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RainParticleEffect.sks; sourceTree = "<group>"; };
+		F04B919C21CDFD2A000F5003 /* SnowParticleEffect.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SnowParticleEffect.sks; sourceTree = "<group>"; };
+		F04B919D21CDFD2A000F5003 /* Particles.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Particles.xcassets; sourceTree = "<group>"; };
+		F04B919F21CDFD2A000F5003 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
+		F04B91A221CDFD2A000F5003 /* retro_transition_fade_to_centre.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = retro_transition_fade_to_centre.fsh; sourceTree = "<group>"; };
+		F04B91A321CDFD2A000F5003 /* retro_transition_fade_from_centre.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = retro_transition_fade_from_centre.fsh; sourceTree = "<group>"; };
+		F04B91A421CDFD2A000F5003 /* retro_transition_fade_from_top_left.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = retro_transition_fade_from_top_left.fsh; sourceTree = "<group>"; };
+		F04B91A521CDFD2A000F5003 /* retro_transition_fade_from_top.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = retro_transition_fade_from_top.fsh; sourceTree = "<group>"; };
+		F04B91A721CDFD2A000F5003 /* Pixel Digivolve.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pixel Digivolve.otf"; sourceTree = "<group>"; };
+		F04B91AA21CDFD2A000F5003 /* clock-final-tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "clock-final-tick.mp3"; sourceTree = "<group>"; };
+		F04B91AB21CDFD2A000F5003 /* clock-tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "clock-tick.mp3"; sourceTree = "<group>"; };
+		F04B91AC21CDFD2A000F5003 /* click2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = click2.mp3; sourceTree = "<group>"; };
+		F04B91AD21CDFD2A000F5003 /* click1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = click1.mp3; sourceTree = "<group>"; };
+		F04B91AE21CDFD2A000F5003 /* switch3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = switch3.mp3; sourceTree = "<group>"; };
+		F04B91AF21CDFD2A000F5003 /* switch2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = switch2.mp3; sourceTree = "<group>"; };
+		F04B91B021CDFD2A000F5003 /* rollover1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rollover1.mp3; sourceTree = "<group>"; };
+		F04B91B121CDFD2A000F5003 /* rollover2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rollover2.mp3; sourceTree = "<group>"; };
+		F04B91B421CDFD2A000F5003 /* POL-catch-them-all-short.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "POL-catch-them-all-short.wav"; sourceTree = "<group>"; };
+		F04B91B521CDFD2A000F5003 /* POL-flight-master-short.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "POL-flight-master-short.wav"; sourceTree = "<group>"; };
+		F04B91B721CDFD2A000F5003 /* Hit_Hurt.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Hit_Hurt.wav; sourceTree = "<group>"; };
+		F04B91B821CDFD2A000F5003 /* Coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Coin.wav; sourceTree = "<group>"; };
+		F04B91BA21CDFD2A000F5003 /* Touchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Touchable.swift; sourceTree = "<group>"; };
+		F04B91BB21CDFD2A000F5003 /* GameSceneProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneProtocol.swift; sourceTree = "<group>"; };
+		F04B91BC21CDFD2A000F5003 /* Playable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playable.swift; sourceTree = "<group>"; };
+		F04B91BD21CDFD2A000F5003 /* Updatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Updatable.swift; sourceTree = "<group>"; };
+		F04B91BF21CDFD2A000F5003 /* ControlInputDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlInputDirection.swift; sourceTree = "<group>"; };
 		F0A401CA217C50AD003ACC53 /* action.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = action.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A401CD217C50AD003ACC53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A401D2217C50AD003ACC53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -119,6 +279,325 @@
 			path = MessagesTab;
 			sourceTree = "<group>";
 		};
+		F04B914C21CDFD2A000F5003 /* flappy-fly-bird */ = {
+			isa = PBXGroup;
+			children = (
+				F04B915221CDFD2A000F5003 /* Scenes */,
+				F04B915A21CDFD2A000F5003 /* Nodes */,
+				F04B916621CDFD2A000F5003 /* View Controllers */,
+				F04B916821CDFD2A000F5003 /* Utils */,
+				F04B916B21CDFD2A000F5003 /* Adapeters */,
+				F04B916D21CDFD2A000F5003 /* Extensions */,
+				F04B917621CDFD2A000F5003 /* Game States */,
+				F04B917A21CDFD2A000F5003 /* Factories */,
+				F04B917D21CDFD2A000F5003 /* Assets */,
+				F04B91B921CDFD2A000F5003 /* Protocols */,
+				F04B91BE21CDFD2A000F5003 /* Control */,
+			);
+			path = "flappy-fly-bird";
+			sourceTree = "<group>";
+		};
+		F04B915221CDFD2A000F5003 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				F04B915321CDFD2A000F5003 /* SettingsScene.swift */,
+				F04B915421CDFD2A000F5003 /* CharactersScene.swift */,
+				F04B915521CDFD2A000F5003 /* SceneOverlay.swift */,
+				F04B915621CDFD2A000F5003 /* ScoresScene.swift */,
+				F04B915721CDFD2A000F5003 /* RoutingUtilityScene.swift */,
+				F04B915821CDFD2A000F5003 /* GameScene.swift */,
+				F04B915921CDFD2A000F5003 /* TitleScene.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		F04B915A21CDFD2A000F5003 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				F04B915B21CDFD2A000F5003 /* UI Components */,
+				F04B915F21CDFD2A000F5003 /* Game Componens */,
+				F04B916221CDFD2A000F5003 /* Playables */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
+		F04B915B21CDFD2A000F5003 /* UI Components */ = {
+			isa = PBXGroup;
+			children = (
+				F04B915C21CDFD2A000F5003 /* ButtonNode.swift */,
+				F04B915D21CDFD2A000F5003 /* TriggleButtonNode.swift */,
+				F04B915E21CDFD2A000F5003 /* ToggleButtonNode.swift */,
+			);
+			path = "UI Components";
+			sourceTree = "<group>";
+		};
+		F04B915F21CDFD2A000F5003 /* Game Componens */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916021CDFD2A000F5003 /* PipeNode.swift */,
+				F04B916121CDFD2A000F5003 /* InfiniteSpriteScrollNode.swift */,
+			);
+			path = "Game Componens";
+			sourceTree = "<group>";
+		};
+		F04B916221CDFD2A000F5003 /* Playables */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916321CDFD2A000F5003 /* NyancatRainbowNode.swift */,
+				F04B916421CDFD2A000F5003 /* NyancatNode.swift */,
+				F04B916521CDFD2A000F5003 /* BirdNode.swift */,
+			);
+			path = Playables;
+			sourceTree = "<group>";
+		};
+		F04B916621CDFD2A000F5003 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916721CDFD2A000F5003 /* GameViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		F04B916821CDFD2A000F5003 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916921CDFD2A000F5003 /* UserDefaults.swift */,
+				F04B916A21CDFD2A000F5003 /* PhysicsCategories.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		F04B916B21CDFD2A000F5003 /* Adapeters */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916C21CDFD2A000F5003 /* GameSceneAdapter.swift */,
+			);
+			path = Adapeters;
+			sourceTree = "<group>";
+		};
+		F04B916D21CDFD2A000F5003 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F04B916E21CDFD2A000F5003 /* CGFloat+MathUtils.swift */,
+				F04B916F21CDFD2A000F5003 /* SKTexture+Gradient.swift */,
+				F04B917021CDFD2A000F5003 /* SKEmitterNode+Utils.swift */,
+				F04B917121CDFD2A000F5003 /* SKSpriteNode+GIF.swift */,
+				F04B917221CDFD2A000F5003 /* Bool+PipeRandom.swift */,
+				F04B917321CDFD2A000F5003 /* SKScene+ShaderTransition.swift */,
+				F04B917421CDFD2A000F5003 /* SKScene+SpriteUploader.swift */,
+				F04B917521CDFD2A000F5003 /* SKTextureAtlas+FrameUploader.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F04B917621CDFD2A000F5003 /* Game States */ = {
+			isa = PBXGroup;
+			children = (
+				F04B917721CDFD2A000F5003 /* PausedState.swift */,
+				F04B917821CDFD2A000F5003 /* GameOverState.swift */,
+				F04B917921CDFD2A000F5003 /* PlayingState.swift */,
+			);
+			path = "Game States";
+			sourceTree = "<group>";
+		};
+		F04B917A21CDFD2A000F5003 /* Factories */ = {
+			isa = PBXGroup;
+			children = (
+				F04B917B21CDFD2A000F5003 /* PipeFactory.swift */,
+			);
+			path = Factories;
+			sourceTree = "<group>";
+		};
+		F04B917D21CDFD2A000F5003 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				F04B917E21CDFD2A000F5003 /* Animated Players */,
+				F04B918521CDFD2A000F5003 /* Scenes */,
+				F04B919921CDFD2A000F5003 /* Assets.xcassets */,
+				F04B919A21CDFD2A000F5003 /* Particles */,
+				F04B919E21CDFD2A000F5003 /* Actions */,
+				F04B91A021CDFD2A000F5003 /* Shaders */,
+				F04B91A621CDFD2A000F5003 /* Fonts */,
+				F04B91A821CDFD2A000F5003 /* Sound */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		F04B917E21CDFD2A000F5003 /* Animated Players */ = {
+			isa = PBXGroup;
+			children = (
+				F04B917F21CDFD2A000F5003 /* animated-nyancoin.gif */,
+				F04B918021CDFD2A000F5003 /* animated-lifealope-nyan.gif */,
+				F04B918121CDFD2A000F5003 /* animated-gamecat-nyan.gif */,
+				F04B918221CDFD2A000F5003 /* animated-jazz-nyan.gif */,
+				F04B918321CDFD2A000F5003 /* animated-nyan-squirrel.gif */,
+				F04B918421CDFD2A000F5003 /* animated-nyan-hip.gif */,
+			);
+			path = "Animated Players";
+			sourceTree = "<group>";
+		};
+		F04B918521CDFD2A000F5003 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				F04B918621CDFD2A000F5003 /* Main Scenes */,
+				F04B919121CDFD2A000F5003 /* Game Overlay */,
+				F04B919621CDFD2A000F5003 /* Utility Overlay */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		F04B918621CDFD2A000F5003 /* Main Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				F04B918721CDFD2A000F5003 /* SettingsScene.sks */,
+				F04B918821CDFD2A000F5003 /* ScoreScene.sks */,
+				F04B918921CDFD2A000F5003 /* TitleScene.sks */,
+				F04B918A21CDFD2A000F5003 /* SettingsScene iPad.sks */,
+				F04B918B21CDFD2A000F5003 /* ScoreScene iPad.sks */,
+				F04B918C21CDFD2A000F5003 /* CharactersScene.sks */,
+				F04B918D21CDFD2A000F5003 /* GameScene iPad.sks */,
+				F04B918E21CDFD2A000F5003 /* TitleScene iPad.sks */,
+				F04B918F21CDFD2A000F5003 /* GameScene.sks */,
+				F04B919021CDFD2A000F5003 /* CharactersScene iPad.sks */,
+			);
+			path = "Main Scenes";
+			sourceTree = "<group>";
+		};
+		F04B919121CDFD2A000F5003 /* Game Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				F04B919221CDFD2A000F5003 /* FailedScene.sks */,
+				F04B919321CDFD2A000F5003 /* PauseScene iPad.sks */,
+				F04B919421CDFD2A000F5003 /* FailedScene iPad.sks */,
+				F04B919521CDFD2A000F5003 /* PauseScene.sks */,
+			);
+			path = "Game Overlay";
+			sourceTree = "<group>";
+		};
+		F04B919621CDFD2A000F5003 /* Utility Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				F04B919721CDFD2A000F5003 /* PrePlayScene.sks */,
+				F04B919821CDFD2A000F5003 /* TouchToFlyScene.sks */,
+			);
+			path = "Utility Overlay";
+			sourceTree = "<group>";
+		};
+		F04B919A21CDFD2A000F5003 /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+				F04B919B21CDFD2A000F5003 /* RainParticleEffect.sks */,
+				F04B919C21CDFD2A000F5003 /* SnowParticleEffect.sks */,
+				F04B919D21CDFD2A000F5003 /* Particles.xcassets */,
+			);
+			path = Particles;
+			sourceTree = "<group>";
+		};
+		F04B919E21CDFD2A000F5003 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				F04B919F21CDFD2A000F5003 /* Actions.sks */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
+		F04B91A021CDFD2A000F5003 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91A121CDFD2A000F5003 /* Transitions */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		F04B91A121CDFD2A000F5003 /* Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91A221CDFD2A000F5003 /* retro_transition_fade_to_centre.fsh */,
+				F04B91A321CDFD2A000F5003 /* retro_transition_fade_from_centre.fsh */,
+				F04B91A421CDFD2A000F5003 /* retro_transition_fade_from_top_left.fsh */,
+				F04B91A521CDFD2A000F5003 /* retro_transition_fade_from_top.fsh */,
+			);
+			path = Transitions;
+			sourceTree = "<group>";
+		};
+		F04B91A621CDFD2A000F5003 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91A721CDFD2A000F5003 /* Pixel Digivolve.otf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		F04B91A821CDFD2A000F5003 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91A921CDFD2A000F5003 /* UI */,
+				F04B91B221CDFD2A000F5003 /* Game */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
+		F04B91A921CDFD2A000F5003 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91AA21CDFD2A000F5003 /* clock-final-tick.mp3 */,
+				F04B91AB21CDFD2A000F5003 /* clock-tick.mp3 */,
+				F04B91AC21CDFD2A000F5003 /* click2.mp3 */,
+				F04B91AD21CDFD2A000F5003 /* click1.mp3 */,
+				F04B91AE21CDFD2A000F5003 /* switch3.mp3 */,
+				F04B91AF21CDFD2A000F5003 /* switch2.mp3 */,
+				F04B91B021CDFD2A000F5003 /* rollover1.mp3 */,
+				F04B91B121CDFD2A000F5003 /* rollover2.mp3 */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		F04B91B221CDFD2A000F5003 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91B321CDFD2A000F5003 /* Music */,
+				F04B91B621CDFD2A000F5003 /* Sound */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		F04B91B321CDFD2A000F5003 /* Music */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91B421CDFD2A000F5003 /* POL-catch-them-all-short.wav */,
+				F04B91B521CDFD2A000F5003 /* POL-flight-master-short.wav */,
+			);
+			path = Music;
+			sourceTree = "<group>";
+		};
+		F04B91B621CDFD2A000F5003 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91B721CDFD2A000F5003 /* Hit_Hurt.wav */,
+				F04B91B821CDFD2A000F5003 /* Coin.wav */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
+		F04B91B921CDFD2A000F5003 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91BA21CDFD2A000F5003 /* Touchable.swift */,
+				F04B91BB21CDFD2A000F5003 /* GameSceneProtocol.swift */,
+				F04B91BC21CDFD2A000F5003 /* Playable.swift */,
+				F04B91BD21CDFD2A000F5003 /* Updatable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		F04B91BE21CDFD2A000F5003 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				F04B91BF21CDFD2A000F5003 /* ControlInputDirection.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
 		F0A401C1217C50AD003ACC53 = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +618,7 @@
 		F0A401CC217C50AD003ACC53 /* action */ = {
 			isa = PBXGroup;
 			children = (
+				F04B914C21CDFD2A000F5003 /* flappy-fly-bird */,
 				F0A40246217C6342003ACC53 /* action.entitlements */,
 				F02ADD9F2196F39C00A28B35 /* MessagesTab */,
 				F0A40259217D9292003ACC53 /* MeTab */,
@@ -311,9 +791,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F04B91F221CDFD2C000F5003 /* CharactersScene iPad.sks in Resources */,
+				F04B920321CDFD2C000F5003 /* clock-final-tick.mp3 in Resources */,
 				F0A401DB217C50AE003ACC53 /* LaunchScreen.storyboard in Resources */,
+				F04B91FE21CDFD2C000F5003 /* retro_transition_fade_to_centre.fsh in Resources */,
+				F04B920621CDFD2C000F5003 /* click1.mp3 in Resources */,
+				F04B91E721CDFD2C000F5003 /* animated-nyan-squirrel.gif in Resources */,
+				F04B920021CDFD2C000F5003 /* retro_transition_fade_from_top_left.fsh in Resources */,
+				F04B91E921CDFD2C000F5003 /* SettingsScene.sks in Resources */,
+				F04B920C21CDFD2C000F5003 /* POL-flight-master-short.wav in Resources */,
+				F04B91FA21CDFD2C000F5003 /* RainParticleEffect.sks in Resources */,
+				F04B920421CDFD2C000F5003 /* clock-tick.mp3 in Resources */,
+				F04B920E21CDFD2C000F5003 /* Coin.wav in Resources */,
+				F04B91E521CDFD2B000F5003 /* animated-gamecat-nyan.gif in Resources */,
+				F04B91E321CDFD2B000F5003 /* animated-nyancoin.gif in Resources */,
+				F04B920921CDFD2C000F5003 /* rollover1.mp3 in Resources */,
+				F04B91EC21CDFD2C000F5003 /* SettingsScene iPad.sks in Resources */,
+				F04B920121CDFD2C000F5003 /* retro_transition_fade_from_top.fsh in Resources */,
+				F04B91F621CDFD2C000F5003 /* PauseScene.sks in Resources */,
+				F04B91EA21CDFD2C000F5003 /* ScoreScene.sks in Resources */,
 				F0A401D8217C50AE003ACC53 /* Assets.xcassets in Resources */,
+				F04B91F021CDFD2C000F5003 /* TitleScene iPad.sks in Resources */,
+				F04B91ED21CDFD2C000F5003 /* ScoreScene iPad.sks in Resources */,
+				F04B920221CDFD2C000F5003 /* Pixel Digivolve.otf in Resources */,
+				F04B91E821CDFD2C000F5003 /* animated-nyan-hip.gif in Resources */,
+				F04B91FC21CDFD2C000F5003 /* Particles.xcassets in Resources */,
+				F04B920721CDFD2C000F5003 /* switch3.mp3 in Resources */,
+				F04B91F421CDFD2C000F5003 /* PauseScene iPad.sks in Resources */,
+				F04B920B21CDFD2C000F5003 /* POL-catch-them-all-short.wav in Resources */,
+				F04B920521CDFD2C000F5003 /* click2.mp3 in Resources */,
+				F04B91FB21CDFD2C000F5003 /* SnowParticleEffect.sks in Resources */,
+				F04B920D21CDFD2C000F5003 /* Hit_Hurt.wav in Resources */,
+				F04B91E621CDFD2C000F5003 /* animated-jazz-nyan.gif in Resources */,
+				F04B91EF21CDFD2C000F5003 /* GameScene iPad.sks in Resources */,
+				F04B91F921CDFD2C000F5003 /* Assets.xcassets in Resources */,
+				F04B91EE21CDFD2C000F5003 /* CharactersScene.sks in Resources */,
+				F04B920A21CDFD2C000F5003 /* rollover2.mp3 in Resources */,
+				F04B91F121CDFD2C000F5003 /* GameScene.sks in Resources */,
+				F04B920821CDFD2C000F5003 /* switch2.mp3 in Resources */,
+				F04B91F721CDFD2C000F5003 /* PrePlayScene.sks in Resources */,
 				F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */,
+				F04B91F521CDFD2C000F5003 /* FailedScene iPad.sks in Resources */,
+				F04B91FD21CDFD2C000F5003 /* Actions.sks in Resources */,
+				F04B91E421CDFD2B000F5003 /* animated-lifealope-nyan.gif in Resources */,
+				F04B91EB21CDFD2C000F5003 /* TitleScene.sks in Resources */,
+				F04B91F821CDFD2C000F5003 /* TouchToFlyScene.sks in Resources */,
+				F04B91FF21CDFD2C000F5003 /* retro_transition_fade_from_centre.fsh in Resources */,
+				F04B91F321CDFD2C000F5003 /* FailedScene.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,34 +848,70 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F04B91D121CDFD2B000F5003 /* BirdNode.swift in Sources */,
+				F04B91DC21CDFD2B000F5003 /* SKScene+SpriteUploader.swift in Sources */,
 				F02ADDA8219BF4EB00A28B35 /* ActionVC.swift in Sources */,
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
+				F04B91DD21CDFD2B000F5003 /* SKTextureAtlas+FrameUploader.swift in Sources */,
+				F04B91CF21CDFD2B000F5003 /* NyancatRainbowNode.swift in Sources */,
 				F0A40251217D9287003ACC53 /* BaseLocalCache.swift in Sources */,
 				F04B914921CACF9F000F5003 /* EULAVC.swift in Sources */,
+				F04B921221CDFD2C000F5003 /* Updatable.swift in Sources */,
 				F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */,
 				F04B914521B288E9000F5003 /* Followers.swift in Sources */,
+				F04B920F21CDFD2C000F5003 /* Touchable.swift in Sources */,
 				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
+				F04B91D021CDFD2B000F5003 /* NyancatNode.swift in Sources */,
 				F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */,
+				F04B91C921CDFD2B000F5003 /* TitleScene.swift in Sources */,
 				F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */,
 				F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */,
+				F04B91E021CDFD2B000F5003 /* PlayingState.swift in Sources */,
 				F0A4021F217C511C003ACC53 /* FourCharCode+StringLiteralConvertible.swift in Sources */,
+				F04B91D421CDFD2B000F5003 /* PhysicsCategories.swift in Sources */,
 				F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */,
+				F04B91D721CDFD2B000F5003 /* SKTexture+Gradient.swift in Sources */,
 				F0A4021B217C511C003ACC53 /* MovieRecorder.swift in Sources */,
 				F0A4021E217C511C003ACC53 /* NumTypes+Conversion.swift in Sources */,
 				F0A4021A217C511C003ACC53 /* OpenGLPixelBufferView.swift in Sources */,
+				F04B91D621CDFD2B000F5003 /* CGFloat+MathUtils.swift in Sources */,
+				F04B91DA21CDFD2B000F5003 /* Bool+PipeRandom.swift in Sources */,
+				F04B91DF21CDFD2B000F5003 /* GameOverState.swift in Sources */,
 				F0A401D6217C50AD003ACC53 /* action.xcdatamodeld in Sources */,
+				F04B91C421CDFD2B000F5003 /* CharactersScene.swift in Sources */,
+				F04B91DE21CDFD2B000F5003 /* PausedState.swift in Sources */,
+				F04B91C621CDFD2B000F5003 /* ScoresScene.swift in Sources */,
 				F0A40218217C511C003ACC53 /* RosyWriterOpenGLRenderer.swift in Sources */,
+				F04B91DB21CDFD2B000F5003 /* SKScene+ShaderTransition.swift in Sources */,
+				F04B91D521CDFD2B000F5003 /* GameSceneAdapter.swift in Sources */,
 				F0A4025F218319E0003ACC53 /* FollowingVC.swift in Sources */,
+				F04B91E121CDFD2B000F5003 /* PipeFactory.swift in Sources */,
+				F04B91C821CDFD2B000F5003 /* GameScene.swift in Sources */,
+				F04B91C321CDFD2B000F5003 /* SettingsScene.swift in Sources */,
+				F04B91D921CDFD2B000F5003 /* SKSpriteNode+GIF.swift in Sources */,
+				F04B91CE21CDFD2B000F5003 /* InfiniteSpriteScrollNode.swift in Sources */,
 				F0A40211217C511C003ACC53 /* MainVC.swift in Sources */,
+				F04B91D221CDFD2B000F5003 /* GameViewController.swift in Sources */,
 				F0A40217217C511C003ACC53 /* CoreImageFilters.swift in Sources */,
+				F04B91CC21CDFD2B000F5003 /* ToggleButtonNode.swift in Sources */,
+				F04B91C521CDFD2B000F5003 /* SceneOverlay.swift in Sources */,
 				F0A40219217C511C003ACC53 /* RosyWriterCapturePipeline.swift in Sources */,
 				F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */,
 				F0A40216217C511C003ACC53 /* RosyWriterCIFilterRenderer.swift in Sources */,
+				F04B91CA21CDFD2B000F5003 /* ButtonNode.swift in Sources */,
 				F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */,
 				F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */,
+				F04B91D821CDFD2B000F5003 /* SKEmitterNode+Utils.swift in Sources */,
+				F04B921121CDFD2C000F5003 /* Playable.swift in Sources */,
 				F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */,
+				F04B91CD21CDFD2B000F5003 /* PipeNode.swift in Sources */,
+				F04B921021CDFD2C000F5003 /* GameSceneProtocol.swift in Sources */,
+				F04B91D321CDFD2B000F5003 /* UserDefaults.swift in Sources */,
 				F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */,
 				F0A4021D217C511C003ACC53 /* ObjC.swift in Sources */,
+				F04B921321CDFD2C000F5003 /* ControlInputDirection.swift in Sources */,
+				F04B91CB21CDFD2B000F5003 /* TriggleButtonNode.swift in Sources */,
+				F04B91C721CDFD2B000F5003 /* RoutingUtilityScene.swift in Sources */,
 				F0A40245217C6267003ACC53 /* UserInfoVC.swift in Sources */,
 				F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */,
 				F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */,

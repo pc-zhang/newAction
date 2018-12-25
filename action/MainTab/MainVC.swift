@@ -114,14 +114,41 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     @IBAction func action(_ sender: Any) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        if true {
-            actionSheet.addAction(UIAlertAction(title: "举报", style: .destructive, handler: { (action) in
-                self.addReports()
-            }))
-            actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "弹幕关", style: .default, handler: { (action) in
             
-            present(actionSheet, animated: true)
-        }
+        }))
+        actionSheet.addAction(UIAlertAction(title: "举报", style: .default, handler: { (action) in
+            self.addReports()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
+        }))
+        
+        present(actionSheet, animated: true)
+        
+    }
+    
+    @IBAction func review(_ sender: Any) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "明明可以靠颜值，却偏偏靠实力！", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "其实，你是一个演员", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "人戏不分，本色出演", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "举手投足皆是戏，忽正忽邪尚有余", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "把角色演成自己，把自己演到失忆。", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "角色虽小，却难掩真情流露", style: .default, handler: { (action) in
+        }))
+        actionSheet.addAction(UIAlertAction(title: "一顾倾人城，再顾倾人国", style: .default, handler: { (action) in
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
+        }))
+        
+        present(actionSheet, animated: true)
         
     }
     
@@ -397,6 +424,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     }
     
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
         artworksTableView.estimatedRowHeight = artworksTableView.bounds.height
         artworksTableView.rowHeight = artworksTableView.bounds.height
     }
@@ -416,8 +445,8 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         var tmpActors:[ActorInfo] = []
         
         let query = CKQuery(recordType: "ArtworkInfo", predicate: NSPredicate(format: "chorusFrom = %@ && reports < 5", artworkID))
-        let byChorusCount = NSSortDescriptor(key: "chorus", ascending: false)
-        query.sortDescriptors = [byChorusCount]
+
+        query.sortDescriptors = [NSSortDescriptor(key: "seconds", ascending: false)]
         
         let queryInfoOp = CKQueryOperation(query: query)
         queryInfoOp.resultsLimit = 99
