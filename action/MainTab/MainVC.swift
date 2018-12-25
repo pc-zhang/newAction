@@ -114,9 +114,18 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
     @IBAction func action(_ sender: Any) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        actionSheet.addAction(UIAlertAction(title: "弹幕关", style: .default, handler: { (action) in
-            
-        }))
+        if isPopings {
+            actionSheet.addAction(UIAlertAction(title: "弹幕关", style: .default, handler: { (action) in
+                self.isPopings = false
+                self.view.layer.removeAllAnimations()
+                self.view.layoutIfNeeded()
+            }))
+        } else {
+            actionSheet.addAction(UIAlertAction(title: "弹幕开", style: .default, handler: { (action) in
+                self.isPopings = true
+                self.reviewsFly()
+            }))
+        }
         actionSheet.addAction(UIAlertAction(title: "举报", style: .default, handler: { (action) in
             self.addReports()
         }))
@@ -368,10 +377,15 @@ class MainVC: UIViewController, UITableViewDataSource, UITableViewDelegate, Artw
         self.operationQueue.addOperation(queryReviewsOp)
     }
     
+    var isPopings = true
+    
     func reviewsFly() {
-        guard let cell = artworksTableView.visibleCells.first as? MainViewCell, let duration = cell.player.currentItem?.duration.seconds else {
+        guard isPopings == true, let cell = artworksTableView.visibleCells.first as? MainViewCell, let duration = cell.player.currentItem?.duration.seconds else {
             return
         }
+        
+        self.view.layer.removeAllAnimations()
+        self.view.layoutIfNeeded()
         
         let length : CGFloat = CGFloat(view.bounds.width) / CGFloat(5) * CGFloat(duration) / CGFloat(reviewRecords.count)
         var i: CGFloat = 0
