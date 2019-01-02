@@ -348,6 +348,9 @@ class UserInfoVC : UIViewController, UICollectionViewDelegate, UICollectionViewD
         queryFullArtworkOp.recordFetchedBlock = { (artworkRecord) in
             if let ckasset = artworkRecord["thumbnail"] as? CKAsset {
                 DispatchQueue.main.sync {
+                    if row >= self.artworkRecords.count {
+                        return
+                    }
                     self.artworkRecords[row].artwork?["thumbnail"] = ckasset
 
                     if self.collectionView.indexPathsForVisibleItems.contains(IndexPath(item: row, section: 0)) {

@@ -899,13 +899,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 
                     let secondVideoTrack = self.composition!.tracks(withMediaType: .video)[1]
                     
-                    secondVideoTrack.preferredTransform = videoAssetTrack.preferredTransform
-                    
 //                    if let recordedSegment = secondVideoTrack.segment(forTrackTime: self.recordTimeRange.start), recordedSegment.timeMapping.target == self.recordTimeRange {
                         secondVideoTrack.removeTimeRange(self.recordTimeRange)
 //                    }
                     
                     try! secondVideoTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: self.recordTimeRange.duration), of: videoAssetTrack, at: self.recordTimeRange.start)
+                    
+                    self.secondTrackTransform = videoAssetTrack.getTransform(renderSize: self.videoComposition!.renderSize)
                 }
                 
                 if let audioAssetTrack = newAsset.tracks(withMediaType: .audio).first {
@@ -997,18 +997,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 let compositionAudioTrack = self.composition!.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
                 
                 let videoAssetTrack = newAsset.tracks(withMediaType: .video).first!
-                
-                compositionVideoTrack?.preferredTransform = videoAssetTrack.preferredTransform
-                
+                                
                 try! compositionVideoTrack?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: newAsset.duration), of: videoAssetTrack, at: CMTime.zero)
                 
                 if let audioAssetTrack = newAsset.tracks(withMediaType: .audio).first {
                     try! compositionAudioTrack?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: newAsset.duration), of: audioAssetTrack, at: CMTime.zero)
                     
                     assert(compositionAudioTrack?.timeRange == compositionVideoTrack?.timeRange)
-                    
                 }
                 
+                self.videoComposition = AVMutableVideoComposition()
+                let renderSize = videoAssetTrack.naturalSize.applying(videoAssetTrack.preferredTransform)
+                self.videoComposition!.renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.height))
+                self.firstTrackTransform = videoAssetTrack.getTransform(renderSize: self.videoComposition!.renderSize)
                 
                 self.interval = self.composition!.duration.seconds / 5
                 // update timeline
@@ -1130,9 +1131,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let firstVideoTrack = composition!.tracks(withMediaType: .video)[0]
         let secondVideoTrack = composition!.tracks(withMediaType: .video)[1]
         
-        videoComposition = AVMutableVideoComposition()
-        let renderSize = firstVideoTrack.naturalSize.applying(firstVideoTrack.preferredTransform)
-        videoComposition!.renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.height))
+        videoComposition!.instructions = []
         videoComposition!.frameDuration = CMTimeMake(value: 1, timescale: 30)
         
         for segment in firstVideoTrack.segments {
@@ -1141,22 +1140,13 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             if let segment2 = secondVideoTrack.segment(forTrackTime: segment.timeMapping.target.start),!segment2.isEmpty, segment2.timeMapping.target ==  segment.timeMapping.target {
                 let transformer2 = AVMutableVideoCompositionLayerInstruction(assetTrack: secondVideoTrack)
-                
-                let renderSize2 = secondVideoTrack.naturalSize.applying(secondVideoTrack.preferredTransform)
-                let xScale = videoComposition!.renderSize.width / renderSize2.width
-                let yScale = videoComposition!.renderSize.height / renderSize2.height
-                if xScale >= yScale {
-                    let translateY = (renderSize2.height * xScale - videoComposition!.renderSize.height) / 2
-                    transformer2.setTransform(secondVideoTrack.preferredTransform.concatenating(CGAffineTransform(scaleX: xScale, y: xScale)).concatenating(CGAffineTransform(translationX: 0, y: -translateY)), at: instruction.timeRange.start)
-                } else {
-                    let translateX = (renderSize2.width * yScale - videoComposition!.renderSize.width) / 2
-                    transformer2.setTransform(secondVideoTrack.preferredTransform.concatenating(CGAffineTransform(scaleX: yScale, y: yScale)).concatenating(CGAffineTransform(translationX: -translateX, y: 0)), at: instruction.timeRange.start)
-                }
+                transformer2.setTransform(secondTrackTransform, at: instruction.timeRange.start)
                 
                 instruction.layerInstructions = [transformer2]
             } else {
                 let transformer1 = AVMutableVideoCompositionLayerInstruction(assetTrack: firstVideoTrack)
-                transformer1.setTransform(firstVideoTrack.preferredTransform, at: instruction.timeRange.start)
+                transformer1.setTransform(firstTrackTransform, at: instruction.timeRange.start)
+                
                 instruction.layerInstructions = [transformer1]
             }
             
@@ -1375,6 +1365,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     var composition: AVMutableComposition? = nil
     var videoComposition: AVMutableVideoComposition? = nil
     var audioMix: AVMutableAudioMix? = nil
+    var firstTrackTransform: CGAffineTransform = CGAffineTransform.identity
+    var secondTrackTransform: CGAffineTransform = CGAffineTransform.identity
     
     /*
      A token obtained from calling `player`'s `addPeriodicTimeObserverForInterval(_:queue:usingBlock:)`
@@ -1432,5 +1424,26 @@ extension NSLayoutConstraint {
         
         NSLayoutConstraint.activate([newConstraint])
         return newConstraint
+    }
+}
+
+extension AVAssetTrack {
+    func getTransform(renderSize: CGSize) -> CGAffineTransform {
+        let mySize = self.naturalSize.applying(self.preferredTransform)
+        
+        let xScale = renderSize.width / abs(mySize.width)
+        let yScale = renderSize.height / abs(mySize.height)
+        let renderScale = max(xScale, yScale)
+
+        var offset = CGPoint.zero
+        
+        if xScale >= yScale {
+            offset.y = (abs(mySize.height) * xScale - renderSize.height) / 2
+        } else {
+            offset.x = (abs(mySize.width) * yScale - renderSize.width) / 2
+        }
+        
+        let transform = self.preferredTransform.concatenating(CGAffineTransform.init(translationX: mySize.width < 0 ? -mySize.width : 0, y: mySize.height < 0 ? -mySize.height : 0)).concatenating(CGAffineTransform.init(scaleX: renderScale, y: renderScale)).concatenating(CGAffineTransform.init(translationX: -offset.x, y: -offset.y))
+        return transform
     }
 }
