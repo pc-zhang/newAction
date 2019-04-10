@@ -178,6 +178,26 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         undoPos = stack.count - 1
     }
     
+    @IBAction func lastFrame(_ sender: Any) {
+        if player.rate != 0 {
+            player.pause()
+            seekTimer?.invalidate()
+            recordTimer?.invalidate()
+        }
+        player.seek(to: player.currentTime() - videoComposition!.frameDuration, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+        self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+    }
+    
+    @IBAction func nextFrame(_ sender: Any) {
+        if player.rate != 0 {
+            player.pause()
+            seekTimer?.invalidate()
+            recordTimer?.invalidate()
+        }
+        player.seek(to: player.currentTime() + videoComposition!.frameDuration, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+        self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+    }
+    
     @IBAction func Undo(_ sender: Any) {
         if undoPos <= 0 {
             return
@@ -657,6 +677,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let segment = firstVideoTrack.segments[indexPath.section]
         recordTimeRange = segment.timeMapping.target
         timelineV.contentOffset.x = CGFloat(recordTimeRange.start.seconds / interval) * timelineV.bounds.height - timelineV.bounds.width/2
+        
+        let playerItem = AVPlayerItem(asset: composition!)
+        player.replaceCurrentItem(with: playerItem)
         player.seek(to: recordTimeRange.start)
 
         isRecording = true
@@ -1018,90 +1041,90 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 self.timelineV.reloadData()
                 self.tapPlayView(0)
                 
-                DispatchQueue.global(qos: .background).async {
-                    var videoTrackOutput : AVAssetReaderTrackOutput?
-                    var avAssetReader = try?AVAssetReader(asset: newAsset)
-
-                    if let videoTrack = newAsset.tracks(withMediaType: AVMediaType.video).first {
-                        videoTrackOutput = AVAssetReaderTrackOutput.init(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange])
-                        avAssetReader?.add(videoTrackOutput!)
-                    }
-
-                    avAssetReader?.startReading()
-
-                    while avAssetReader?.status == .reading {
-                        //视频
-                        if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
-                            let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                            DispatchQueue.main.async {
-                                self.downloadProgress =  CGFloat(sampleBufferTime.seconds / newAsset.duration.seconds)
-                            }
-
-                            if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-                            {
-
-                                var buffer = vImage_Buffer()
-                                buffer.data = CVPixelBufferGetBaseAddress(pixelBuffer)
-                                buffer.rowBytes = CVPixelBufferGetBytesPerRow(pixelBuffer)
-                                buffer.width = vImagePixelCount(CVPixelBufferGetWidth(pixelBuffer))
-                                buffer.height = vImagePixelCount(CVPixelBufferGetHeight(pixelBuffer))
-
-                                let bitmapInfo = CGBitmapInfo(rawValue: CGImageByteOrderInfo.orderMask.rawValue | CGImageAlphaInfo.last.rawValue)
-
-                                var cgFormat = vImage_CGImageFormat(bitsPerComponent: 8,
-                                                                    bitsPerPixel: 32,
-                                                                    colorSpace: nil,
-                                                                    bitmapInfo: bitmapInfo,
-                                                                    version: 0,
-                                                                    decode: nil,
-                                                                    renderingIntent: .defaultIntent)
-
-
-                                var error = vImageBuffer_InitWithCVPixelBuffer(&buffer, &cgFormat, pixelBuffer, nil, nil, vImage_Flags(kvImageNoFlags))
-                                assert(kvImageNoError == error)
-                                defer {
-                                    free(buffer.data)
-                                }
-
-                                let histogramBins = (0...3).map { _ in
-                                    return [vImagePixelCount](repeating: 0, count: 256)
-                                }
-                                var mutableHistogram: [UnsafeMutablePointer<vImagePixelCount>?] = histogramBins.map {
-                                    return UnsafeMutablePointer<vImagePixelCount>(mutating: $0)
-                                }
-                                error = vImageHistogramCalculation_ARGB8888(&buffer,
-                                                                            &mutableHistogram,
-                                                                            vImage_Flags(kvImageNoFlags))
-                                assert(kvImageNoError == error)
-
-
-                                if let last_split_time = self.histograms.last?.time, let last_histogramBins = self.histograms.last?.histogram {
-
-                                    if self.costheta(histogramBins, last_histogramBins) < 0.9995, CMTimeSubtract(sampleBufferTime, last_split_time).seconds > 1 {
-
-                                        self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
-
-                                        DispatchQueue.main.async {
-                                            self.split(at: sampleBufferTime)
-                                        }
-
-                                    }
-                                } else {
-                                    self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
-                                }
-                            }
-                        }
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.push()
-                        self.downloadProgress = 1
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                        self.downloadProgress = 0
-                    })
-                }
+//                DispatchQueue.global(qos: .background).async {
+//                    var videoTrackOutput : AVAssetReaderTrackOutput?
+//                    var avAssetReader = try?AVAssetReader(asset: newAsset)
+//
+//                    if let videoTrack = newAsset.tracks(withMediaType: AVMediaType.video).first {
+//                        videoTrackOutput = AVAssetReaderTrackOutput.init(track: videoTrack, outputSettings: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange])
+//                        avAssetReader?.add(videoTrackOutput!)
+//                    }
+//
+//                    avAssetReader?.startReading()
+//
+//                    while avAssetReader?.status == .reading {
+//                        //视频
+//                        if let sampleBuffer = videoTrackOutput?.copyNextSampleBuffer() {
+//                            let sampleBufferTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+//                            DispatchQueue.main.async {
+//                                self.downloadProgress =  CGFloat(sampleBufferTime.seconds / newAsset.duration.seconds)
+//                            }
+//
+//                            if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+//                            {
+//
+//                                var buffer = vImage_Buffer()
+//                                buffer.data = CVPixelBufferGetBaseAddress(pixelBuffer)
+//                                buffer.rowBytes = CVPixelBufferGetBytesPerRow(pixelBuffer)
+//                                buffer.width = vImagePixelCount(CVPixelBufferGetWidth(pixelBuffer))
+//                                buffer.height = vImagePixelCount(CVPixelBufferGetHeight(pixelBuffer))
+//
+//                                let bitmapInfo = CGBitmapInfo(rawValue: CGImageByteOrderInfo.orderMask.rawValue | CGImageAlphaInfo.last.rawValue)
+//
+//                                var cgFormat = vImage_CGImageFormat(bitsPerComponent: 8,
+//                                                                    bitsPerPixel: 32,
+//                                                                    colorSpace: nil,
+//                                                                    bitmapInfo: bitmapInfo,
+//                                                                    version: 0,
+//                                                                    decode: nil,
+//                                                                    renderingIntent: .defaultIntent)
+//
+//
+//                                var error = vImageBuffer_InitWithCVPixelBuffer(&buffer, &cgFormat, pixelBuffer, nil, nil, vImage_Flags(kvImageNoFlags))
+//                                assert(kvImageNoError == error)
+//                                defer {
+//                                    free(buffer.data)
+//                                }
+//
+//                                let histogramBins = (0...3).map { _ in
+//                                    return [vImagePixelCount](repeating: 0, count: 256)
+//                                }
+//                                var mutableHistogram: [UnsafeMutablePointer<vImagePixelCount>?] = histogramBins.map {
+//                                    return UnsafeMutablePointer<vImagePixelCount>(mutating: $0)
+//                                }
+//                                error = vImageHistogramCalculation_ARGB8888(&buffer,
+//                                                                            &mutableHistogram,
+//                                                                            vImage_Flags(kvImageNoFlags))
+//                                assert(kvImageNoError == error)
+//
+//
+//                                if let last_split_time = self.histograms.last?.time, let last_histogramBins = self.histograms.last?.histogram {
+//
+//                                    if self.costheta(histogramBins, last_histogramBins) < 0.9995, CMTimeSubtract(sampleBufferTime, last_split_time).seconds > 1 {
+//
+//                                        self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
+//
+//                                        DispatchQueue.main.async {
+//                                            self.split(at: sampleBufferTime)
+//                                        }
+//
+//                                    }
+//                                } else {
+//                                    self.histograms.append((time: sampleBufferTime, histogram: histogramBins))
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    DispatchQueue.main.async {
+//                        self.push()
+//                        self.downloadProgress = 1
+//                    }
+//
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+//                        self.downloadProgress = 0
+//                    })
+//                }
                 
             }
         }

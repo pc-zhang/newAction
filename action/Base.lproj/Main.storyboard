@@ -1646,31 +1646,36 @@
                                             <action selector="Undo:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="nCS-1T-Qgn"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="meh-pb-YSI">
-                                        <rect key="frame" x="108.33333333333331" y="0.0" width="40" height="54"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h2F-BW-BiC">
+                                        <rect key="frame" x="88.666666666666671" y="0.0" width="30" height="54"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                        <state key="normal" title="↪️"/>
+                                        <state key="normal" title="&lt;"/>
                                         <connections>
-                                            <action selector="Redo:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="m07-iR-Hta"/>
+                                            <action selector="lastFrame:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="p5N-Kd-r69"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fmg-3o-n37">
-                                        <rect key="frame" x="216.66666666666666" y="0.0" width="39.999999999999972" height="54"/>
+                                        <rect key="frame" x="167.66666666666666" y="0.0" width="40" height="54"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="35"/>
                                         <state key="normal" title="✂️"/>
                                         <connections>
                                             <action selector="split:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="D0h-ay-QD5"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v7m-B3-rKz">
-                                        <rect key="frame" x="325" y="0.0" width="50" height="54"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="D3x-Mq-Man"/>
-                                        </constraints>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ias-ha-S23">
+                                        <rect key="frame" x="256.33333333333331" y="0.0" width="30" height="54"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                        <state key="normal" title="🖇"/>
+                                        <state key="normal" title="&gt;"/>
                                         <connections>
-                                            <action selector="merge:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="HHj-Lv-MnM"/>
+                                            <action selector="nextFrame:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="yfD-xm-LcZ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="meh-pb-YSI">
+                                        <rect key="frame" x="335" y="0.0" width="40" height="54"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                        <state key="normal" title="↪️"/>
+                                        <connections>
+                                            <action selector="Redo:" destination="GMQ-DF-KZ3" eventType="touchUpInside" id="m07-iR-Hta"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1678,7 +1683,7 @@
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="O6B-F3-kGR">
                                 <rect key="frame" x="95.666666666666671" y="94" width="183.66666666666663" height="37.666666666666657"/>
                                 <segments>
-                                    <segment title="露脸"/>
+                                    <segment title="表演"/>
                                     <segment title="配音"/>
                                 </segments>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
