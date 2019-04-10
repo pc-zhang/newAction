@@ -25,7 +25,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             actionSegment.selectedSegmentIndex = 0
         }
     }
-    @IBOutlet weak var audioLevel: UIProgressView!
+//    @IBOutlet weak var audioLevel: UIProgressView!
     @IBOutlet weak var tools: UIStackView!
     @IBOutlet weak var middleLineV: UIView!
     @IBOutlet weak var titleTextV: UITextView!
@@ -507,7 +507,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         UIDevice.current.endGeneratingDeviceOrientationNotifications()
         
         _capturePipeline.stopRunning()
-        audioLevelTimer?.cancel()
+//        audioLevelTimer?.cancel()
     }
     
     
@@ -686,19 +686,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
 
 //        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
             _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
-            audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
-                                                       queue: DispatchQueue.global())
-            audioLevelTimer?.schedule(deadline: .now(), repeating: .milliseconds(100))
-            audioLevelTimer?.setEventHandler {
-                DispatchQueue.main.async {
-                    if let audioChannel = self._capturePipeline.audioChannels?.first {
-                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 50.0
-                    } else {
-                        self.audioLevel.progress = 0
-                    }
-                }
-            }
-            audioLevelTimer?.resume()
+//            audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
+//                                                       queue: DispatchQueue.global())
+//            audioLevelTimer?.schedule(deadline: .now(), repeating: .milliseconds(100))
+//            audioLevelTimer?.setEventHandler {
+//                DispatchQueue.main.async {
+//                    if let audioChannel = self._capturePipeline.audioChannels?.first {
+//                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 50.0
+//                    } else {
+//                        self.audioLevel.progress = 0
+//                    }
+//                }
+//            }
+//            audioLevelTimer?.resume()
 //        }
     }
     
@@ -818,7 +818,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                     self.player.seek(to: self.recordTimeRange.start)
                     
                     if self._recording {
-                        self.audioLevelTimer?.cancel()
+//                        self.audioLevelTimer?.cancel()
                         self._capturePipeline.stopRunning()
                     }
                 })
@@ -1289,15 +1289,23 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var isRecording: Bool = false {
         didSet {
+            if isRecording == true {
+                (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .all
+            } else {
+                (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
+                let value = UIInterfaceOrientation.portrait.rawValue
+                UIDevice.current.setValue(value, forKey: "orientation")
+            }
+            
             navigationController?.navigationBar.isHidden = isRecording
             recordButton.isHidden = !isRecording
             tools.isHidden = isRecording
             downloadProgressLayer?.isHidden = isRecording
             actionSegment.isHidden = isRecording
-            audioLevel.isHidden = !isRecording
+//            audioLevel.isHidden = !isRecording
             
             if !isRecording {
-                audioLevelTimer?.cancel()
+//                audioLevelTimer?.cancel()
             }
             
             viewDidLayoutSubviews()
@@ -1338,10 +1346,21 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 _ = 1
             }
             
+            if UIDevice.current.orientation.isLandscape {
+                timelineV.isHidden = true
+                middleLineV.isHidden = true
+            } else {
+                timelineV.isHidden = false
+                middleLineV.isHidden = false
+            }
+            
         } else {
             playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0)
             playerHeightConstraint = playerHeightConstraint.setMultiplier(multiplier: 1.0)
             playerV.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            
+            timelineV.isHidden = false
+            middleLineV.isHidden = false
         }
         
         playerV.layoutIfNeeded()
@@ -1396,7 +1415,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
      method.
      */
     
-    var audioLevelTimer: DispatchSourceTimer?
+//    var audioLevelTimer: DispatchSourceTimer?
     var downloadProgressLayer: CAShapeLayer?
     var downloadProgress: CGFloat = 0 {
         didSet {
