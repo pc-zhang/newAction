@@ -1318,16 +1318,24 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     override func viewDidLayoutSubviews() {
         if isRecording {
+            _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
-                let xScale = view.bounds.width / width
-                let yScale = view.bounds.height / height
-                if xScale <= yScale {
-                    let offsetY = (view.bounds.height - height * xScale) / 2
-                    _previewView?.frame = CGRect(x: 0, y: offsetY, width: view.bounds.width, height: height * xScale)
-                } else {
-                    let offsetX = (view.bounds.width - width * yScale) / 2
-                    _previewView?.frame = CGRect(x: offsetX, y: 0, width: width * yScale, height: view.bounds.height)
+                
+                if _previewView != nil {
+                    let currentInterfaceOrientation = UIApplication.shared.statusBarOrientation
+                    _previewView!.transform = _capturePipeline.transformFromVideoBufferOrientationToOrientation(AVCaptureVideoOrientation(rawValue: currentInterfaceOrientation.rawValue)!, withAutoMirroring: true) // Front camera preview should be mirrored
                 }
+                
+                let xScale = view.frame.width / width
+                let yScale = view.frame.height / height
+                if xScale <= yScale {
+                    let offsetY = (view.frame.height - height * xScale) / 2
+                    _previewView?.frame = CGRect(x: 0, y: offsetY, width: view.frame.width, height: height * xScale)
+                } else {
+                    let offsetX = (view.frame.width - width * yScale) / 2
+                    _previewView?.frame = CGRect(x: offsetX, y: 0, width: width * yScale, height: view.frame.height)
+                }
+                
                 _previewView?.layoutIfNeeded()
             }
             
@@ -1364,7 +1372,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         playerV.layoutIfNeeded()
-        
     }
     
     private var _recording: Bool = false {
