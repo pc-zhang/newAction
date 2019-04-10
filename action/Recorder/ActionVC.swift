@@ -531,7 +531,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     // MARK: - UICollectionViewDelegate
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let _timelineView = scrollView as? UICollectionView, player.rate == 0 {
+        if let _timelineView = scrollView as? UICollectionView, player.rate == 0, UIDevice.current.orientation.isPortrait {
             currentTime = Double((_timelineView.contentOffset.x + _timelineView.bounds.width/2) / _timelineView.bounds.height) * interval
         }
     }
