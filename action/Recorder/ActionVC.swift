@@ -258,7 +258,33 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         // Set the output file type to be a QuickTime movie.
         exporter.outputFileType = AVFileType.mov
         exporter.shouldOptimizeForNetworkUse = true
-        exporter.videoComposition = videoComposition
+        let waterMarkedVideoComposition = videoComposition?.mutableCopy() as! AVMutableVideoComposition
+        
+        let weixin = CALayer()
+        weixin.contents = UIImage(named: "logo")!.cgImage!
+        weixin.frame = CGRect(origin: .zero, size: videoComposition!.renderSize)
+        weixin.contentsGravity = CALayerContentsGravity(rawValue: "topRight")
+        if videoComposition!.renderSize.width > videoComposition!.renderSize.height {
+            weixin.contentsScale = CGFloat(UIImage(named: "logo")!.cgImage!.height) / videoComposition!.renderSize.height * 8
+            
+            weixin.frame.origin.x -= weixin.frame.width / 5 / 4
+            weixin.frame.origin.y -= weixin.frame.height / 8 / 2
+        } else {
+            weixin.contentsScale = CGFloat(UIImage(named: "logo")!.cgImage!.width) / videoComposition!.renderSize.width * 5
+            weixin.frame.origin.x -= weixin.frame.width / 5 / 4
+            weixin.frame.origin.y -= weixin.frame.height / 8 / 3
+        }
+        
+        
+        let parentLayer = CALayer()
+        let videoLayer = CALayer()
+        parentLayer.frame = CGRect(origin: .zero, size: videoComposition!.renderSize)
+        videoLayer.frame = CGRect(origin: .zero, size: videoComposition!.renderSize)
+        
+        parentLayer.addSublayer(videoLayer)
+        parentLayer.addSublayer(weixin)
+        waterMarkedVideoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+        exporter.videoComposition = waterMarkedVideoComposition
         exporter.audioMix = audioMix
         let firstVideoTrack = composition!.tracks(withMediaType: .video).first!
         exporter.timeRange = firstVideoTrack.timeRange
