@@ -10,7 +10,7 @@ import UIKit
 import Accelerate
 import AVFoundation
 import CoreServices
-import CloudKit
+import MobileCoreServices
 
 class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate {
     
@@ -43,45 +43,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     
     //MARK: - UI Actions
-    
-    func generateThumbnail() -> CKAsset? {
-        let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
-        imageGenerator.maximumSize = CGSize(width: 90, height: 160)
-        imageGenerator.appliesPreferredTrackTransform = true
-        imageGenerator.videoComposition = videoComposition
-        
-        var iter = 0
-        var iterTime = CMTime.zero
-        var images: [CGImage] = []
-        
-        while iter < 5 {
-            if let image = try? imageGenerator.copyCGImage(at: iterTime, actualTime: nil) {
-                images.append(image)
-            }
-            iterTime = CMTimeAdd(iterTime, CMTime(value: 1, timescale: 10))
-            iter = iter + 1
-        }
-        
-        let fileProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFLoopCount as String: 0]]  as CFDictionary
-        let frameProperties: CFDictionary = [kCGImagePropertyGIFDictionary as String: [(kCGImagePropertyGIFDelayTime as String): 0.3]] as CFDictionary
-        
-        let documentsDirectoryURL: URL? = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        if let fileURL = documentsDirectoryURL?.appendingPathComponent("thumbnail.gif"), let url = fileURL as CFURL? {
-            if let destination = CGImageDestinationCreateWithURL(url, kUTTypeGIF, images.count, nil) {
-                CGImageDestinationSetProperties(destination, fileProperties)
-                for image in images {
-                    CGImageDestinationAddImage(destination, image, frameProperties)
-                }
-                if !CGImageDestinationFinalize(destination) {
-                    print("Failed to finalize the image destination")
-                } else {
-                    return CKAsset(fileURL: fileURL)
-                }
-            }
-        }
-        
-        return nil
-    }
     
     @IBAction func cancel(_ sender: Any) {
         if isExporting {
@@ -325,7 +286,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             }
             
             recordButton.isEnabled = false; // re-enabled once recording has finished starting
-            recordButton.setTitle("Stop", for: .normal)
             
             _capturePipeline.startRecording()
             
@@ -1169,10 +1129,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     var url: URL?
     
-    var artworkID: CKRecord.ID? = nil
-    
-    var infoRecord: CKRecord?
-    
     var player = AVPlayer()
     
     var recordTimeRange = CMTimeRange.zero
@@ -1209,7 +1165,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             tools.isHidden = isRecording
             downloadProgressLayer?.isHidden = isRecording
             actionSegment.isHidden = isRecording
-//            audioLevel.isHidden = !isRecording
+            newButton.isHidden = isRecording
+            exportButton.isHidden = isRecording
             
             if !isRecording {
 //                audioLevelTimer?.cancel()
@@ -1261,13 +1218,9 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 _ = 1
             }
             
-            if UIDevice.current.orientation.isLandscape {
-                timelineV.isHidden = true
-                middleLineV.isHidden = true
-            } else {
-                timelineV.isHidden = false
-                middleLineV.isHidden = false
-            }
+            let isLandscape = UIDevice.current.orientation.isLandscape
+            timelineV.isHidden = isLandscape
+            middleLineV.isHidden = isLandscape
             
         } else {
             playerWidthConstraint = playerWidthConstraint.setMultiplier(multiplier: 1.0)

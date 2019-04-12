@@ -23,7 +23,6 @@
 		F0A401DB217C50AE003ACC53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A401D9217C50AE003ACC53 /* LaunchScreen.storyboard */; };
 		F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E3217C511B003ACC53 /* PreviewView.swift */; };
 		F0A40211217C511C003ACC53 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E5217C511B003ACC53 /* MainVC.swift */; };
-		F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E6217C511B003ACC53 /* PlayerView.swift */; };
 		F0A40213217C511C003ACC53 /* RosyWriterCPURenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */; };
 		F0A40214217C511C003ACC53 /* RosyWriterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EA217C511B003ACC53 /* RosyWriterRenderer.swift */; };
 		F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401EB217C511B003ACC53 /* RosyWriterOpenCVRenderer.swift */; };
@@ -64,6 +63,7 @@
 		F0E0F77222606FB0006EBB35 /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F76222606FAF006EBB35 /* TimelineLayout.swift */; };
 		F0E0F77422606FF1006EBB35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77322606FF1006EBB35 /* ActionVC.swift */; };
 		F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77522607110006EBB35 /* PlayerView.swift */; };
+		F0E0F77A22607F72006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77922607F72006EBB35 /* PlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,7 +87,6 @@
 		F0A401DC217C50AE003ACC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F0A401E3217C511B003ACC53 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 		F0A401E5217C511B003ACC53 /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
-		F0A401E6217C511B003ACC53 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		F0A401E9217C511B003ACC53 /* RosyWriterCPURenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCPURenderer.swift; sourceTree = "<group>"; };
 		F0A401EA217C511B003ACC53 /* RosyWriterRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterRenderer.swift; sourceTree = "<group>"; };
 		F0A401EB217C511B003ACC53 /* RosyWriterOpenCVRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterOpenCVRenderer.swift; sourceTree = "<group>"; };
@@ -131,6 +130,7 @@
 		F0E0F76222606FAF006EBB35 /* TimelineLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
 		F0E0F77322606FF1006EBB35 /* ActionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionVC.swift; sourceTree = "<group>"; };
 		F0E0F77522607110006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
+		F0E0F77922607F72006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,7 +213,7 @@
 			children = (
 				F04B914821CACF9E000F5003 /* EULAVC.swift */,
 				F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */,
-				F0A401E6217C511B003ACC53 /* PlayerView.swift */,
+				F0E0F77922607F72006EBB35 /* PlayerView.swift */,
 				F0A401E5217C511B003ACC53 /* MainVC.swift */,
 			);
 			path = MainTab;
@@ -481,12 +481,12 @@
 				F02ADDA8219BF4EB00A28B35 /* ActionVC.swift in Sources */,
 				F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */,
 				F0A40251217D9287003ACC53 /* BaseLocalCache.swift in Sources */,
+				F0E0F77A22607F72006EBB35 /* PlayerView.swift in Sources */,
 				F04B914921CACF9F000F5003 /* EULAVC.swift in Sources */,
 				F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */,
 				F04B914521B288E9000F5003 /* Followers.swift in Sources */,
 				F0A4020F217C511C003ACC53 /* PreviewView.swift in Sources */,
 				F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */,
-				F0A40212217C511C003ACC53 /* PlayerView.swift in Sources */,
 				F0A40242217C5723003ACC53 /* ShaderUtilities.swift in Sources */,
 				F0A4021F217C511C003ACC53 /* FourCharCode+StringLiteralConvertible.swift in Sources */,
 				F0A40215217C511C003ACC53 /* RosyWriterOpenCVRenderer.swift in Sources */,
@@ -745,7 +745,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5K87F3JL7S;
 				INFOPLIST_FILE = Actor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -753,7 +753,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.Actor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -764,7 +764,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5K87F3JL7S;
 				INFOPLIST_FILE = Actor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -772,7 +772,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = zpc.Actor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
