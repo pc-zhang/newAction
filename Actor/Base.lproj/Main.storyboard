@@ -13,7 +13,7 @@
         <!--ActionVC-->
         <scene sceneID="Pbh-KJ-RRr">
             <objects>
-                <viewController hidesBottomBarWhenPushed="YES" id="6HP-jX-V0O" customClass="ActionVC" customModule="action" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="6HP-jX-V0O" customClass="ActionVC" customModule="Actor" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="Srq-rv-UVs">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -27,7 +27,7 @@
                                     <outletCollection property="gestureRecognizers" destination="bOj-IV-fTY" appends="YES" id="z71-6g-cWj"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XUY-Ct-yS9" customClass="PlayerView" customModule="action" customModuleProvider="target">
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XUY-Ct-yS9" customClass="PlayerView" customModule="Actor" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play" translatesAutoresizingMaskIntoConstraints="NO" id="xN9-Yo-Le4">
@@ -60,7 +60,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" reuseIdentifier="thumbnail cell" id="YHb-gS-p4G" customClass="ThumbnailCell" customModule="action" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" reuseIdentifier="thumbnail cell" id="YHb-gS-p4G" customClass="ThumbnailCell" customModule="Actor" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="4.5" width="75" height="75"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -162,8 +162,8 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yxx-YI-E5R">
-                                <rect key="frame" x="152.5" y="298.5" width="70" height="70"/>
-                                <state key="normal" title="Button" image="add"/>
+                                <rect key="frame" x="0.0" y="10" width="375" height="667"/>
+                                <state key="normal" title="Button" image="artwork"/>
                                 <connections>
                                     <action selector="newMovie:" destination="6HP-jX-V0O" eventType="touchUpInside" id="hWi-PT-Rzt"/>
                                 </connections>
@@ -205,32 +205,32 @@
                             <constraint firstAttribute="trailing" secondItem="SLa-T8-Cq9" secondAttribute="trailing" id="0oz-MG-Qeg"/>
                             <constraint firstItem="ORh-hj-fIA" firstAttribute="bottom" secondItem="SLa-T8-Cq9" secondAttribute="bottom" constant="150" id="0rI-KS-9nw"/>
                             <constraint firstItem="8Xt-L1-mCE" firstAttribute="bottom" secondItem="fWr-5L-h2Y" secondAttribute="bottom" id="6Lc-Rq-JA4"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerX" secondItem="xN9-Yo-Le4" secondAttribute="centerX" id="8Mh-ge-c1r"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="centerX" secondItem="Srq-rv-UVs" secondAttribute="centerX" id="94h-jo-3J4"/>
                             <constraint firstItem="w0f-ov-IRJ" firstAttribute="top" secondItem="8s6-5G-V8I" secondAttribute="top" constant="30" id="Dx6-QH-vr4"/>
                             <constraint firstItem="SLa-T8-Cq9" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" multiplier="1:8" id="GHo-h2-On9"/>
+                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerX" secondItem="ORh-hj-fIA" secondAttribute="centerX" id="Ijh-f3-Vuy"/>
                             <constraint firstItem="w0f-ov-IRJ" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" constant="20" id="L6p-gq-6xk"/>
                             <constraint firstItem="ORh-hj-fIA" firstAttribute="trailing" secondItem="DE0-gO-CVy" secondAttribute="trailing" constant="20" id="LJU-Iu-wyp"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" id="LY2-Vz-kjB"/>
+                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="width" secondItem="Srq-rv-UVs" secondAttribute="width" id="Oo4-WT-xYG"/>
                             <constraint firstItem="fWr-5L-h2Y" firstAttribute="centerX" secondItem="Srq-rv-UVs" secondAttribute="centerX" id="U89-gA-i74"/>
                             <constraint firstItem="r9B-XN-MfJ" firstAttribute="centerX" secondItem="SLa-T8-Cq9" secondAttribute="centerX" id="UhE-Ts-t1A"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="top" secondItem="ORh-hj-fIA" secondAttribute="top" constant="50" id="VEF-8N-ar0"/>
                             <constraint firstItem="8Xt-L1-mCE" firstAttribute="top" secondItem="SLa-T8-Cq9" secondAttribute="bottom" constant="30" id="Xpd-FQ-FgL"/>
+                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" id="Ygr-Vz-1i3"/>
                             <constraint firstItem="ORh-hj-fIA" firstAttribute="trailing" secondItem="8Xt-L1-mCE" secondAttribute="trailing" id="Yqt-eA-XNd"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="trailing" secondItem="ORh-hj-fIA" secondAttribute="trailing" id="Ysg-cS-M4d"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="top" secondItem="Srq-rv-UVs" secondAttribute="top" id="b7C-dU-Wb4"/>
                             <constraint firstItem="r9B-XN-MfJ" firstAttribute="height" secondItem="SLa-T8-Cq9" secondAttribute="height" id="bBf-Qp-dno"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerY" secondItem="xN9-Yo-Le4" secondAttribute="centerY" id="bDo-xD-jJU"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="top" secondItem="Srq-rv-UVs" secondAttribute="top" id="bR9-fc-SgD"/>
                             <constraint firstItem="DE0-gO-CVy" firstAttribute="centerY" secondItem="w0f-ov-IRJ" secondAttribute="centerY" id="bT6-nb-hZa"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="bottom" secondItem="ORh-hj-fIA" secondAttribute="bottom" id="bnl-8N-hKu"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="height" secondItem="ORh-hj-fIA" secondAttribute="height" multiplier="1:20" id="cG1-I7-qlA"/>
                             <constraint firstItem="8Xt-L1-mCE" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" id="ccp-ut-7e1"/>
+                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerY" secondItem="ORh-hj-fIA" secondAttribute="centerY" id="dYd-j4-hNr"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" id="gi4-Wm-VhG"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="height" secondItem="xN9-Yo-Le4" secondAttribute="height" id="hrs-vl-6yq"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="width" secondItem="Srq-rv-UVs" secondAttribute="width" id="nbB-9G-lp1"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="leading" secondItem="Srq-rv-UVs" secondAttribute="leading" id="onv-Yw-YAx"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="width" secondItem="xN9-Yo-Le4" secondAttribute="width" id="sJI-d1-qsa"/>
                             <constraint firstItem="r9B-XN-MfJ" firstAttribute="centerY" secondItem="SLa-T8-Cq9" secondAttribute="centerY" id="wQw-QZ-6ND"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="width" secondItem="a1W-kN-f0i" secondAttribute="height" multiplier="5:1" id="y0R-4r-xtz"/>
                             <constraint firstItem="SLa-T8-Cq9" firstAttribute="leading" secondItem="Srq-rv-UVs" secondAttribute="leading" id="zwO-uq-Scx"/>
@@ -303,11 +303,12 @@
                     </connections>
                 </pinchGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3214" y="1495"/>
+            <point key="canvasLocation" x="-3215.1999999999998" y="1494.6026986506747"/>
         </scene>
     </scenes>
     <resources>
         <image name="add" width="180" height="181"/>
+        <image name="artwork" width="416" height="383"/>
         <image name="export" width="58" height="58"/>
         <image name="play" width="210" height="212"/>
     </resources>

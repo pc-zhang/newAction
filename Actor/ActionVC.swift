@@ -912,6 +912,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 
                 self.interval = self.composition!.duration.seconds / 5
                 // update timeline
+                self.stack = []
+                self.undoPos = -1
                 self.push()
                 self.updatePlayer()
                 self.timelineV.reloadData()
@@ -1149,6 +1151,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             timelineV.isHidden = false
             middleLineV.isHidden = false
+            
+            if cutButton.isEnabled == false {
+                middleLineV.isHidden = true
+            }
         }
         
         playerV.layoutIfNeeded()
