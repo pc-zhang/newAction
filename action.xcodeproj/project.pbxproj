@@ -43,6 +43,27 @@
 		F0A40256217D9287003ACC53 /* HandleCloudKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */; };
 		F0A4025D21808464003ACC53 /* UserLocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025C21808464003ACC53 /* UserLocalCache.swift */; };
 		F0A4025F218319E0003ACC53 /* FollowingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A4025E218319E0003ACC53 /* FollowingVC.swift */; };
+		F0E0F73F225F6FD5006EBB35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */; };
+		F0E0F744225F6FD5006EBB35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0E0F742225F6FD5006EBB35 /* Main.storyboard */; };
+		F0E0F746225F6FD7006EBB35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F0E0F745225F6FD7006EBB35 /* Assets.xcassets */; };
+		F0E0F749225F6FD7006EBB35 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0E0F747225F6FD7006EBB35 /* LaunchScreen.storyboard */; };
+		F0E0F76322606FB0006EBB35 /* RosyWriterCPURenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75022606FAF006EBB35 /* RosyWriterCPURenderer.swift */; };
+		F0E0F76422606FB0006EBB35 /* RosyWriterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75122606FAF006EBB35 /* RosyWriterRenderer.swift */; };
+		F0E0F76522606FB0006EBB35 /* RosyWriterOpenCVRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75222606FAF006EBB35 /* RosyWriterOpenCVRenderer.swift */; };
+		F0E0F76622606FB0006EBB35 /* RosyWriterCIFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75322606FAF006EBB35 /* RosyWriterCIFilterRenderer.swift */; };
+		F0E0F76722606FB0006EBB35 /* CoreImageFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75422606FAF006EBB35 /* CoreImageFilters.swift */; };
+		F0E0F76822606FB0006EBB35 /* RosyWriterOpenGLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75522606FAF006EBB35 /* RosyWriterOpenGLRenderer.swift */; };
+		F0E0F76922606FB0006EBB35 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75622606FAF006EBB35 /* PreviewView.swift */; };
+		F0E0F76A22606FB0006EBB35 /* RosyWriterCapturePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75722606FAF006EBB35 /* RosyWriterCapturePipeline.swift */; };
+		F0E0F76C22606FB0006EBB35 /* OpenGLPixelBufferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75A22606FAF006EBB35 /* OpenGLPixelBufferView.swift */; };
+		F0E0F76D22606FB0006EBB35 /* MovieRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75B22606FAF006EBB35 /* MovieRecorder.swift */; };
+		F0E0F76E22606FB0006EBB35 /* ShaderUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75D22606FAF006EBB35 /* ShaderUtilities.swift */; };
+		F0E0F76F22606FB0006EBB35 /* ObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F75F22606FAF006EBB35 /* ObjC.swift */; };
+		F0E0F77022606FB0006EBB35 /* NumTypes+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F76022606FAF006EBB35 /* NumTypes+Conversion.swift */; };
+		F0E0F77122606FB0006EBB35 /* FourCharCode+StringLiteralConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F76122606FAF006EBB35 /* FourCharCode+StringLiteralConvertible.swift */; };
+		F0E0F77222606FB0006EBB35 /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F76222606FAF006EBB35 /* TimelineLayout.swift */; };
+		F0E0F77422606FF1006EBB35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77322606FF1006EBB35 /* ActionVC.swift */; };
+		F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77522607110006EBB35 /* PlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +108,29 @@
 		F0A4024E217D9286003ACC53 /* HandleCloudKitError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandleCloudKitError.swift; sourceTree = "<group>"; };
 		F0A4025C21808464003ACC53 /* UserLocalCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocalCache.swift; sourceTree = "<group>"; };
 		F0A4025E218319E0003ACC53 /* FollowingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingVC.swift; sourceTree = "<group>"; };
+		F0E0F73C225F6FD5006EBB35 /* Actor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Actor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F0E0F743225F6FD5006EBB35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F0E0F745225F6FD7006EBB35 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F0E0F748225F6FD7006EBB35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F0E0F74A225F6FD7006EBB35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F0E0F75022606FAF006EBB35 /* RosyWriterCPURenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCPURenderer.swift; sourceTree = "<group>"; };
+		F0E0F75122606FAF006EBB35 /* RosyWriterRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterRenderer.swift; sourceTree = "<group>"; };
+		F0E0F75222606FAF006EBB35 /* RosyWriterOpenCVRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterOpenCVRenderer.swift; sourceTree = "<group>"; };
+		F0E0F75322606FAF006EBB35 /* RosyWriterCIFilterRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCIFilterRenderer.swift; sourceTree = "<group>"; };
+		F0E0F75422606FAF006EBB35 /* CoreImageFilters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreImageFilters.swift; sourceTree = "<group>"; };
+		F0E0F75522606FAF006EBB35 /* RosyWriterOpenGLRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterOpenGLRenderer.swift; sourceTree = "<group>"; };
+		F0E0F75622606FAF006EBB35 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		F0E0F75722606FAF006EBB35 /* RosyWriterCapturePipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RosyWriterCapturePipeline.swift; sourceTree = "<group>"; };
+		F0E0F75A22606FAF006EBB35 /* OpenGLPixelBufferView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLPixelBufferView.swift; sourceTree = "<group>"; };
+		F0E0F75B22606FAF006EBB35 /* MovieRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieRecorder.swift; sourceTree = "<group>"; };
+		F0E0F75D22606FAF006EBB35 /* ShaderUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderUtilities.swift; sourceTree = "<group>"; };
+		F0E0F75F22606FAF006EBB35 /* ObjC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjC.swift; sourceTree = "<group>"; };
+		F0E0F76022606FAF006EBB35 /* NumTypes+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NumTypes+Conversion.swift"; sourceTree = "<group>"; };
+		F0E0F76122606FAF006EBB35 /* FourCharCode+StringLiteralConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FourCharCode+StringLiteralConvertible.swift"; sourceTree = "<group>"; };
+		F0E0F76222606FAF006EBB35 /* TimelineLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
+		F0E0F77322606FF1006EBB35 /* ActionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionVC.swift; sourceTree = "<group>"; };
+		F0E0F77522607110006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +139,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A40248217C6348003ACC53 /* CloudKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F0E0F739225F6FD5006EBB35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				F0A401CC217C50AD003ACC53 /* action */,
+				F0E0F73D225F6FD5006EBB35 /* Actor */,
 				F0A401CB217C50AD003ACC53 /* Products */,
 				25073188CBCF24F934A69BEB /* Frameworks */,
 			);
@@ -132,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				F0A401CA217C50AD003ACC53 /* action.app */,
+				F0E0F73C225F6FD5006EBB35 /* Actor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -242,6 +295,76 @@
 			path = MeTab;
 			sourceTree = "<group>";
 		};
+		F0E0F73D225F6FD5006EBB35 /* Actor */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F74E22606FAF006EBB35 /* Recorder */,
+				F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */,
+				F0E0F77322606FF1006EBB35 /* ActionVC.swift */,
+				F0E0F742225F6FD5006EBB35 /* Main.storyboard */,
+				F0E0F745225F6FD7006EBB35 /* Assets.xcassets */,
+				F0E0F747225F6FD7006EBB35 /* LaunchScreen.storyboard */,
+				F0E0F74A225F6FD7006EBB35 /* Info.plist */,
+			);
+			path = Actor;
+			sourceTree = "<group>";
+		};
+		F0E0F74E22606FAF006EBB35 /* Recorder */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F74F22606FAF006EBB35 /* Renderer */,
+				F0E0F75622606FAF006EBB35 /* PreviewView.swift */,
+				F0E0F77522607110006EBB35 /* PlayerView.swift */,
+				F0E0F75722606FAF006EBB35 /* RosyWriterCapturePipeline.swift */,
+				F0E0F75922606FAF006EBB35 /* Utilities */,
+				F0E0F75E22606FAF006EBB35 /* OOPUtils */,
+				F0E0F76222606FAF006EBB35 /* TimelineLayout.swift */,
+			);
+			name = Recorder;
+			path = action/Recorder;
+			sourceTree = SOURCE_ROOT;
+		};
+		F0E0F74F22606FAF006EBB35 /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F75022606FAF006EBB35 /* RosyWriterCPURenderer.swift */,
+				F0E0F75122606FAF006EBB35 /* RosyWriterRenderer.swift */,
+				F0E0F75222606FAF006EBB35 /* RosyWriterOpenCVRenderer.swift */,
+				F0E0F75322606FAF006EBB35 /* RosyWriterCIFilterRenderer.swift */,
+				F0E0F75422606FAF006EBB35 /* CoreImageFilters.swift */,
+				F0E0F75522606FAF006EBB35 /* RosyWriterOpenGLRenderer.swift */,
+			);
+			path = Renderer;
+			sourceTree = "<group>";
+		};
+		F0E0F75922606FAF006EBB35 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F75A22606FAF006EBB35 /* OpenGLPixelBufferView.swift */,
+				F0E0F75B22606FAF006EBB35 /* MovieRecorder.swift */,
+				F0E0F75C22606FAF006EBB35 /* GL */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F0E0F75C22606FAF006EBB35 /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F75D22606FAF006EBB35 /* ShaderUtilities.swift */,
+			);
+			path = GL;
+			sourceTree = "<group>";
+		};
+		F0E0F75E22606FAF006EBB35 /* OOPUtils */ = {
+			isa = PBXGroup;
+			children = (
+				F0E0F75F22606FAF006EBB35 /* ObjC.swift */,
+				F0E0F76022606FAF006EBB35 /* NumTypes+Conversion.swift */,
+				F0E0F76122606FAF006EBB35 /* FourCharCode+StringLiteralConvertible.swift */,
+			);
+			path = OOPUtils;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -260,6 +383,23 @@
 			name = action;
 			productName = action;
 			productReference = F0A401CA217C50AD003ACC53 /* action.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F0E0F73B225F6FD5006EBB35 /* Actor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0E0F74D225F6FD7006EBB35 /* Build configuration list for PBXNativeTarget "Actor" */;
+			buildPhases = (
+				F0E0F738225F6FD5006EBB35 /* Sources */,
+				F0E0F739225F6FD5006EBB35 /* Frameworks */,
+				F0E0F73A225F6FD5006EBB35 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Actor;
+			productName = Actor;
+			productReference = F0E0F73C225F6FD5006EBB35 /* Actor.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -286,6 +426,9 @@
 							};
 						};
 					};
+					F0E0F73B225F6FD5006EBB35 = {
+						CreatedOnToolsVersion = 10.1;
+					};
 				};
 			};
 			buildConfigurationList = F0A401C5217C50AD003ACC53 /* Build configuration list for PBXProject "action" */;
@@ -302,6 +445,7 @@
 			projectRoot = "";
 			targets = (
 				F0A401C9217C50AD003ACC53 /* action */,
+				F0E0F73B225F6FD5006EBB35 /* Actor */,
 			);
 		};
 /* End PBXProject section */
@@ -314,6 +458,16 @@
 				F0A401DB217C50AE003ACC53 /* LaunchScreen.storyboard in Resources */,
 				F0A401D8217C50AE003ACC53 /* Assets.xcassets in Resources */,
 				F0A401D3217C50AD003ACC53 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F0E0F73A225F6FD5006EBB35 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0E0F749225F6FD7006EBB35 /* LaunchScreen.storyboard in Resources */,
+				F0E0F746225F6FD7006EBB35 /* Assets.xcassets in Resources */,
+				F0E0F744225F6FD5006EBB35 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +513,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F0E0F738225F6FD5006EBB35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0E0F76422606FB0006EBB35 /* RosyWriterRenderer.swift in Sources */,
+				F0E0F77422606FF1006EBB35 /* ActionVC.swift in Sources */,
+				F0E0F76722606FB0006EBB35 /* CoreImageFilters.swift in Sources */,
+				F0E0F76F22606FB0006EBB35 /* ObjC.swift in Sources */,
+				F0E0F76922606FB0006EBB35 /* PreviewView.swift in Sources */,
+				F0E0F76E22606FB0006EBB35 /* ShaderUtilities.swift in Sources */,
+				F0E0F76622606FB0006EBB35 /* RosyWriterCIFilterRenderer.swift in Sources */,
+				F0E0F73F225F6FD5006EBB35 /* AppDelegate.swift in Sources */,
+				F0E0F76522606FB0006EBB35 /* RosyWriterOpenCVRenderer.swift in Sources */,
+				F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */,
+				F0E0F77222606FB0006EBB35 /* TimelineLayout.swift in Sources */,
+				F0E0F77022606FB0006EBB35 /* NumTypes+Conversion.swift in Sources */,
+				F0E0F77122606FB0006EBB35 /* FourCharCode+StringLiteralConvertible.swift in Sources */,
+				F0E0F76322606FB0006EBB35 /* RosyWriterCPURenderer.swift in Sources */,
+				F0E0F76A22606FB0006EBB35 /* RosyWriterCapturePipeline.swift in Sources */,
+				F0E0F76D22606FB0006EBB35 /* MovieRecorder.swift in Sources */,
+				F0E0F76C22606FB0006EBB35 /* OpenGLPixelBufferView.swift in Sources */,
+				F0E0F76822606FB0006EBB35 /* RosyWriterOpenGLRenderer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -376,6 +555,22 @@
 			children = (
 				F0A401DA217C50AE003ACC53 /* Base */,
 				F04B914721B7ED78000F5003 /* zh-Hans */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		F0E0F742225F6FD5006EBB35 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F0E0F743225F6FD5006EBB35 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F0E0F747225F6FD7006EBB35 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F0E0F748225F6FD7006EBB35 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -543,6 +738,44 @@
 			};
 			name = Release;
 		};
+		F0E0F74B225F6FD7006EBB35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5K87F3JL7S;
+				INFOPLIST_FILE = Actor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = zpc.Actor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F0E0F74C225F6FD7006EBB35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5K87F3JL7S;
+				INFOPLIST_FILE = Actor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = zpc.Actor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -560,6 +793,15 @@
 			buildConfigurations = (
 				F0A401E0217C50AE003ACC53 /* Debug */,
 				F0A401E1217C50AE003ACC53 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F0E0F74D225F6FD7006EBB35 /* Build configuration list for PBXNativeTarget "Actor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F0E0F74B225F6FD7006EBB35 /* Debug */,
+				F0E0F74C225F6FD7006EBB35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
