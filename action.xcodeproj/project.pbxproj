@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37A6FF4BDE240D01125CEEF3 /* Pods_Actor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A712BEDF71106BA3B089374 /* Pods_Actor.framework */; };
 		F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */; };
 		F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025537821904D1A00261DEA /* EditUserInfoVC.swift */; };
 		F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA42199264400A28B35 /* MessagesVC.swift */; };
@@ -67,6 +68,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A712BEDF71106BA3B089374 /* Pods_Actor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Actor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		493DC757320EC0E82B8B89B8 /* Pods-Actor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Actor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Actor/Pods-Actor.debug.xcconfig"; sourceTree = "<group>"; };
+		DEA36B5CB78E5B3F24F58399 /* Pods-Actor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Actor.release.xcconfig"; path = "Pods/Target Support Files/Pods-Actor/Pods-Actor.release.xcconfig"; sourceTree = "<group>"; };
 		F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "iOSDevCenters+GIF.swift"; sourceTree = "<group>"; };
 		F025537821904D1A00261DEA /* EditUserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoVC.swift; sourceTree = "<group>"; };
 		F02ADDA42199264400A28B35 /* MessagesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
@@ -146,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37A6FF4BDE240D01125CEEF3 /* Pods_Actor.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,8 +161,18 @@
 			isa = PBXGroup;
 			children = (
 				F0A40247217C6348003ACC53 /* CloudKit.framework */,
+				1A712BEDF71106BA3B089374 /* Pods_Actor.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9BFDB32DD9A411B144224645 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				493DC757320EC0E82B8B89B8 /* Pods-Actor.debug.xcconfig */,
+				DEA36B5CB78E5B3F24F58399 /* Pods-Actor.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		F02ADD9F2196F39C00A28B35 /* MessagesTab */ = {
@@ -177,6 +192,7 @@
 				F0E0F73D225F6FD5006EBB35 /* Actor */,
 				F0A401CB217C50AD003ACC53 /* Products */,
 				25073188CBCF24F934A69BEB /* Frameworks */,
+				9BFDB32DD9A411B144224645 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -389,9 +405,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F0E0F74D225F6FD7006EBB35 /* Build configuration list for PBXNativeTarget "Actor" */;
 			buildPhases = (
+				A3AFFC314A4AB039E017A759 /* [CP] Check Pods Manifest.lock */,
 				F0E0F738225F6FD5006EBB35 /* Sources */,
 				F0E0F739225F6FD5006EBB35 /* Frameworks */,
 				F0E0F73A225F6FD5006EBB35 /* Resources */,
+				BAE64D35B9A329B556DA053D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -438,6 +456,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = F0A401C1217C50AD003ACC53;
 			productRefGroup = F0A401CB217C50AD003ACC53 /* Products */;
@@ -472,6 +491,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A3AFFC314A4AB039E017A759 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Actor-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BAE64D35B9A329B556DA053D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Vivid/Vivid.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Vivid.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F0A401C6217C50AD003ACC53 /* Sources */ = {
@@ -740,6 +798,7 @@
 		};
 		F0E0F74B225F6FD7006EBB35 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 493DC757320EC0E82B8B89B8 /* Pods-Actor.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -759,6 +818,7 @@
 		};
 		F0E0F74C225F6FD7006EBB35 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DEA36B5CB78E5B3F24F58399 /* Pods-Actor.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
