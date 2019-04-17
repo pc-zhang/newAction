@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6HP-jX-V0O">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6HP-jX-V0O">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -161,13 +161,6 @@
                                     <action selector="newMovie:" destination="6HP-jX-V0O" eventType="touchUpInside" id="Ufa-6m-MlV"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yxx-YI-E5R">
-                                <rect key="frame" x="0.0" y="10" width="375" height="667"/>
-                                <state key="normal" title="Button" image="artwork"/>
-                                <connections>
-                                    <action selector="newMovie:" destination="6HP-jX-V0O" eventType="touchUpInside" id="hWi-PT-Rzt"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DE0-gO-CVy">
                                 <rect key="frame" x="323" y="36.5" width="32" height="32"/>
                                 <constraints>
@@ -208,16 +201,13 @@
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="centerX" secondItem="Srq-rv-UVs" secondAttribute="centerX" id="94h-jo-3J4"/>
                             <constraint firstItem="w0f-ov-IRJ" firstAttribute="top" secondItem="8s6-5G-V8I" secondAttribute="top" constant="30" id="Dx6-QH-vr4"/>
                             <constraint firstItem="SLa-T8-Cq9" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" multiplier="1:8" id="GHo-h2-On9"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerX" secondItem="ORh-hj-fIA" secondAttribute="centerX" id="Ijh-f3-Vuy"/>
                             <constraint firstItem="w0f-ov-IRJ" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" constant="20" id="L6p-gq-6xk"/>
                             <constraint firstItem="ORh-hj-fIA" firstAttribute="trailing" secondItem="DE0-gO-CVy" secondAttribute="trailing" constant="20" id="LJU-Iu-wyp"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" id="LY2-Vz-kjB"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="width" secondItem="Srq-rv-UVs" secondAttribute="width" id="Oo4-WT-xYG"/>
                             <constraint firstItem="fWr-5L-h2Y" firstAttribute="centerX" secondItem="Srq-rv-UVs" secondAttribute="centerX" id="U89-gA-i74"/>
                             <constraint firstItem="r9B-XN-MfJ" firstAttribute="centerX" secondItem="SLa-T8-Cq9" secondAttribute="centerX" id="UhE-Ts-t1A"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="top" secondItem="ORh-hj-fIA" secondAttribute="top" constant="50" id="VEF-8N-ar0"/>
                             <constraint firstItem="8Xt-L1-mCE" firstAttribute="top" secondItem="SLa-T8-Cq9" secondAttribute="bottom" constant="30" id="Xpd-FQ-FgL"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" id="Ygr-Vz-1i3"/>
                             <constraint firstItem="ORh-hj-fIA" firstAttribute="trailing" secondItem="8Xt-L1-mCE" secondAttribute="trailing" id="Yqt-eA-XNd"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="trailing" secondItem="ORh-hj-fIA" secondAttribute="trailing" id="Ysg-cS-M4d"/>
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="top" secondItem="Srq-rv-UVs" secondAttribute="top" id="b7C-dU-Wb4"/>
@@ -227,7 +217,6 @@
                             <constraint firstItem="8s6-5G-V8I" firstAttribute="bottom" secondItem="ORh-hj-fIA" secondAttribute="bottom" id="bnl-8N-hKu"/>
                             <constraint firstItem="a1W-kN-f0i" firstAttribute="height" secondItem="ORh-hj-fIA" secondAttribute="height" multiplier="1:20" id="cG1-I7-qlA"/>
                             <constraint firstItem="8Xt-L1-mCE" firstAttribute="leading" secondItem="ORh-hj-fIA" secondAttribute="leading" id="ccp-ut-7e1"/>
-                            <constraint firstItem="Yxx-YI-E5R" firstAttribute="centerY" secondItem="ORh-hj-fIA" secondAttribute="centerY" id="dYd-j4-hNr"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="height" secondItem="Srq-rv-UVs" secondAttribute="height" id="gi4-Wm-VhG"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="width" secondItem="Srq-rv-UVs" secondAttribute="width" id="nbB-9G-lp1"/>
                             <constraint firstItem="XUY-Ct-yS9" firstAttribute="leading" secondItem="Srq-rv-UVs" secondAttribute="leading" id="onv-Yw-YAx"/>
@@ -256,7 +245,6 @@
                     <connections>
                         <outlet property="RedoButton" destination="F6d-cZ-A0e" id="AUT-Kc-aWh"/>
                         <outlet property="actionSegment" destination="a1W-kN-f0i" id="riR-Ro-PbI"/>
-                        <outlet property="addButton" destination="Yxx-YI-E5R" id="Puq-4b-IY1"/>
                         <outlet property="cutButton" destination="sQM-Yz-7c0" id="RUe-ac-40i"/>
                         <outlet property="exportButton" destination="DE0-gO-CVy" id="zYQ-F3-WQk"/>
                         <outlet property="middleLineV" destination="r9B-XN-MfJ" id="2vv-kb-o9X"/>
@@ -308,7 +296,6 @@
     </scenes>
     <resources>
         <image name="add" width="180" height="181"/>
-        <image name="artwork" width="416" height="383"/>
         <image name="export" width="58" height="58"/>
         <image name="play" width="210" height="212"/>
     </resources>

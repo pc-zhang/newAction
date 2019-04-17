@@ -65,6 +65,7 @@
 		F0E0F77422606FF1006EBB35 /* ActionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77322606FF1006EBB35 /* ActionVC.swift */; };
 		F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77522607110006EBB35 /* PlayerView.swift */; };
 		F0E0F77A22607F72006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77922607F72006EBB35 /* PlayerView.swift */; };
+		F0FCA4502267083B0014FBBA /* movie.MOV in Resources */ = {isa = PBXBuildFile; fileRef = F0FCA44F2267083B0014FBBA /* movie.MOV */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,6 +136,7 @@
 		F0E0F77322606FF1006EBB35 /* ActionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionVC.swift; sourceTree = "<group>"; };
 		F0E0F77522607110006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
 		F0E0F77922607F72006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
+		F0FCA44F2267083B0014FBBA /* movie.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = movie.MOV; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +316,7 @@
 		F0E0F73D225F6FD5006EBB35 /* Actor */ = {
 			isa = PBXGroup;
 			children = (
+				F0FCA44F2267083B0014FBBA /* movie.MOV */,
 				F0E0F74E22606FAF006EBB35 /* Recorder */,
 				F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */,
 				F0E0F77322606FF1006EBB35 /* ActionVC.swift */,
@@ -485,6 +488,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0E0F749225F6FD7006EBB35 /* LaunchScreen.storyboard in Resources */,
+				F0FCA4502267083B0014FBBA /* movie.MOV in Resources */,
 				F0E0F746225F6FD7006EBB35 /* Assets.xcassets in Resources */,
 				F0E0F744225F6FD5006EBB35 /* Main.storyboard in Resources */,
 			);
@@ -519,10 +523,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Vivid/Vivid.framework",
+				"${BUILT_PRODUCTS_DIR}/YUCIHighPassSkinSmoothing/YUCIHighPassSkinSmoothing.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Vivid.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YUCIHighPassSkinSmoothing.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -18,7 +18,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     @IBOutlet weak var exportButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
-    @IBOutlet weak var addButton: UIButton!
     @IBOutlet weak var playButton: UIImageView!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var playerV: PlayerView!
@@ -53,6 +52,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     func split(at splitTime: CMTime) -> Bool {
+        print(splitTime)
         guard let firstVideoTrack = self.composition?.tracks(withMediaType: .video).first else {
             return false
         }
@@ -301,14 +301,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        newButton.isHidden = true
-        exportButton.isHidden = true
-        undoButton.isEnabled = false
-        previousFrameButton.isEnabled = false
-        cutButton.isEnabled = false
-        nextFrameButton.isEnabled = false
-        RedoButton.isEnabled = false
-        
         playerV.player = player
         playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
         
@@ -342,8 +334,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         _allowedToUseGPU = (UIApplication.shared.applicationState != .background)
         _capturePipeline.renderingEnabled = _allowedToUseGPU
         
-        if let url = url {
-            addClip(url)
+        addClip(Bundle.main.url(forResource: "movie", withExtension: "MOV")!)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if true == self.split(at: CMTime(value: 1561, timescale: 600)) {
+                self.push()
+            }
+            if true == self.split(at: CMTime(value: 3254, timescale: 600)) {
+                self.push()
+            }
+            if true == self.split(at: CMTime(value: 4360, timescale: 600)) {
+                self.push()
+            }
         }
     
         player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
@@ -840,7 +841,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     //MARK: - Utilities
     
     
-    func addClip(_ movieURL: URL) {
+    func addClip(_ movieURL: URL, completionHandler handler: (() -> Void)? = nil) {
         let newAsset = AVURLAsset(url: movieURL, options: nil)
         
         /*
@@ -919,6 +920,11 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 self.timelineV.reloadData()
                 self.tapPlayView(0)
                 
+                if let handler = handler {
+                    DispatchQueue.main.async {
+                        handler()
+                    }
+                }
             }
         }
     }
@@ -1247,7 +1253,6 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         dismiss(animated: false) {
             DispatchQueue.main.async {
                 self.addClip(videoURL)
-                self.addButton.isHidden = true
                 self.newButton.isHidden = false
                 self.exportButton.isHidden = false
                 self.undoButton.isEnabled = true

@@ -17,12 +17,19 @@
 import UIKit
 import CoreMedia
 import CoreVideo
+import YUCIHighPassSkinSmoothing
 
 @objc(RosyWriterCIFilterRenderer)
 class RosyWriterCIFilterRenderer: NSObject, RosyWriterRenderer {
     let avaliableFilters = CoreImageFilters.avaliableFilters()
 
     private var _ciContext: CIContext!
+    private lazy var _beautifyFilter: CIFilter = {
+        let filter = YUCIHighPassSkinSmoothing()
+        filter.inputAmount = 0.7
+        filter.inputRadius = 7.0
+        return filter
+    }()
     private var _rosyFilter: CIFilter!
     private var _rgbColorSpace: CGColorSpace!
     private var _bufferPool: CVPixelBufferPool!
@@ -73,7 +80,9 @@ class RosyWriterCIFilterRenderer: NSObject, RosyWriterRenderer {
         
         let sourceImage = CIImage(cvPixelBuffer: pixelBuffer, options: nil)
         
-        _rosyFilter.setValue(sourceImage, forKey: kCIInputImageKey)
+        _beautifyFilter.setValue(sourceImage, forKey: kCIInputImageKey)
+        let beautifiedImage = _beautifyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
+        _rosyFilter.setValue(beautifiedImage, forKey: kCIInputImageKey)
         let filteredImage = _rosyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
         
         let err = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _bufferPool, &renderedOutputPixelBuffer)
