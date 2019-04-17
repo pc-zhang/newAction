@@ -66,6 +66,11 @@
 		F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77522607110006EBB35 /* PlayerView.swift */; };
 		F0E0F77A22607F72006EBB35 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E0F77922607F72006EBB35 /* PlayerView.swift */; };
 		F0FCA4502267083B0014FBBA /* movie.MOV in Resources */ = {isa = PBXBuildFile; fileRef = F0FCA44F2267083B0014FBBA /* movie.MOV */; };
+		F0FCA458226779600014FBBA /* AwesomeTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FCA453226779600014FBBA /* AwesomeTabButton.swift */; };
+		F0FCA459226779600014FBBA /* AwesomeSpotlightViewBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F0FCA454226779600014FBBA /* AwesomeSpotlightViewBundle.bundle */; };
+		F0FCA45A226779600014FBBA /* AwesomeSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FCA455226779600014FBBA /* AwesomeSpotlightView.swift */; };
+		F0FCA45B226779600014FBBA /* AwesomeSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FCA456226779600014FBBA /* AwesomeSpotlight.swift */; };
+		F0FCA45C226779600014FBBA /* Localizator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FCA457226779600014FBBA /* Localizator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -137,6 +142,11 @@
 		F0E0F77522607110006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
 		F0E0F77922607F72006EBB35 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = action/Recorder/PlayerView.swift; sourceTree = SOURCE_ROOT; };
 		F0FCA44F2267083B0014FBBA /* movie.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = movie.MOV; sourceTree = "<group>"; };
+		F0FCA453226779600014FBBA /* AwesomeTabButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeTabButton.swift; sourceTree = "<group>"; };
+		F0FCA454226779600014FBBA /* AwesomeSpotlightViewBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AwesomeSpotlightViewBundle.bundle; sourceTree = "<group>"; };
+		F0FCA455226779600014FBBA /* AwesomeSpotlightView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlightView.swift; sourceTree = "<group>"; };
+		F0FCA456226779600014FBBA /* AwesomeSpotlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwesomeSpotlight.swift; sourceTree = "<group>"; };
+		F0FCA457226779600014FBBA /* Localizator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localizator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -316,6 +326,7 @@
 		F0E0F73D225F6FD5006EBB35 /* Actor */ = {
 			isa = PBXGroup;
 			children = (
+				F0FCA451226779600014FBBA /* AwesomeSpotlightView */,
 				F0FCA44F2267083B0014FBBA /* movie.MOV */,
 				F0E0F74E22606FAF006EBB35 /* Recorder */,
 				F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */,
@@ -382,6 +393,26 @@
 				F0E0F76122606FAF006EBB35 /* FourCharCode+StringLiteralConvertible.swift */,
 			);
 			path = OOPUtils;
+			sourceTree = "<group>";
+		};
+		F0FCA451226779600014FBBA /* AwesomeSpotlightView */ = {
+			isa = PBXGroup;
+			children = (
+				F0FCA452226779600014FBBA /* Classes */,
+			);
+			path = AwesomeSpotlightView;
+			sourceTree = "<group>";
+		};
+		F0FCA452226779600014FBBA /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				F0FCA453226779600014FBBA /* AwesomeTabButton.swift */,
+				F0FCA454226779600014FBBA /* AwesomeSpotlightViewBundle.bundle */,
+				F0FCA455226779600014FBBA /* AwesomeSpotlightView.swift */,
+				F0FCA456226779600014FBBA /* AwesomeSpotlight.swift */,
+				F0FCA457226779600014FBBA /* Localizator.swift */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -488,6 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0E0F749225F6FD7006EBB35 /* LaunchScreen.storyboard in Resources */,
+				F0FCA459226779600014FBBA /* AwesomeSpotlightViewBundle.bundle in Resources */,
 				F0FCA4502267083B0014FBBA /* movie.MOV in Resources */,
 				F0E0F746225F6FD7006EBB35 /* Assets.xcassets in Resources */,
 				F0E0F744225F6FD5006EBB35 /* Main.storyboard in Resources */,
@@ -588,6 +620,10 @@
 				F0E0F76922606FB0006EBB35 /* PreviewView.swift in Sources */,
 				F0E0F76E22606FB0006EBB35 /* ShaderUtilities.swift in Sources */,
 				F0E0F76622606FB0006EBB35 /* RosyWriterCIFilterRenderer.swift in Sources */,
+				F0FCA45B226779600014FBBA /* AwesomeSpotlight.swift in Sources */,
+				F0FCA45A226779600014FBBA /* AwesomeSpotlightView.swift in Sources */,
+				F0FCA458226779600014FBBA /* AwesomeTabButton.swift in Sources */,
+				F0FCA45C226779600014FBBA /* Localizator.swift in Sources */,
 				F0E0F73F225F6FD5006EBB35 /* AppDelegate.swift in Sources */,
 				F0E0F76522606FB0006EBB35 /* RosyWriterOpenCVRenderer.swift in Sources */,
 				F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */,

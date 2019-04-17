@@ -15,7 +15,8 @@ import MobileCoreServices
 class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate {
     
     // MARK: - UI Controls
-    
+    var spotlightView = AwesomeSpotlightView()
+
     @IBOutlet weak var exportButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
     @IBOutlet weak var playButton: UIImageView!
@@ -339,11 +340,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             if true == self.split(at: CMTime(value: 1561, timescale: 600)) {
                 self.push()
             }
-            if true == self.split(at: CMTime(value: 3254, timescale: 600)) {
+            if true == self.split(at: CMTime(value: 3290, timescale: 600)) {
                 self.push()
             }
             if true == self.split(at: CMTime(value: 4360, timescale: 600)) {
                 self.push()
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.tapPlayView(0)
+                self.handleShowAction()
             }
         }
     
@@ -367,6 +373,40 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 playButton.isHidden = false
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupSpotlight()
+    }
+    
+    func setupSpotlight() {
+        let undoButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(undoButton.frame, to: self.view), shape: .roundRectangle, text: "撤销")
+        let previousFrameButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(previousFrameButton.frame, to: self.view), shape: .roundRectangle, text: "向前一帧")
+        let cutButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(cutButton.frame, to: self.view), shape: .roundRectangle, text: "剪切")
+        let nextFrameButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(nextFrameButton.frame, to: self.view), shape: .roundRectangle, text: "向后一帧")
+        let redoButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(RedoButton.frame, to: self.view), shape: .roundRectangle, text: "重做")
+        
+        let newButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(newButton.frame, to: self.view), shape: .roundRectangle, text: "新建")
+        let exportButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(exportButton.frame, to: self.view), shape: .roundRectangle, text: "导出")
+        
+        let actionSpotlightRect = CGRect(x: self.timelineV.frame.origin.x + self.timelineV.frame.width / 2, y: self.timelineV.frame.origin.y, width: self.timelineV.frame.size.height, height: self.timelineV.frame.size.height)
+        let actionSpotlightMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "点我开演", margin: actionSpotlightMargin)
+        
+        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
+        spotlightView.cutoutRadius = 8
+        spotlightView.delegate = self
+    }
+    
+    // MARK: - Actions
+    
+    func handleShowAction() {
+        self.view.addSubview(spotlightView)
+        spotlightView.continueButtonModel.isEnable = false
+        spotlightView.skipButtonModel.isEnable = false
+        spotlightView.showAllSpotlightsAtOnce = false
+        spotlightView.start()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -1315,4 +1355,24 @@ extension AVAssetTrack {
         let transform = self.preferredTransform.concatenating(CGAffineTransform.init(translationX: mySize.width < 0 ? -mySize.width : 0, y: mySize.height < 0 ? -mySize.height : 0)).concatenating(CGAffineTransform.init(scaleX: renderScale, y: renderScale)).concatenating(CGAffineTransform.init(translationX: -offset.x, y: -offset.y))
         return transform
     }
+}
+
+extension ActionVC : AwesomeSpotlightViewDelegate {
+    
+    func spotlightView(_ spotlightView: AwesomeSpotlightView, willNavigateToIndex index: Int) {
+        print("spotlightView willNavigateToIndex index = \(index)")
+    }
+    
+    func spotlightView(_ spotlightView: AwesomeSpotlightView, didNavigateToIndex index: Int) {
+        print("spotlightView didNavigateToIndex index = \(index)")
+    }
+    
+    func spotlightViewWillCleanup(_ spotlightView: AwesomeSpotlightView, atIndex index: Int) {
+        print("spotlightViewWillCleanup atIndex = \(index)")
+    }
+    
+    func spotlightViewDidCleanup(_ spotlightView: AwesomeSpotlightView) {
+        print("spotlightViewDidCleanup")
+    }
+    
 }
