@@ -350,7 +350,19 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.tapPlayView(0)
-                self.handleShowAction()
+                
+                if self.isTeaching {
+                    let actionSpotlightRect = CGRect(x: self.timelineV.frame.origin.x + self.timelineV.frame.width / 2, y: self.timelineV.frame.origin.y, width: self.timelineV.frame.size.height, height: self.timelineV.frame.size.height)
+                    let actionSpotlightMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "点击高亮区域开演", margin: actionSpotlightMargin)
+                    actionSpotlight.isAllowPassTouchesThroughSpotlight = true
+                    
+                    self.spotlightView = AwesomeSpotlightView(frame: self.view.frame, spotlight: [actionSpotlight])
+                    self.spotlightView.cutoutRadius = 8
+                    self.spotlightView.delegate = self
+                    
+                    self.handleShowAction()
+                }
             }
         }
     
@@ -378,25 +390,18 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if isTeaching {
-            let actionSpotlightRect = CGRect(x: self.timelineV.frame.origin.x + self.timelineV.frame.width / 2, y: self.timelineV.frame.origin.y, width: self.timelineV.frame.size.height, height: self.timelineV.frame.size.height)
-            let actionSpotlightMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "点我开演", margin: actionSpotlightMargin)
-            
-            spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
-            spotlightView.cutoutRadius = 8
-            spotlightView.delegate = self
-        }
     }
     
     func setupSpotlight() {
         let undoButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(undoButton.frame, to: self.view), shape: .roundRectangle, text: "撤销")
         let previousFrameButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(previousFrameButton.frame, to: self.view), shape: .roundRectangle, text: "向前一帧")
         let cutButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(cutButton.frame, to: self.view), shape: .roundRectangle, text: "剪切")
+        cutButtonSpotlight.isAllowPassTouchesThroughSpotlight = false
         let nextFrameButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(nextFrameButton.frame, to: self.view), shape: .roundRectangle, text: "向后一帧")
         let redoButtonSpotlight = AwesomeSpotlight(withRect: tools.convert(RedoButton.frame, to: self.view), shape: .roundRectangle, text: "重做")
         
         let newButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(newButton.frame, to: self.view), shape: .roundRectangle, text: "新建")
+        newButtonSpotlight.isAllowPassTouchesThroughSpotlight = false
         let exportButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(exportButton.frame, to: self.view), shape: .roundRectangle, text: "导出")
         
         spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [undoButtonSpotlight, redoButtonSpotlight, previousFrameButtonSpotlight, nextFrameButtonSpotlight, cutButtonSpotlight, newButtonSpotlight, exportButtonSpotlight])
@@ -607,10 +612,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         isRecording = true
 
         if isTeaching {
-            let actionSpotlightMargin = UIEdgeInsets(top: -self.view.frame.height / 3, left: 0, bottom: -self.view.frame.height / 3, right: 0)
-            let actionSpotlight = AwesomeSpotlight(withRect: self.view.frame, shape: .circle, text: "左右滑动切换滤镜", margin: actionSpotlightMargin)
+            let actionSpotlight = AwesomeSpotlight(withRect: self.view.frame.insetBy(dx: 0, dy: self.view.frame.height / 3), shape: .circle, text: "左右滑动切换滤镜", margin: UIEdgeInsets.zero)
+            actionSpotlight.isAllowPassTouchesThroughSpotlight = true
             
-            let actionSpotlight2 = AwesomeSpotlight(withRect: self.view.frame, shape: .circle, text: "手机横屏以录制横屏视频", margin: actionSpotlightMargin)
+            let actionSpotlight2 = AwesomeSpotlight(withRect:self.view.frame.insetBy(dx: 0, dy: self.view.frame.height / 3), shape: .circle, text: "手机横屏以录制横屏视频", margin: UIEdgeInsets.zero)
             
             spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight, actionSpotlight2])
             spotlightView.cutoutRadius = 8
@@ -1212,6 +1217,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         }
         
         playerV.layoutIfNeeded()
+        spotlightView.layoutIfNeeded()
     }
     
     private var _recording: Bool = false {

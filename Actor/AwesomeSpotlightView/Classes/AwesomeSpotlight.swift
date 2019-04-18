@@ -19,7 +19,7 @@ open class AwesomeSpotlight: NSObject {
   var rect = CGRect()
   var shape : AwesomeSpotlightShape = .roundRectangle
   var margin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-  var isAllowPassTouchesThroughSpotlight = false
+  var isAllowPassTouchesThroughSpotlight = true
   
   private var text : String = ""
   private var attributedText : NSAttributedString? = nil
@@ -41,7 +41,7 @@ open class AwesomeSpotlight: NSObject {
        shape: AwesomeSpotlightShape,
        text: String,
        margin: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
-       isAllowPassTouchesThroughSpotlight: Bool = false) {
+       isAllowPassTouchesThroughSpotlight: Bool = true) {
     super.init()
     self.rect = rect
     self.shape = shape
@@ -54,7 +54,7 @@ open class AwesomeSpotlight: NSObject {
        shape: AwesomeSpotlightShape,
        attributedText: NSAttributedString,
        margin: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0),
-       isAllowPassTouchesThroughSpotlight: Bool = false) {
+       isAllowPassTouchesThroughSpotlight: Bool = true) {
     super.init()
     self.rect = rect
     self.shape = shape

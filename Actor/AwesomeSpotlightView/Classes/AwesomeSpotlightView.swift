@@ -181,7 +181,16 @@ public class AwesomeSpotlightView: UIView {
   // MARK: - Touches
   
   @objc func userDidTap(_ recognizer: UITapGestureRecognizer) {
-    goToSpotlightAtIndex(index: currentIndex + 1)
+    guard currentIndex < spotlightsArray.count else {
+        return
+    }
+    
+    let localPoint = recognizer.location(in: self)
+    let currentSpotlight = spotlightsArray[currentIndex]
+    
+    if currentSpotlight.rect.contains(localPoint) {
+        goToSpotlightAtIndex(index: currentIndex + 1)
+    }
   }
   
   override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -197,7 +206,7 @@ public class AwesomeSpotlightView: UIView {
     if currentSpotlight.rect.contains(localPoint), currentSpotlight.isAllowPassTouchesThroughSpotlight {
       if hitTestPoints.filter({ $0 == localPoint }).count == 1 {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: {
-          self.cleanup()
+            self.goToSpotlightAtIndex(index: self.currentIndex + 1)
         })
       }
       return nil
@@ -452,6 +461,16 @@ public class AwesomeSpotlightView: UIView {
     
     public func setSkipButtonEnable(_ isEnable:Bool) {
         self.skipButtonModel.isEnable = isEnable
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if UIDevice.current.orientation.isLandscape {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: {
+                self.cleanup()
+            })
+        }
     }
 }
 
