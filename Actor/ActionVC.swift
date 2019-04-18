@@ -16,6 +16,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     // MARK: - UI Controls
     var spotlightView = AwesomeSpotlightView()
+    var isTeaching : Bool = true
 
     @IBOutlet weak var exportButton: UIButton!
     @IBOutlet weak var newButton: UIButton!
@@ -347,7 +348,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
                 self.push()
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.tapPlayView(0)
                 self.handleShowAction()
             }
@@ -377,7 +378,15 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupSpotlight()
+        if isTeaching {
+            let actionSpotlightRect = CGRect(x: self.timelineV.frame.origin.x + self.timelineV.frame.width / 2, y: self.timelineV.frame.origin.y, width: self.timelineV.frame.size.height, height: self.timelineV.frame.size.height)
+            let actionSpotlightMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "点我开演", margin: actionSpotlightMargin)
+            
+            spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
+            spotlightView.cutoutRadius = 8
+            spotlightView.delegate = self
+        }
     }
     
     func setupSpotlight() {
@@ -390,11 +399,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         let newButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(newButton.frame, to: self.view), shape: .roundRectangle, text: "新建")
         let exportButtonSpotlight = AwesomeSpotlight(withRect: self.view.convert(exportButton.frame, to: self.view), shape: .roundRectangle, text: "导出")
         
-        let actionSpotlightRect = CGRect(x: self.timelineV.frame.origin.x + self.timelineV.frame.width / 2, y: self.timelineV.frame.origin.y, width: self.timelineV.frame.size.height, height: self.timelineV.frame.size.height)
-        let actionSpotlightMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "点我开演", margin: actionSpotlightMargin)
-        
-        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
+        spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [undoButtonSpotlight, redoButtonSpotlight, previousFrameButtonSpotlight, nextFrameButtonSpotlight, cutButtonSpotlight, newButtonSpotlight, exportButtonSpotlight])
         spotlightView.cutoutRadius = 8
         spotlightView.delegate = self
     }
@@ -601,22 +606,16 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
 
         isRecording = true
 
-//        if histograms.index(where: {$0.time == recordTimeRange.start}) != nil {
-            _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
-//            audioLevelTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0),
-//                                                       queue: DispatchQueue.global())
-//            audioLevelTimer?.schedule(deadline: .now(), repeating: .milliseconds(100))
-//            audioLevelTimer?.setEventHandler {
-//                DispatchQueue.main.async {
-//                    if let audioChannel = self._capturePipeline.audioChannels?.first {
-//                        self.audioLevel.progress = (50 + audioChannel.averagePowerLevel) / 50.0
-//                    } else {
-//                        self.audioLevel.progress = 0
-//                    }
-//                }
-//            }
-//            audioLevelTimer?.resume()
-//        }
+        if isTeaching {
+            let actionSpotlightRect = self.view.frame
+            let actionSpotlightMargin = UIEdgeInsets(top: -self.view.frame.height / 3, left: 0, bottom: -self.view.frame.height / 3, right: 0)
+            let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "左右滑动切换滤镜", margin: actionSpotlightMargin)
+            
+            spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
+            spotlightView.cutoutRadius = 8
+            spotlightView.delegate = self
+            handleShowAction()
+        }
     }
     
     // MARK: - UICollectionViewDataSource
@@ -1048,11 +1047,17 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         _recording = false
         recordButton.isEnabled = true
         //        recordButton.title = "Record"
-        
         UIApplication.shared.isIdleTimerDisabled = false
         
         UIApplication.shared.endBackgroundTask(_backgroundRecordingID)
         _backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
+        
+        if isTeaching {
+            setupSpotlight()
+            handleShowAction()
+        }
+        
+        isTeaching = false
     }
     
     private func setupPreviewView() {
@@ -1284,6 +1289,8 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        isTeaching = false
         
         guard let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL else {
             dismiss(animated: true, completion: nil)
