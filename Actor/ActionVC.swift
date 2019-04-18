@@ -607,11 +607,12 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         isRecording = true
 
         if isTeaching {
-            let actionSpotlightRect = self.view.frame
             let actionSpotlightMargin = UIEdgeInsets(top: -self.view.frame.height / 3, left: 0, bottom: -self.view.frame.height / 3, right: 0)
-            let actionSpotlight = AwesomeSpotlight(withRect: actionSpotlightRect, shape: .circle, text: "左右滑动切换滤镜", margin: actionSpotlightMargin)
+            let actionSpotlight = AwesomeSpotlight(withRect: self.view.frame, shape: .circle, text: "左右滑动切换滤镜", margin: actionSpotlightMargin)
             
-            spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight])
+            let actionSpotlight2 = AwesomeSpotlight(withRect: self.view.frame, shape: .circle, text: "手机横屏以录制横屏视频", margin: actionSpotlightMargin)
+            
+            spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [actionSpotlight, actionSpotlight2])
             spotlightView.cutoutRadius = 8
             spotlightView.delegate = self
             handleShowAction()
@@ -1053,8 +1054,10 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         _backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
         
         if isTeaching {
-            setupSpotlight()
-            handleShowAction()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                self.setupSpotlight()
+                self.handleShowAction()
+            })
         }
         
         isTeaching = false
