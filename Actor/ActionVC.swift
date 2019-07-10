@@ -416,7 +416,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
         spotlightView.continueButtonModel.isEnable = false
         spotlightView.skipButtonModel.isEnable = false
         spotlightView.showAllSpotlightsAtOnce = false
-        spotlightView.start()
+//        spotlightView.start()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

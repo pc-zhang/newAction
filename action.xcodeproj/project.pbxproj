@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		37A6FF4BDE240D01125CEEF3 /* Pods_Actor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A712BEDF71106BA3B089374 /* Pods_Actor.framework */; };
+		F0179D1A22D5F77F0071832D /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0179D0622D5E6F90071832D /* RootViewController.swift */; };
 		F025535E218BFFA000261DEA /* iOSDevCenters+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */; };
 		F025537921904D1A00261DEA /* EditUserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025537821904D1A00261DEA /* EditUserInfoVC.swift */; };
 		F02ADDA52199264400A28B35 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02ADDA42199264400A28B35 /* MessagesVC.swift */; };
@@ -77,6 +78,7 @@
 		1A712BEDF71106BA3B089374 /* Pods_Actor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Actor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		493DC757320EC0E82B8B89B8 /* Pods-Actor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Actor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Actor/Pods-Actor.debug.xcconfig"; sourceTree = "<group>"; };
 		DEA36B5CB78E5B3F24F58399 /* Pods-Actor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Actor.release.xcconfig"; path = "Pods/Target Support Files/Pods-Actor/Pods-Actor.release.xcconfig"; sourceTree = "<group>"; };
+		F0179D0622D5E6F90071832D /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F025535D218BFFA000261DEA /* iOSDevCenters+GIF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "iOSDevCenters+GIF.swift"; sourceTree = "<group>"; };
 		F025537821904D1A00261DEA /* EditUserInfoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoVC.swift; sourceTree = "<group>"; };
 		F02ADDA42199264400A28B35 /* MessagesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				F0E0F74E22606FAF006EBB35 /* Recorder */,
 				F0E0F73E225F6FD5006EBB35 /* AppDelegate.swift */,
 				F0E0F77322606FF1006EBB35 /* ActionVC.swift */,
+				F0179D0622D5E6F90071832D /* RootViewController.swift */,
 				F0E0F742225F6FD5006EBB35 /* Main.storyboard */,
 				F0E0F745225F6FD7006EBB35 /* Assets.xcassets */,
 				F0E0F747225F6FD7006EBB35 /* LaunchScreen.storyboard */,
@@ -460,7 +463,7 @@
 		F0A401C2217C50AD003ACC53 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = zpc;
 				TargetAttributes = {
@@ -552,19 +555,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Vivid/Vivid.framework",
-				"${BUILT_PRODUCTS_DIR}/YUCIHighPassSkinSmoothing/YUCIHighPassSkinSmoothing.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Actor/Pods-Actor-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Vivid.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YUCIHighPassSkinSmoothing.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Actor/Pods-Actor-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Actor/Pods-Actor-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -625,6 +625,7 @@
 				F0FCA458226779600014FBBA /* AwesomeTabButton.swift in Sources */,
 				F0FCA45C226779600014FBBA /* Localizator.swift in Sources */,
 				F0E0F73F225F6FD5006EBB35 /* AppDelegate.swift in Sources */,
+				F0179D1A22D5F77F0071832D /* RootViewController.swift in Sources */,
 				F0E0F76522606FB0006EBB35 /* RosyWriterOpenCVRenderer.swift in Sources */,
 				F0E0F77622607110006EBB35 /* PlayerView.swift in Sources */,
 				F0E0F77222606FB0006EBB35 /* TimelineLayout.swift in Sources */,
