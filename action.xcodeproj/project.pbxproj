@@ -16,6 +16,7 @@
 		F030FFA021A24D74008FB7BE /* ReviewsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */; };
 		F030FFA221A4049A008FB7BE /* DialogVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA121A40499008FB7BE /* DialogVC.swift */; };
 		F030FFA421A79B1B008FB7BE /* TimelineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */; };
+		F039D77722D6DEB7009F997C /* RecorderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F039D77622D6DEB6009F997C /* RecorderVC.swift */; };
 		F04B914521B288E9000F5003 /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B914421B288E9000F5003 /* Followers.swift */; };
 		F04B914921CACF9F000F5003 /* EULAVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B914821CACF9E000F5003 /* EULAVC.swift */; };
 		F0A401CE217C50AD003ACC53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A401CD217C50AD003ACC53 /* AppDelegate.swift */; };
@@ -86,6 +87,7 @@
 		F030FF9F21A24D74008FB7BE /* ReviewsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsVC.swift; sourceTree = "<group>"; };
 		F030FFA121A40499008FB7BE /* DialogVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogVC.swift; sourceTree = "<group>"; };
 		F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
+		F039D77622D6DEB6009F997C /* RecorderVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecorderVC.swift; sourceTree = "<group>"; };
 		F04B914421B288E9000F5003 /* Followers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
 		F04B914621B7ED77000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		F04B914721B7ED78000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 		F0E0F73D225F6FD5006EBB35 /* Actor */ = {
 			isa = PBXGroup;
 			children = (
+				F039D77622D6DEB6009F997C /* RecorderVC.swift */,
 				F0FCA451226779600014FBBA /* AwesomeSpotlightView */,
 				F0FCA44F2267083B0014FBBA /* movie.MOV */,
 				F0E0F74E22606FAF006EBB35 /* Recorder */,
@@ -615,6 +618,7 @@
 			files = (
 				F0E0F76422606FB0006EBB35 /* RosyWriterRenderer.swift in Sources */,
 				F0E0F77422606FF1006EBB35 /* ActionVC.swift in Sources */,
+				F039D77722D6DEB7009F997C /* RecorderVC.swift in Sources */,
 				F0E0F76722606FB0006EBB35 /* CoreImageFilters.swift in Sources */,
 				F0E0F76F22606FB0006EBB35 /* ObjC.swift in Sources */,
 				F0E0F76922606FB0006EBB35 /* PreviewView.swift in Sources */,

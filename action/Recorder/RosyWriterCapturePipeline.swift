@@ -573,7 +573,7 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
         
         let callbackQueue = DispatchQueue(label: "com.apple.sample.capturepipeline.recordercallback", attributes: []); // guarantee ordering of callbacks with a serial queue
         
-        _recordingURL = URL(fileURLWithPath: NSString.path(withComponents: [NSTemporaryDirectory(), UUID().uuidString]) as String).appendingPathExtension("mov")
+        _recordingURL = URL(fileURLWithPath: NSString.path(withComponents: [NSTemporaryDirectory(), UUID().uuidString]) as String).appendingPathExtension("mp4")
 
         let recorder = MovieRecorder(url: _recordingURL, delegate: self, callbackQueue: callbackQueue)
         
