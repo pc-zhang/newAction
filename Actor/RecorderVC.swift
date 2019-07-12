@@ -85,7 +85,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
     
     private var _backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier(rawValue: 0)
     private var _allowedToUseGPU: Bool = false
-    private var _previewView: OpenGLPixelBufferView?
+    private var _previewView: OpenGLPixelBufferView? = nil
     @IBOutlet weak var _previewWrapperView: UIView!
     
     private var _capturePipeline: RosyWriterCapturePipeline!
@@ -112,7 +112,16 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
         super.viewWillAppear(animated)
         
         _capturePipeline.startRunning(0)
-        setupPreviewView()
+        
+        if _previewView == nil {
+            setupPreviewView()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        _capturePipeline.stopRunning()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -375,6 +384,19 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
                                         delegate: nil,
                                         cancelButtonTitle: "OK")
             alertView.show()
+        }
+    }
+    
+    @IBAction func done(bySegue: UIStoryboardSegue) {
+        if bySegue.identifier == "" {
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "recorder to editor" {
+            if let editorVC = segue.destination as? VideoEditVC {
+                editorVC.composition = composition!.mutableCopy() as! AVMutableComposition
+            }
         }
     }
 }

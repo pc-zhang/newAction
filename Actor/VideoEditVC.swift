@@ -14,6 +14,10 @@ import MobileCoreServices
 
 class VideoEditVC: UIViewController {
     
+    @IBAction func previous(_ sender: Any) {
+        self.navigationController?.popViewController(animated: false)
+    }
+    
     var composition: AVMutableComposition?
     
     @IBOutlet weak var playerV: PlayerView!
@@ -29,5 +33,13 @@ class VideoEditVC: UIViewController {
         playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
         
         player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        _ = 1
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return true
     }
 }
