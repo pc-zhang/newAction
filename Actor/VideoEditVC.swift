@@ -36,10 +36,17 @@ class VideoEditVC: UIViewController {
         playerV.player = player
         playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
         
-//        player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
+        player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.new.rawValue | NSKeyValueObservingOptions.old.rawValue), context: nil)
         
         updatePlayer()
         player.play()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -92,5 +99,39 @@ class VideoEditVC: UIViewController {
             player.seek(to: time)
         }
         
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rate" {
+            if player.rate == 1  {
+                playImage.isHidden = true
+            }else{
+                playImage.isHidden = false
+            }
+        }
+    }
+    
+    @objc func playerDidFinishPlaying(note: NSNotification) {
+        
+        player.seek(to: .zero)
+        player.play()
+        
+    }
+    
+    @IBAction func tapPlayView(_ sender: Any) {
+        if player.rate == 0 {
+            
+            player.play()
+            
+//            seekTimer?.invalidate()
+//            seekTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (timer) in
+//                self.timelineV.contentOffset.x = CGFloat(self.currentTime/self.interval)*self.timelineV.bounds.height - self.timelineV.bounds.width/2
+//            })
+        }
+        else {
+            // Playing, so pause.
+            player.pause()
+//            seekTimer?.invalidate()
+        }
     }
 }
