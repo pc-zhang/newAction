@@ -265,6 +265,10 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
         return _composition
     } ()
     
+    private var videoComposition: AVMutableVideoComposition? = nil
+    
+    var firstTrackTransform: CGAffineTransform = CGAffineTransform.identity
+    
     func capturePipelineRecordingDidStop(_ capturePipeline: RosyWriterCapturePipeline) {
         
         recordingStopped()
@@ -312,6 +316,12 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
                     let videoTrack = self.composition!.tracks(withMediaType: .video).first!
                     
                     try! videoTrack.insertTimeRange(videoAssetTrack.timeRange, of: videoAssetTrack, at: videoTrack.timeRange.end)
+                    
+                    self.videoComposition = AVMutableVideoComposition()
+                    let renderSize = videoAssetTrack.naturalSize.applying(videoAssetTrack.preferredTransform)
+                    self.videoComposition!.renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.width) * 4.0/3.0)
+                    
+                    self.firstTrackTransform = videoAssetTrack.getTransform(renderSize: self.videoComposition!.renderSize)
                 }
                 
                 if let audioAssetTrack = newAsset.tracks(withMediaType: .audio).first {
@@ -396,6 +406,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
         if segue.identifier == "recorder to editor" {
             if let editorVC = segue.destination as? VideoEditVC {
                 editorVC.composition = composition!.mutableCopy() as! AVMutableComposition
+                editorVC.videoComposition = videoComposition!.mutableCopy() as! AVMutableVideoComposition
+                editorVC.firstTrackTransform = firstTrackTransform
             }
         }
     }
