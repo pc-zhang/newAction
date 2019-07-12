@@ -88,6 +88,7 @@
 		F030FFA121A40499008FB7BE /* DialogVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogVC.swift; sourceTree = "<group>"; };
 		F030FFA321A79B1B008FB7BE /* TimelineLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineLayout.swift; sourceTree = "<group>"; };
 		F039D77622D6DEB6009F997C /* RecorderVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecorderVC.swift; sourceTree = "<group>"; };
+		F039D77C22D8573D009F997C /* page.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = page.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F04B914421B288E9000F5003 /* Followers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
 		F04B914621B7ED77000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		F04B914721B7ED78000F5003 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
@@ -154,6 +155,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F039D77922D8573D009F997C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F0A401C7217C50AD003ACC53 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -217,6 +225,7 @@
 			children = (
 				F0A401CA217C50AD003ACC53 /* action.app */,
 				F0E0F73C225F6FD5006EBB35 /* Actor.app */,
+				F039D77C22D8573D009F997C /* page.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -424,6 +433,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F039D77B22D8573D009F997C /* page */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F039D79122D85740009F997C /* Build configuration list for PBXNativeTarget "page" */;
+			buildPhases = (
+				F039D77822D8573D009F997C /* Sources */,
+				F039D77922D8573D009F997C /* Frameworks */,
+				F039D77A22D8573D009F997C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = page;
+			productName = page;
+			productReference = F039D77C22D8573D009F997C /* page.app */;
+			productType = "com.apple.product-type.application";
+		};
 		F0A401C9217C50AD003ACC53 /* action */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F0A401DF217C50AE003ACC53 /* Build configuration list for PBXNativeTarget "action" */;
@@ -470,6 +496,9 @@
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = zpc;
 				TargetAttributes = {
+					F039D77B22D8573D009F997C = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
 					F0A401C9217C50AD003ACC53 = {
 						CreatedOnToolsVersion = 10.0;
 						SystemCapabilities = {
@@ -505,11 +534,19 @@
 			targets = (
 				F0A401C9217C50AD003ACC53 /* action */,
 				F0E0F73B225F6FD5006EBB35 /* Actor */,
+				F039D77B22D8573D009F997C /* page */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F039D77A22D8573D009F997C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F0A401C8217C50AD003ACC53 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -573,6 +610,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F039D77822D8573D009F997C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F0A401C6217C50AD003ACC53 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -683,6 +727,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		F039D78F22D85740009F997C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5K87F3JL7S;
+				INFOPLIST_FILE = page/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = zpc.page;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F039D79022D85740009F997C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5K87F3JL7S;
+				INFOPLIST_FILE = page/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = zpc.page;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F0A401DD217C50AE003ACC53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -886,6 +968,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F039D79122D85740009F997C /* Build configuration list for PBXNativeTarget "page" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F039D78F22D85740009F997C /* Debug */,
+				F039D79022D85740009F997C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F0A401C5217C50AD003ACC53 /* Build configuration list for PBXProject "action" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
