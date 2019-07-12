@@ -30,6 +30,11 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
         }
     }
     
+    @IBOutlet weak var nextButton: UIButton! {
+        didSet {
+            nextButton.layer.cornerRadius = 14
+        }
+    }
     
     @IBOutlet weak var recordProgressBar: UIView!
     
