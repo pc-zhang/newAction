@@ -12,7 +12,65 @@ import AVFoundation
 import CoreServices
 import MobileCoreServices
 
-class VideoEditVC: UIViewController {
+class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    @IBOutlet weak var filterCollectionV: UICollectionView!
+    
+    // MARK: - UICollectionViewDelegateFlowLayout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        return CGSize(width: collectionView.bounds.height * 3 / 4.0, height: collectionView.bounds.height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 7
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filter cell", for: indexPath)
+        
+        if let filterCell = cell as? FilterCell {
+            
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let filterCell = cell as? FilterCell else {
+            return
+        }
+        
+        if _thumbnail == nil {
+            _thumbnail = UIImage()
+            let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
+            imageGenerator.maximumSize = CGSize(width: cell.bounds.width, height: cell.bounds.height)
+            imageGenerator.appliesPreferredTrackTransform = true
+            imageGenerator.videoComposition = videoComposition
+            
+            imageGenerator.generateCGImagesAsynchronously(forTimes: [CMTime.zero as NSValue]) { (requestedTime, image, actualTime, result, error) in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self._thumbnail = UIImage.init(cgImage: image)
+                        self.filterCollectionV.reloadData()
+                    }
+                }
+            }
+        }
+        
+        let sourceImage = CIImage(image: _thumbnail!)
+        if indexPath.item < avaliableFilters.count, let newFilter = CIFilter(name: avaliableFilters[indexPath.item]) {
+            newFilter.setValue(sourceImage, forKey: kCIInputImageKey)
+            if let filteredImage = newFilter.value(forKey: kCIOutputImageKey) as! CIImage? {
+                filterCell.imageV.image = UIImage(ciImage: filteredImage)
+            }
+        }
+    }
+    
+    private var _thumbnail : UIImage?
+    let avaliableFilters = CoreImageFilters.avaliableFilters()
     
     @IBAction func previous(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
@@ -134,4 +192,20 @@ class VideoEditVC: UIViewController {
 //            seekTimer?.invalidate()
         }
     }
+}
+
+class FilterCell: UICollectionViewCell {
+    @IBOutlet weak var imageV: UIImageView! {
+        didSet {
+            imageV.layer.cornerRadius = 10
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        self.layer.cornerRadius = 10
+    }
+    
+    var thumbnailTime: CMTime? = nil
 }
