@@ -27,4 +27,18 @@ struct CoreImageFilters {
         
         return avaliableFilters
     }
+    
+    static func avaliableFiltersName() -> [String] {
+        
+        var avaliableFiltersName = ["橘子汽水",
+                                "神仙高光",
+                                "蜜桃少女",
+                                "朝阳",
+                                "海蓝",
+                                "黑白",
+                                "经典",
+                                "巴厘岛"]
+        
+        return avaliableFiltersName
+    }
 }

@@ -49,7 +49,7 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
             filterCell.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
         }
         
-        filterCell.filterNameLabel.text = avaliableFilters[indexPath.item]
+        filterCell.filterNameLabel.text = avaliableFiltersName[indexPath.item]
         
         if _thumbnail == nil {
             _thumbnail = UIImage()
@@ -90,6 +90,7 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     private var _thumbnail : UIImage?
     private let avaliableFilters = CoreImageFilters.avaliableFilters()
+    private let avaliableFiltersName = CoreImageFilters.avaliableFiltersName()
     private var selectedFilterIndex: Int = -1
     
     @IBAction func previous(_ sender: Any) {
