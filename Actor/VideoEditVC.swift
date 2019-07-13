@@ -43,6 +43,12 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
             return
         }
         
+        if indexPath.item == selectedFilterIndex {
+            filterCell.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.3)
+        } else {
+            filterCell.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        }
+        
         filterCell.filterNameLabel.text = avaliableFilters[indexPath.item]
         
         if _thumbnail == nil {
@@ -70,12 +76,21 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        _filter = CIFilter(name: self.avaliableFilters[indexPath.item])
-
+        
+        if selectedFilterIndex == indexPath.item {
+            selectedFilterIndex = -1
+            _filter = nil
+        } else {
+            selectedFilterIndex = indexPath.item
+            _filter = CIFilter(name: self.avaliableFilters[indexPath.item])
+        }
+        
+        collectionView.reloadData()
     }
     
     private var _thumbnail : UIImage?
-    let avaliableFilters = CoreImageFilters.avaliableFilters()
+    private let avaliableFilters = CoreImageFilters.avaliableFilters()
+    private var selectedFilterIndex: Int = -1
     
     @IBAction func previous(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
