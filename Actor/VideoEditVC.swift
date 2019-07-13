@@ -24,7 +24,7 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        return avaliableFilters.count
     }
     
     
@@ -43,13 +43,13 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
             return
         }
         
+        filterCell.filterNameLabel.text = avaliableFilters[indexPath.item]
+        
         if _thumbnail == nil {
             _thumbnail = UIImage()
             let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
             imageGenerator.maximumSize = CGSize(width: cell.bounds.width, height: cell.bounds.height)
             imageGenerator.appliesPreferredTrackTransform = true
-            imageGenerator.videoComposition = videoComposition
-            
             imageGenerator.generateCGImagesAsynchronously(forTimes: [CMTime.zero as NSValue]) { (requestedTime, image, actualTime, result, error) in
                 if let image = image {
                     DispatchQueue.main.async {
@@ -69,6 +69,11 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        _filter = CIFilter(name: self.avaliableFilters[indexPath.item])
+
+    }
+    
     private var _thumbnail : UIImage?
     let avaliableFilters = CoreImageFilters.avaliableFilters()
     
@@ -80,7 +85,8 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     var videoComposition: AVMutableVideoComposition? = nil
     var audioMix: AVMutableAudioMix? = nil
     
-    var firstTrackTransform: CGAffineTransform = CGAffineTransform.identity
+    var _filter: CIFilter? = nil
+    var videoCompositionRenderSize: CGSize = .zero
     
     @IBOutlet weak var playerV: PlayerView!
     @IBOutlet weak var playImage: UIImageView!
@@ -120,22 +126,15 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
             return
         }
         
-        let firstVideoTrack = composition!.tracks(withMediaType: .video)[0]
-        
-        videoComposition?.instructions = []
+        videoComposition = AVMutableVideoComposition(asset: composition!, applyingCIFiltersWithHandler: { (request) in
+            
+            self._filter?.setValue(request.sourceImage, forKey: kCIInputImageKey)
+            let filteredImage = self._filter?.value(forKey: kCIOutputImageKey) as! CIImage?
+            
+            request.finish(with: filteredImage ?? request.sourceImage, context: nil)
+        })
         videoComposition?.frameDuration = CMTimeMake(value: 1, timescale: 30)
-        
-        for segment in firstVideoTrack.segments {
-            let instruction = AVMutableVideoCompositionInstruction()
-            instruction.timeRange = segment.timeMapping.target
-            
-            let transformer1 = AVMutableVideoCompositionLayerInstruction(assetTrack: firstVideoTrack)
-            transformer1.setTransform(firstTrackTransform, at: instruction.timeRange.start)
-            
-            instruction.layerInstructions = [transformer1]
-            
-            videoComposition?.instructions.append(instruction)
-        }
+        videoComposition?.renderSize = videoCompositionRenderSize
         
         if let audioTrack = composition!.tracks(withMediaType: .audio).first {
             audioMix = AVMutableAudioMix()
@@ -207,5 +206,6 @@ class FilterCell: UICollectionViewCell {
         self.layer.cornerRadius = 10
     }
     
-    var thumbnailTime: CMTime? = nil
+    @IBOutlet weak var filterNameLabel: UILabel!
+    
 }

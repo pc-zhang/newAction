@@ -350,7 +350,7 @@
                             </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="30r-tk-O7k">
                                 <rect key="frame" x="0.0" y="90.666666666666686" width="375" height="500.00000000000006"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="30r-tk-O7k" secondAttribute="height" multiplier="3:4" id="oYa-Dt-o4C"/>
                                 </constraints>
@@ -473,6 +473,7 @@
                                                     <constraint firstItem="fSQ-NL-cxN" firstAttribute="top" secondItem="D5u-o6-HCY" secondAttribute="top" id="zNr-Lt-Dag"/>
                                                 </constraints>
                                                 <connections>
+                                                    <outlet property="filterNameLabel" destination="hDK-s0-ndn" id="TpD-xC-Jpy"/>
                                                     <outlet property="imageV" destination="fSQ-NL-cxN" id="rXz-sJ-bYz"/>
                                                 </connections>
                                             </collectionViewCell>
@@ -1099,7 +1100,7 @@
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Dna-cf-e4X">
                                 <rect key="frame" x="0.0" y="90" width="375" height="500"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Dna-cf-e4X" secondAttribute="height" multiplier="3:4" id="ouj-MH-bXB"/>
                                 </constraints>
