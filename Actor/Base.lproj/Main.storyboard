@@ -1495,8 +1495,10 @@
                     <navigationItem key="navigationItem" id="pKq-97-cIn"/>
                     <connections>
                         <outlet property="_previewWrapperView" destination="9rc-7d-jwX" id="Ucc-N3-eNJ"/>
+                        <outlet property="converCameraPosition" destination="1ZS-F0-8n4" id="nap-RF-pEw"/>
                         <outlet property="deleteButton" destination="i6W-Lo-VYt" id="zHM-jC-61M"/>
                         <outlet property="nextButton" destination="f6y-xw-AQe" id="BBX-ta-v3h"/>
+                        <outlet property="nextButtonPosition" destination="KeA-Ig-kOz" id="dIo-IZ-J2U"/>
                         <outlet property="progressV" destination="1je-62-IX8" id="dxa-5T-h5s"/>
                         <outlet property="proportionImage" destination="STj-kt-I4b" id="SBL-Cf-tIB"/>
                         <outlet property="recordButton" destination="b4H-tk-Ptj" id="SvL-Dq-GWO"/>

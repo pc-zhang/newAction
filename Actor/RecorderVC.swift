@@ -14,6 +14,12 @@ import MobileCoreServices
 
 class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderProgressViewDelegate {
     
+    
+    @IBOutlet weak var nextButtonPosition: NSLayoutConstraint!
+    
+    @IBOutlet weak var converCameraPosition: NSLayoutConstraint!
+    
+    
     func progress(_ recorderProgressView: RecorderProgressView) -> CGFloat {
         return CGFloat(recordProgressView!.progress)
     }
@@ -86,7 +92,9 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             
             tabBarPositionY.constant = 15
             
-            
+            converCameraPosition.constant = 20
+            proportionImage.isHidden = false
+            nextButtonPosition.constant = -100
         } else {
             deleteButton.isHidden = false
             recordProgressView.isHidden = true
@@ -96,6 +104,10 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             progressV.isHidden = false
             
             tabBarPositionY.constant = -100
+            
+            converCameraPosition.constant = 174
+            proportionImage.isHidden = true
+            nextButtonPosition.constant = 16
         }
     }
     
