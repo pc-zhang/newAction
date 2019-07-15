@@ -14,7 +14,39 @@ import MobileCoreServices
 
 class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    @IBOutlet weak var cutStartPositionX: NSLayoutConstraint!
+    
+    @IBOutlet weak var cutEndPositionX: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var cutCollectionV: UICollectionView!
+    
     @IBOutlet weak var thumbnailDraggableImagePositionX: NSLayoutConstraint!
+    
+
+    @IBAction func dragCutStart(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: self.view)
+        cutStartPositionX.constant += translation.x
+        
+        recognizer.setTranslation(.zero, in: self.view)
+        
+        let position = Double(cutStartPositionX.constant - cutCollectionV.contentInset.left) / Double(cutCollectionV.bounds.width - cutCollectionV.contentInset.left - cutCollectionV.contentInset.right)
+        let seekTime = CMTime(seconds: position * composition!.duration.seconds , preferredTimescale: 60)
+        player.pause()
+        player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    
+    @IBAction func dragCutEnd(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: self.view)
+        cutEndPositionX.constant += translation.x
+        
+        recognizer.setTranslation(.zero, in: self.view)
+        
+        let position = Double(cutEndPositionX.constant - cutCollectionV.contentInset.left) / Double(cutCollectionV.bounds.width - cutCollectionV.contentInset.left - cutCollectionV.contentInset.right)
+        let seekTime = CMTime(seconds: position * composition!.duration.seconds , preferredTimescale: 60)
+        player.pause()
+        player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
     
     @IBAction func dragThumbnail(_ recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: self.view)
@@ -105,7 +137,11 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         thumbnailDot.isHidden = true
         
         filterCollectionVLeading.constant = -UIScreen.main.bounds.width
-
+        
+        player.pause()
+        player.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+        
+        cutCollectionV.reloadData()
     }
     
     @IBAction func changeThumbnailPage(_ sender: Any) {
@@ -238,6 +274,9 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     private var thumbnailDelegate : ThumbnailDelegate?
     private var thumbnailDataSource : ThumbnailDataSource?
     
+    private var cutDelegate : CutDelegate?
+    private var cutDataSource : CutDataSource?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -245,6 +284,11 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         thumbnailDataSource = ThumbnailDataSource(self)
         thumbnailCollectionV.delegate = thumbnailDelegate
         thumbnailCollectionV.dataSource = thumbnailDataSource
+        
+        cutDelegate = CutDelegate(self)
+        cutDataSource = CutDataSource(self)
+        cutCollectionV.delegate = cutDelegate
+        cutCollectionV.dataSource = cutDataSource
         
         playerV.player = player
         playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
@@ -372,6 +416,15 @@ class ThumbnailCell2: UICollectionViewCell {
     
 }
 
+class CutCell: UICollectionViewCell {
+    @IBOutlet weak var imageV: UIImageView!
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+}
+
 class ThumbnailDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     init(_ videoEditVC: VideoEditVC) {
@@ -443,6 +496,73 @@ class ThumbnailDataSource : NSObject, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "thumbnail cell", for: indexPath)
         
         if let thumbnailCell = cell as? ThumbnailCell2 {
+            
+        }
+        
+        return cell
+    }
+    
+    
+}
+
+class CutDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    init(_ videoEditVC: VideoEditVC) {
+        super.init()
+        
+        self._videoEditVC = videoEditVC
+    }
+    
+    private weak var _videoEditVC: VideoEditVC!
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cutCell = cell as? CutCell else {
+            return
+        }
+        
+        
+        let width = _videoEditVC.cutCollectionV.bounds.width - _videoEditVC.cutCollectionV.contentInset.left - _videoEditVC.cutCollectionV.contentInset.right
+        let itemWidthNormalized = Double(_videoEditVC.cutCollectionV.bounds.height / width)
+        let positionXNormalized = Double(indexPath.item) * itemWidthNormalized
+        
+        let seekTime = CMTime(seconds: positionXNormalized * _videoEditVC.composition!.duration.seconds, preferredTimescale: 60)
+        
+        let imageGenerator = AVAssetImageGenerator.init(asset: _videoEditVC.composition!)
+        imageGenerator.videoComposition = _videoEditVC.videoComposition
+        imageGenerator.maximumSize = CGSize(width: cell.bounds.width, height: cell.bounds.height)
+        imageGenerator.appliesPreferredTrackTransform = true
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [seekTime as NSValue]) { (requestedTime, image, actualTime, result, error) in
+            if let image = image {
+                DispatchQueue.main.async {
+                    cutCell.imageV.image = UIImage(cgImage: image)
+                }
+            }
+        }
+        
+    }
+}
+
+class CutDataSource : NSObject, UICollectionViewDataSource {
+    
+    init(_ videoEditVC: VideoEditVC) {
+        super.init()
+        
+        self._videoEditVC = videoEditVC
+    }
+    
+    private weak var _videoEditVC: VideoEditVC!
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        let numberOfItems = (_videoEditVC.cutCollectionV.bounds.width - _videoEditVC.cutCollectionV.contentInset.left - _videoEditVC.cutCollectionV.contentInset.right) / _videoEditVC.cutCollectionV.bounds.height
+        
+        return Int(floor(numberOfItems))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cut cell", for: indexPath)
+        
+        if let cutCell = cell as? CutCell {
             
         }
         
