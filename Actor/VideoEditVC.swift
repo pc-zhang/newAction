@@ -14,6 +14,82 @@ import MobileCoreServices
 
 class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
+    @IBOutlet weak var thumbnailDraggableImageV: UIImageView! {
+        didSet {
+            thumbnailDraggableImageV.layer.cornerRadius = 1
+        }
+    }
+    
+    @IBOutlet weak var thumbnailDaggableImageViewWrapper: UIView! {
+        didSet {
+            thumbnailDaggableImageViewWrapper.layer.cornerRadius = 2
+        }
+    }
+    
+    @IBOutlet weak var thumbnailCollectionV: UICollectionView!
+    
+    @IBOutlet weak var filterCollectionVLeading: NSLayoutConstraint!
+    
+    @IBOutlet weak var filterDot: UIView! {
+        didSet {
+            filterDot.layer.cornerRadius = filterDot.bounds.width / 2
+        }
+    }
+    
+    @IBOutlet weak var cutDot: UIView! {
+        didSet {
+            cutDot.layer.cornerRadius = cutDot.bounds.width / 2
+        }
+    }
+    
+    @IBOutlet weak var thumbnailDot: UIView! {
+        didSet {
+            thumbnailDot.layer.cornerRadius = thumbnailDot.bounds.width / 2
+        }
+    }
+    
+    @IBOutlet weak var filterLabel: UILabel!
+    
+    @IBOutlet weak var cutLabel: UILabel!
+    
+    @IBOutlet weak var thumbnailLabel: UILabel!
+    
+    @IBAction func changeFilterPage(_ sender: Any) {
+        filterLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        cutLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        thumbnailLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        filterDot.isHidden = false
+        cutDot.isHidden = true
+        thumbnailDot.isHidden = true
+        
+        filterCollectionVLeading.constant = 0
+    }
+    
+    @IBAction func changeCutPage(_ sender: Any) {
+        filterLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        cutLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        thumbnailLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        filterDot.isHidden = true
+        cutDot.isHidden = false
+        thumbnailDot.isHidden = true
+        
+        filterCollectionVLeading.constant = -UIScreen.main.bounds.width
+
+    }
+    
+    @IBAction func changeThumbnailPage(_ sender: Any) {
+        filterLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        cutLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.7)
+        thumbnailLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        filterDot.isHidden = true
+        cutDot.isHidden = true
+        thumbnailDot.isHidden = false
+        
+        filterCollectionVLeading.constant = -UIScreen.main.bounds.width * 2
+
+    }
+    
+    
     @IBOutlet weak var filterCollectionV: UICollectionView!
     
     // MARK: - UICollectionViewDelegateFlowLayout
@@ -61,6 +137,8 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
                     DispatchQueue.main.async {
                         self._thumbnail = UIImage.init(cgImage: image)
                         self.filterCollectionV.reloadData()
+                        
+                        self.thumbnailDraggableImageV.image = self._thumbnail
                     }
                 }
             }
@@ -110,8 +188,16 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         return AVPlayer()
     } ()
     
+    private var thumbnailDelegate : ThumbnailDelegate?
+    private var thumbnailDataSource : ThumbnailDataSource?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        thumbnailDelegate = ThumbnailDelegate(self)
+        thumbnailDataSource = ThumbnailDataSource()
+        thumbnailCollectionV.delegate = thumbnailDelegate
+        thumbnailCollectionV.dataSource = thumbnailDataSource
         
         playerV.player = player
         playerV.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
@@ -223,5 +309,62 @@ class FilterCell: UICollectionViewCell {
     }
     
     @IBOutlet weak var filterNameLabel: UILabel!
+    
+}
+
+class ThumbnailCell2: UICollectionViewCell {
+    @IBOutlet weak var imageV: UIImageView!
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+}
+
+class ThumbnailDelegate : NSObject, UICollectionViewDelegate {
+    
+    init(_ videoEditVC: VideoEditVC) {
+        super.init()
+        
+        self._videoEditVC = videoEditVC
+    }
+    
+    private weak var _videoEditVC: VideoEditVC?
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let thumbnailCell = cell as? ThumbnailCell2 else {
+            return
+        }
+        
+        let imageGenerator = AVAssetImageGenerator.init(asset: _videoEditVC!.composition!)
+        imageGenerator.videoComposition = _videoEditVC!.videoComposition
+        imageGenerator.maximumSize = CGSize(width: cell.bounds.width, height: cell.bounds.height)
+        imageGenerator.appliesPreferredTrackTransform = true
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [CMTime.zero as NSValue]) { (requestedTime, image, actualTime, result, error) in
+            if let image = image {
+                DispatchQueue.main.async {
+                    thumbnailCell.imageV.image = UIImage(cgImage: image)
+                }
+            }
+        }
+        
+    }
+}
+
+class ThumbnailDataSource : NSObject, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 7
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "thumbnail cell", for: indexPath)
+        
+        if let thumbnailCell = cell as? ThumbnailCell2 {
+            
+        }
+        
+        return cell
+    }
+    
     
 }
