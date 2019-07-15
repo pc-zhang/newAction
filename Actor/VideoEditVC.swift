@@ -12,7 +12,7 @@ import AVFoundation
 import CoreServices
 import MobileCoreServices
 
-class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var thumbnailDraggableImagePositionX: NSLayoutConstraint!
     
@@ -26,8 +26,8 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         }
         recognizer.setTranslation(.zero, in: self.view)
         
-        let position = Double(thumbnailDraggableImagePositionX.constant - 20) / Double(thumbnailCollectionV.bounds.width - thumbnailCollectionV.contentInset.left - thumbnailCollectionV.contentInset.right) * composition!.duration.seconds
-        let seekTime = CMTime(seconds: position , preferredTimescale: 60)
+        let position = Double(thumbnailDraggableImagePositionX.constant - 20) / Double(thumbnailCollectionV.bounds.width - thumbnailCollectionV.contentInset.left - thumbnailCollectionV.contentInset.right)
+        let seekTime = CMTime(seconds: position * composition!.duration.seconds , preferredTimescale: 60)
         player.pause()
         player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
         
@@ -116,8 +116,25 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         cutDot.isHidden = true
         thumbnailDot.isHidden = false
         
+        player.pause()
+        player.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+        
+        let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
+        imageGenerator.videoComposition = videoComposition!
+        imageGenerator.maximumSize = CGSize(width: thumbnailCollectionV.bounds.height, height: thumbnailCollectionV.bounds.height)
+        imageGenerator.appliesPreferredTrackTransform = true
+        
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [CMTime.zero as NSValue]) { (requestedTime, image, actualTime, result, error) in
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.thumbnailDraggableImageV.image = UIImage(cgImage: image)
+                }
+            }
+        }
+        
         filterCollectionVLeading.constant = -UIScreen.main.bounds.width * 2
-
+        thumbnailDraggableImagePositionX.constant = 20
+        thumbnailCollectionV.reloadData()
     }
     
     
@@ -168,8 +185,6 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
                     DispatchQueue.main.async {
                         self._thumbnail = UIImage.init(cgImage: image)
                         self.filterCollectionV.reloadData()
-                        
-                        self.thumbnailDraggableImageV.image = self._thumbnail
                     }
                 }
             }
@@ -195,6 +210,7 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         }
         
         collectionView.reloadData()
+        player.play()
     }
     
     private var _thumbnail : UIImage?
@@ -226,7 +242,7 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         super.viewDidLoad()
         
         thumbnailDelegate = ThumbnailDelegate(self)
-        thumbnailDataSource = ThumbnailDataSource()
+        thumbnailDataSource = ThumbnailDataSource(self)
         thumbnailCollectionV.delegate = thumbnailDelegate
         thumbnailCollectionV.dataSource = thumbnailDataSource
         
@@ -244,6 +260,10 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
         
         NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).playerDidFinishPlaying(note:)),
                                                name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -293,9 +313,9 @@ class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewD
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "rate" {
-            if player.rate == 1  {
+            if player.rate == 1 || thumbnailDot.isHidden == false {
                 playImage.isHidden = true
-            }else{
+            } else {
                 playImage.isHidden = false
             }
         }
@@ -352,7 +372,7 @@ class ThumbnailCell2: UICollectionViewCell {
     
 }
 
-class ThumbnailDelegate : NSObject, UICollectionViewDelegate {
+class ThumbnailDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     init(_ videoEditVC: VideoEditVC) {
         super.init()
@@ -360,18 +380,38 @@ class ThumbnailDelegate : NSObject, UICollectionViewDelegate {
         self._videoEditVC = videoEditVC
     }
     
-    private weak var _videoEditVC: VideoEditVC?
+    private weak var _videoEditVC: VideoEditVC!
+    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//
+//        let width = _videoEditVC.thumbnailCollectionV.bounds.width - _videoEditVC.thumbnailCollectionV.contentInset.left - _videoEditVC.thumbnailCollectionV.contentInset.right
+//        let itemWidthNormalized = Double(_videoEditVC.thumbnailCollectionV.bounds.height / width)
+//        let positionXNormalized = Double(indexPath.item) * itemWidthNormalized
+//
+//        if positionXNormalized + itemWidthNormalized > 1 {
+//            return CGSize(width: CGFloat(1 - positionXNormalized) * width, height: collectionView.bounds.height)
+//        }
+//
+//        return CGSize(width: collectionView.bounds.height, height: collectionView.bounds.height)
+//    }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let thumbnailCell = cell as? ThumbnailCell2 else {
             return
         }
         
-        let imageGenerator = AVAssetImageGenerator.init(asset: _videoEditVC!.composition!)
-        imageGenerator.videoComposition = _videoEditVC!.videoComposition
+        
+        let width = _videoEditVC.thumbnailCollectionV.bounds.width - _videoEditVC.thumbnailCollectionV.contentInset.left - _videoEditVC.thumbnailCollectionV.contentInset.right
+        let itemWidthNormalized = Double(_videoEditVC.thumbnailCollectionV.bounds.height / width)
+        let positionXNormalized = Double(indexPath.item) * itemWidthNormalized
+
+        let seekTime = CMTime(seconds: positionXNormalized * _videoEditVC.composition!.duration.seconds, preferredTimescale: 60)
+        
+        let imageGenerator = AVAssetImageGenerator.init(asset: _videoEditVC.composition!)
+        imageGenerator.videoComposition = _videoEditVC.videoComposition
         imageGenerator.maximumSize = CGSize(width: cell.bounds.width, height: cell.bounds.height)
         imageGenerator.appliesPreferredTrackTransform = true
-        imageGenerator.generateCGImagesAsynchronously(forTimes: [CMTime.zero as NSValue]) { (requestedTime, image, actualTime, result, error) in
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [seekTime as NSValue]) { (requestedTime, image, actualTime, result, error) in
             if let image = image {
                 DispatchQueue.main.async {
                     thumbnailCell.imageV.image = UIImage(cgImage: image)
@@ -383,8 +423,20 @@ class ThumbnailDelegate : NSObject, UICollectionViewDelegate {
 }
 
 class ThumbnailDataSource : NSObject, UICollectionViewDataSource {
+    
+    init(_ videoEditVC: VideoEditVC) {
+        super.init()
+        
+        self._videoEditVC = videoEditVC
+    }
+    
+    private weak var _videoEditVC: VideoEditVC!
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        
+        let numberOfItems = (_videoEditVC.thumbnailCollectionV.bounds.width - _videoEditVC.thumbnailCollectionV.contentInset.left - _videoEditVC.thumbnailCollectionV.contentInset.right) / _videoEditVC.thumbnailCollectionV.bounds.height
+        
+        return Int(floor(numberOfItems))
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
