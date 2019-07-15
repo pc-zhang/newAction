@@ -14,6 +14,22 @@ import MobileCoreServices
 
 class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
     
+    @IBAction func changeProportion(_ sender: Any) {
+        if topMaskViewHeight.multiplier != 1/8.0 {
+            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/8.0)
+            proportionImage.image = #imageLiteral(resourceName: "top_proportion_1")
+        } else {
+            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/800.0)
+            proportionImage.image = #imageLiteral(resourceName: "top_proportion_4")
+        }
+    }
+    
+    @IBOutlet weak var proportionImage: UIImageView!
+    
+    
+    @IBOutlet weak var topMaskViewHeight: NSLayoutConstraint!
+    
+    
     @IBOutlet weak var tabBarPositionY: NSLayoutConstraint!
     
     @IBOutlet weak var redDot: UIView! {
