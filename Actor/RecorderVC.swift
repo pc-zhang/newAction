@@ -12,7 +12,25 @@ import AVFoundation
 import CoreServices
 import MobileCoreServices
 
-class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
+class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderProgressViewDelegate {
+    
+    func getPositions(_ recorderProgressView: RecorderProgressView) -> [CGFloat] {
+        
+        var positions: [CGFloat] = []
+        
+        if let composition = composition {
+            for segment in composition.tracks(withMediaType: .video).first?.segments ?? [] {
+                let position = CGFloat(segment.timeMapping.target.end.seconds) / 60.0
+                positions.append(position)
+            }
+        }
+        
+        return positions
+    }
+    
+    
+    
+    @IBOutlet weak var progressV: RecorderProgressView!
     
     @IBAction func changeProportion(_ sender: Any) {
         if topMaskViewHeight.multiplier != 1/8.0 {
@@ -158,6 +176,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        progressV.delegate = self
+        
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
         
         NotificationCenter.default.addObserver(self,
@@ -274,6 +294,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
             self.recordProgressView.progress = 0
         }
 
+        progressV.setNeedsDisplay()
         viewDidLayoutSubviews()
     }
     
@@ -356,6 +377,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
                 }
                 
                 self.push()
+                
+                self.progressV.setNeedsDisplay()
             }
         }
         

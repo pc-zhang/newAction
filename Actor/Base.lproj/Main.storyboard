@@ -1398,6 +1398,13 @@
                                 <color key="progressTintColor" red="1" green="0.32941176470588235" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </progressView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1je-62-IX8" customClass="RecorderProgressView" customModule="Actor" customModuleProvider="target">
+                                <rect key="frame" x="31" y="574.66666666666663" width="313" height="5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="5" id="shn-eb-M8P"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QHs-uY-2hT">
                                 <rect key="frame" x="49" y="572.66666666666663" width="2" height="9"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1435,6 +1442,7 @@
                             <constraint firstItem="yUa-QS-mz5" firstAttribute="width" secondItem="9rc-7d-jwX" secondAttribute="width" id="3o3-R8-C7i"/>
                             <constraint firstItem="9rc-7d-jwX" firstAttribute="centerY" secondItem="Dna-cf-e4X" secondAttribute="centerY" id="4ey-mT-Lbg"/>
                             <constraint firstItem="EjU-hz-p6G" firstAttribute="centerY" secondItem="f6y-xw-AQe" secondAttribute="centerY" id="539-tk-GHz"/>
+                            <constraint firstItem="1je-62-IX8" firstAttribute="width" secondItem="jJH-MA-mLy" secondAttribute="width" id="5X5-Xp-ND4"/>
                             <constraint firstItem="XW8-zr-hed" firstAttribute="top" secondItem="Dna-cf-e4X" secondAttribute="bottom" id="5Yn-1j-2KN"/>
                             <constraint firstItem="U6F-0X-RaD" firstAttribute="centerY" secondItem="7lY-tY-A1C" secondAttribute="centerY" id="5bF-ps-m5T"/>
                             <constraint firstItem="vdl-EF-oZr" firstAttribute="top" secondItem="mXv-Nj-aeI" secondAttribute="top" constant="5" id="8L5-up-2gK"/>
@@ -1476,7 +1484,9 @@
                             <constraint firstItem="OUB-30-Wdd" firstAttribute="centerY" secondItem="vdl-EF-oZr" secondAttribute="centerY" id="ph2-cb-mfR"/>
                             <constraint firstItem="EjU-hz-p6G" firstAttribute="width" secondItem="f6y-xw-AQe" secondAttribute="width" id="qsc-6y-JJR"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="XW8-zr-hed" secondAttribute="trailing" id="sVf-m8-gbD"/>
+                            <constraint firstItem="1je-62-IX8" firstAttribute="centerY" secondItem="jJH-MA-mLy" secondAttribute="centerY" id="tDI-sy-qOI"/>
                             <constraint firstItem="AUB-RB-VQP" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="tYM-FH-Ux9"/>
+                            <constraint firstItem="1je-62-IX8" firstAttribute="centerX" secondItem="jJH-MA-mLy" secondAttribute="centerX" id="tkB-rY-QiZ"/>
                             <constraint firstItem="KO3-TM-Gxj" firstAttribute="centerY" secondItem="STj-kt-I4b" secondAttribute="centerY" id="x6S-M4-Tlw"/>
                             <constraint firstItem="daE-wV-wrl" firstAttribute="top" secondItem="mOa-iB-dyb" secondAttribute="bottom" constant="4" id="yBt-Lk-TPL"/>
                         </constraints>
@@ -1487,6 +1497,7 @@
                         <outlet property="_previewWrapperView" destination="9rc-7d-jwX" id="Ucc-N3-eNJ"/>
                         <outlet property="deleteButton" destination="i6W-Lo-VYt" id="zHM-jC-61M"/>
                         <outlet property="nextButton" destination="f6y-xw-AQe" id="BBX-ta-v3h"/>
+                        <outlet property="progressV" destination="1je-62-IX8" id="dxa-5T-h5s"/>
                         <outlet property="proportionImage" destination="STj-kt-I4b" id="SBL-Cf-tIB"/>
                         <outlet property="recordButton" destination="b4H-tk-Ptj" id="SvL-Dq-GWO"/>
                         <outlet property="recordButtonWidthConstraint" destination="JGf-Ra-wQ5" id="6Of-Jd-Eq0"/>
