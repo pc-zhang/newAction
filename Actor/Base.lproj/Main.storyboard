@@ -1393,12 +1393,12 @@
                                 <rect key="frame" x="0.0" y="589.33333333333337" width="375" height="0.66666666666662877"/>
                                 <color key="backgroundColor" red="0.074509803921568626" green="0.078431372549019607" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJH-MA-mLy">
+                            <progressView hidden="YES" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJH-MA-mLy">
                                 <rect key="frame" x="31" y="576" width="313" height="2"/>
                                 <color key="progressTintColor" red="1" green="0.32941176470588235" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </progressView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1je-62-IX8" customClass="RecorderProgressView" customModule="Actor" customModuleProvider="target">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1je-62-IX8" customClass="RecorderProgressView" customModule="Actor" customModuleProvider="target">
                                 <rect key="frame" x="31" y="574.66666666666663" width="313" height="5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -1473,7 +1473,7 @@
                             <constraint firstItem="Ggv-O6-lQI" firstAttribute="top" secondItem="mXv-Nj-aeI" secondAttribute="top" constant="5" id="ZVp-9M-DCN"/>
                             <constraint firstItem="7lY-tY-A1C" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="bLP-d0-jXk"/>
                             <constraint firstItem="Ggv-O6-lQI" firstAttribute="leading" secondItem="mXv-Nj-aeI" secondAttribute="leading" constant="20" id="ca3-5L-yXj"/>
-                            <constraint firstItem="QHs-uY-2hT" firstAttribute="leading" secondItem="mXv-Nj-aeI" secondAttribute="leading" constant="49" id="evF-sr-c4v"/>
+                            <constraint firstItem="QHs-uY-2hT" firstAttribute="leading" secondItem="jJH-MA-mLy" secondAttribute="leading" constant="18" id="evF-sr-c4v"/>
                             <constraint firstItem="yUa-QS-mz5" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="f0b-Ms-siw"/>
                             <constraint firstItem="STj-kt-I4b" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="fvU-r6-Dji"/>
                             <constraint firstItem="Dna-cf-e4X" firstAttribute="leading" secondItem="mXv-Nj-aeI" secondAttribute="leading" id="g1K-JU-g5y"/>
@@ -1503,7 +1503,9 @@
                         <outlet property="recordButtonWidthConstraint" destination="JGf-Ra-wQ5" id="6Of-Jd-Eq0"/>
                         <outlet property="recordProgressBar" destination="QHs-uY-2hT" id="d9b-2b-oAI"/>
                         <outlet property="recordProgressView" destination="jJH-MA-mLy" id="JzV-sG-Zq2"/>
+                        <outlet property="recordProgressWhiteBarPosition" destination="evF-sr-c4v" id="zY8-tw-Kva"/>
                         <outlet property="recordRedCircle" destination="Kw1-iH-5mM" id="fI1-ng-xT8"/>
+                        <outlet property="recordTimeGrayWrapper" destination="XnF-71-aN3" id="Xzl-Af-MxT"/>
                         <outlet property="recordWhiteCircle" destination="gJc-Mf-3xZ" id="lGZ-cl-Igd"/>
                         <outlet property="recordWhiteCircleInner" destination="GIP-in-Km0" id="cld-y5-prD"/>
                         <outlet property="recordedSecondsLabel" destination="kNI-XJ-gBm" id="uwd-Ga-znP"/>

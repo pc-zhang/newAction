@@ -14,6 +14,21 @@ import MobileCoreServices
 
 class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderProgressViewDelegate {
     
+    func progress(_ recorderProgressView: RecorderProgressView) -> CGFloat {
+        return CGFloat(recordProgressView!.progress)
+    }
+    
+    
+    @IBOutlet weak var recordTimeGrayWrapper: UIView! {
+        didSet {
+            recordTimeGrayWrapper.layer.cornerRadius = 6
+        }
+    }
+    
+    
+    @IBOutlet weak var recordProgressWhiteBarPosition: NSLayoutConstraint!
+    
+    
     func getPositions(_ recorderProgressView: RecorderProgressView) -> [CGFloat] {
         
         var positions: [CGFloat] = []
@@ -30,7 +45,11 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     
     
     
-    @IBOutlet weak var progressV: RecorderProgressView!
+    @IBOutlet weak var progressV: RecorderProgressView! {
+        didSet {
+            progressV.layer.cornerRadius = 2.5
+        }
+    }
     
     @IBAction func changeProportion(_ sender: Any) {
         if topMaskViewHeight.multiplier != 1/8.0 {
@@ -63,14 +82,18 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             recordedSecondsWrapper.isHidden = true
             recordedSecondsLabel.isHidden = true
             recordProgressBar.isHidden = true
+            progressV.isHidden = true
             
             tabBarPositionY.constant = 15
+            
+            
         } else {
             deleteButton.isHidden = false
-            recordProgressView.isHidden = false
+            recordProgressView.isHidden = true
             recordedSecondsWrapper.isHidden = false
             recordedSecondsLabel.isHidden = false
             recordProgressBar.isHidden = false
+            progressV.isHidden = false
             
             tabBarPositionY.constant = -100
         }
@@ -82,7 +105,11 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
         }
     }
     
-    @IBOutlet weak var recordProgressBar: UIView!
+    @IBOutlet weak var recordProgressBar: UIView! {
+        didSet {
+            recordProgressBar.layer.cornerRadius = 1
+        }
+    }
     
     @IBOutlet weak var recordProgressView: UIProgressView!
     @IBOutlet weak var deleteButton: UIButton!
@@ -176,6 +203,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        recordProgressWhiteBarPosition.constant = recordProgressView.bounds.width / 12.0
+        
         progressV.delegate = self
         
         _capturePipeline = RosyWriterCapturePipeline(delegate: self, callbackQueue: DispatchQueue.main)
@@ -250,6 +279,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
         recordTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true ) { (timer) in
             self.recordProgressView.progress += 1 / 600.0
             self.recordedSecondsLabel.text = String(format: "%.1fs", self.recordProgressView.progress * 60)
+            self.progressV.setNeedsDisplay()
         }
     }
     
