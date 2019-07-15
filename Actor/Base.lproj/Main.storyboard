@@ -974,7 +974,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vXC-eW-Tcm">
                                         <rect key="frame" x="20" y="67" width="59" height="59"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Itn-TC-kmS">
+                                            <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Itn-TC-kmS">
                                                 <rect key="frame" x="2" y="2" width="55" height="55"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="55" id="Gad-9X-1Dg"/>
@@ -983,12 +983,16 @@
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="59" id="26b-nz-miH"/>
                                             <constraint firstItem="Itn-TC-kmS" firstAttribute="centerX" secondItem="vXC-eW-Tcm" secondAttribute="centerX" id="U6V-fe-k2t"/>
                                             <constraint firstAttribute="width" constant="59" id="jSG-6c-rbd"/>
                                             <constraint firstItem="Itn-TC-kmS" firstAttribute="centerY" secondItem="vXC-eW-Tcm" secondAttribute="centerY" id="nFw-qw-g5v"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="QB0-20-QG8" appends="YES" id="qGl-PR-iGn"/>
+                                        </connections>
                                     </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="release_video_tailor_left" translatesAutoresizingMaskIntoConstraints="NO" id="dfN-xP-RhK">
                                         <rect key="frame" x="-305" y="64.666666666666629" width="10" height="64"/>
@@ -1024,7 +1028,7 @@
                                     <constraint firstItem="73W-sD-tjX" firstAttribute="top" secondItem="ytX-ri-g9l" secondAttribute="top" constant="42" id="3b6-id-a54"/>
                                     <constraint firstAttribute="height" constant="210" id="3mA-kE-dp0"/>
                                     <constraint firstItem="dfN-xP-RhK" firstAttribute="centerY" secondItem="vBY-2z-IOv" secondAttribute="centerY" id="462-JF-Xs1"/>
-                                    <constraint firstItem="vXC-eW-Tcm" firstAttribute="leading" secondItem="vBY-2z-IOv" secondAttribute="trailing" constant="20" id="4CV-is-EkL"/>
+                                    <constraint firstItem="vXC-eW-Tcm" firstAttribute="leading" secondItem="qfF-Kb-tzE" secondAttribute="leading" constant="20" id="4CV-is-EkL"/>
                                     <constraint firstItem="Wbv-NW-dg9" firstAttribute="centerY" secondItem="nRh-40-QNn" secondAttribute="centerY" constant="-2" id="55P-zA-hVg"/>
                                     <constraint firstItem="Wjj-Cj-yAb" firstAttribute="top" secondItem="Nty-RL-cCT" secondAttribute="bottom" constant="4" id="6dI-IL-MBS"/>
                                     <constraint firstItem="X2o-b6-WQa" firstAttribute="top" secondItem="uoZ-MC-Y56" secondAttribute="bottom" constant="4" id="ELL-9I-VsJ"/>
@@ -1124,6 +1128,7 @@
                         <outlet property="thumbnailCollectionV" destination="qfF-Kb-tzE" id="h3Y-Dx-u7w"/>
                         <outlet property="thumbnailDaggableImageViewWrapper" destination="vXC-eW-Tcm" id="eWS-KD-E2a"/>
                         <outlet property="thumbnailDot" destination="jdB-Jb-PjK" id="WKa-P5-2Uv"/>
+                        <outlet property="thumbnailDraggableImagePositionX" destination="4CV-is-EkL" id="6xc-yH-5Zw"/>
                         <outlet property="thumbnailDraggableImageV" destination="Itn-TC-kmS" id="z7M-Xg-HK4"/>
                         <outlet property="thumbnailLabel" destination="hSG-u6-iGL" id="bbz-Kq-4zE"/>
                     </connections>
@@ -1134,6 +1139,11 @@
                         <action selector="tapPlayView:" destination="pFL-Ij-qko" id="gPm-sb-amN"/>
                     </connections>
                 </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="QB0-20-QG8">
+                    <connections>
+                        <action selector="dragThumbnail:" destination="pFL-Ij-qko" id="Poj-da-qBd"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-3242" y="1470"/>
         </scene>

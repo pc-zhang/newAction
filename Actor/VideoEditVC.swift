@@ -14,6 +14,37 @@ import MobileCoreServices
 
 class VideoEditVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
+    @IBOutlet weak var thumbnailDraggableImagePositionX: NSLayoutConstraint!
+    
+    @IBAction func dragThumbnail(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: self.view)
+        thumbnailDraggableImagePositionX.constant += translation.x
+        if thumbnailDraggableImagePositionX.constant < 20 {
+            thumbnailDraggableImagePositionX.constant = 20
+        } else if thumbnailDraggableImagePositionX.constant > UIScreen.main.bounds.width - 20 - 59 {
+            thumbnailDraggableImagePositionX.constant = UIScreen.main.bounds.width - 20 - 59
+        }
+        recognizer.setTranslation(.zero, in: self.view)
+        
+        let position = Double(thumbnailDraggableImagePositionX.constant - 20) / Double(thumbnailCollectionV.bounds.width - thumbnailCollectionV.contentInset.left - thumbnailCollectionV.contentInset.right) * composition!.duration.seconds
+        let seekTime = CMTime(seconds: position , preferredTimescale: 60)
+        player.pause()
+        player.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        
+        let imageGenerator = AVAssetImageGenerator.init(asset: composition!)
+        imageGenerator.videoComposition = videoComposition!
+        imageGenerator.maximumSize = CGSize(width: thumbnailCollectionV.bounds.height, height: thumbnailCollectionV.bounds.height)
+        imageGenerator.appliesPreferredTrackTransform = true
+        
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [seekTime as NSValue]) { (requestedTime, image, actualTime, result, error) in
+            if let image = image {
+                DispatchQueue.main.async {
+                    self.thumbnailDraggableImageV.image = UIImage(cgImage: image)
+                }
+            }
+        }
+    }
+    
     @IBOutlet weak var thumbnailDraggableImageV: UIImageView! {
         didSet {
             thumbnailDraggableImageV.layer.cornerRadius = 1
