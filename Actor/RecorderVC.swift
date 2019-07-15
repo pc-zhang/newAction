@@ -14,6 +14,14 @@ import MobileCoreServices
 
 class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
     
+    @IBOutlet weak var tabBarPositionY: NSLayoutConstraint!
+    
+    @IBOutlet weak var redDot: UIView! {
+        didSet {
+            redDot.layer.cornerRadius = redDot.bounds.width / 2.0
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
         if !_recording && (composition?.tracks(withMediaType: .video).first?.timeRange.duration == .zero || composition!.tracks(withMediaType: .video).first!.timeRange.duration.isValid == false) {
             deleteButton.isHidden = true
@@ -21,12 +29,16 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate {
             recordedSecondsWrapper.isHidden = true
             recordedSecondsLabel.isHidden = true
             recordProgressBar.isHidden = true
+            
+            tabBarPositionY.constant = 15
         } else {
             deleteButton.isHidden = false
             recordProgressView.isHidden = false
             recordedSecondsWrapper.isHidden = false
             recordedSecondsLabel.isHidden = false
             recordProgressBar.isHidden = false
+            
+            tabBarPositionY.constant = -100
         }
     }
     

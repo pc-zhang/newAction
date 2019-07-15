@@ -1241,21 +1241,21 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="视频" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOa-iB-dyb">
-                                <rect key="frame" x="297" y="741" width="32" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="FLf-WN-KBi"/>
-                                    <constraint firstAttribute="width" constant="32" id="xAx-tj-iiN"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="16"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999998807907104" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="相机" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7lY-tY-A1C">
                                 <rect key="frame" x="171.66666666666666" y="741" width="32" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="KHs-fp-9rl"/>
                                     <constraint firstAttribute="width" constant="32" id="eS8-aq-KQM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="视频" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOa-iB-dyb">
+                                <rect key="frame" x="297" y="741" width="32" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="FLf-WN-KBi"/>
+                                    <constraint firstAttribute="width" constant="32" id="xAx-tj-iiN"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1319,7 +1319,7 @@
                                         <rect key="frame" x="267.66666666666669" y="61.666666666666629" width="52" height="28"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12.0s" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kNI-XJ-gBm">
-                                                <rect key="frame" x="9" y="4" width="33.666666666666664" height="19.666666666666668"/>
+                                                <rect key="frame" x="9" y="4.3333333333333712" width="33.666666666666664" height="19.666666666666668"/>
                                                 <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -1353,7 +1353,7 @@
                                     <constraint firstItem="XnF-71-aN3" firstAttribute="centerY" secondItem="gJc-Mf-3xZ" secondAttribute="centerY" id="AME-69-K0K"/>
                                     <constraint firstItem="gJc-Mf-3xZ" firstAttribute="centerX" secondItem="XW8-zr-hed" secondAttribute="centerX" id="Fta-RS-sO0"/>
                                     <constraint firstItem="XnF-71-aN3" firstAttribute="leading" secondItem="gJc-Mf-3xZ" secondAttribute="trailing" constant="40" id="Ohk-td-ttn"/>
-                                    <constraint firstItem="gJc-Mf-3xZ" firstAttribute="centerY" secondItem="XW8-zr-hed" secondAttribute="centerY" id="vJe-RK-hrQ"/>
+                                    <constraint firstItem="gJc-Mf-3xZ" firstAttribute="top" secondItem="XW8-zr-hed" secondAttribute="top" constant="35.670000000000002" id="Zb3-vq-rGo"/>
                                     <constraint firstItem="gJc-Mf-3xZ" firstAttribute="leading" secondItem="i6W-Lo-VYt" secondAttribute="trailing" constant="46.5" id="vnf-N2-ySy"/>
                                 </constraints>
                             </view>
@@ -1399,13 +1399,13 @@
                         <color key="backgroundColor" red="0.074509803920000006" green="0.078431372550000003" blue="0.078431372550000003" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="vdl-EF-oZr" secondAttribute="trailing" constant="20" id="1ZS-F0-8n4"/>
-                            <constraint firstItem="mXv-Nj-aeI" firstAttribute="bottom" secondItem="U6F-0X-RaD" secondAttribute="bottom" constant="15" id="2ox-tK-gyy"/>
                             <constraint firstItem="9rc-7d-jwX" firstAttribute="centerY" secondItem="Dna-cf-e4X" secondAttribute="centerY" id="4ey-mT-Lbg"/>
                             <constraint firstItem="EjU-hz-p6G" firstAttribute="centerY" secondItem="f6y-xw-AQe" secondAttribute="centerY" id="539-tk-GHz"/>
                             <constraint firstItem="XW8-zr-hed" firstAttribute="top" secondItem="Dna-cf-e4X" secondAttribute="bottom" id="5Yn-1j-2KN"/>
+                            <constraint firstItem="U6F-0X-RaD" firstAttribute="centerY" secondItem="7lY-tY-A1C" secondAttribute="centerY" id="5bF-ps-m5T"/>
                             <constraint firstItem="vdl-EF-oZr" firstAttribute="top" secondItem="mXv-Nj-aeI" secondAttribute="top" constant="5" id="8L5-up-2gK"/>
                             <constraint firstItem="9rc-7d-jwX" firstAttribute="width" secondItem="Dna-cf-e4X" secondAttribute="width" id="A1Y-7S-BgV"/>
-                            <constraint firstItem="daE-wV-wrl" firstAttribute="top" secondItem="mOa-iB-dyb" secondAttribute="bottom" constant="4" id="Btg-Bl-Bzi"/>
+                            <constraint firstItem="mOa-iB-dyb" firstAttribute="centerY" secondItem="7lY-tY-A1C" secondAttribute="centerY" id="Agg-LF-mFc"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="mOa-iB-dyb" secondAttribute="trailing" constant="46" id="Da0-DX-Yet"/>
                             <constraint firstItem="QHs-uY-2hT" firstAttribute="centerY" secondItem="jJH-MA-mLy" secondAttribute="centerY" id="IC8-Ra-fIs"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="f6y-xw-AQe" secondAttribute="trailing" constant="16" id="KeA-Ig-kOz"/>
@@ -1429,10 +1429,10 @@
                             <constraint firstItem="jJH-MA-mLy" firstAttribute="leading" secondItem="FKQ-hn-Gut" secondAttribute="leadingMargin" constant="15" id="hpB-XG-ocd"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="bottom" secondItem="7lY-tY-A1C" secondAttribute="bottom" constant="15" id="hvi-jh-glV"/>
                             <constraint firstItem="XW8-zr-hed" firstAttribute="top" secondItem="jJH-MA-mLy" secondAttribute="bottom" constant="12" id="lb6-Vs-u8R"/>
-                            <constraint firstItem="mXv-Nj-aeI" firstAttribute="bottom" secondItem="mOa-iB-dyb" secondAttribute="bottom" constant="15" id="lsM-27-0ov"/>
                             <constraint firstItem="Dna-cf-e4X" firstAttribute="top" secondItem="f6y-xw-AQe" secondAttribute="bottom" constant="15" id="ocZ-vT-d7K"/>
                             <constraint firstItem="EjU-hz-p6G" firstAttribute="width" secondItem="f6y-xw-AQe" secondAttribute="width" id="qsc-6y-JJR"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="XW8-zr-hed" secondAttribute="trailing" id="sVf-m8-gbD"/>
+                            <constraint firstItem="daE-wV-wrl" firstAttribute="top" secondItem="mOa-iB-dyb" secondAttribute="bottom" constant="4" id="yBt-Lk-TPL"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="mXv-Nj-aeI"/>
                     </view>
@@ -1450,6 +1450,8 @@
                         <outlet property="recordWhiteCircleInner" destination="GIP-in-Km0" id="cld-y5-prD"/>
                         <outlet property="recordedSecondsLabel" destination="kNI-XJ-gBm" id="uwd-Ga-znP"/>
                         <outlet property="recordedSecondsWrapper" destination="XnF-71-aN3" id="vt5-OI-ihQ"/>
+                        <outlet property="redDot" destination="daE-wV-wrl" id="R1r-Ma-Zq6"/>
+                        <outlet property="tabBarPositionY" destination="hvi-jh-glV" id="CJd-ur-uI8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lGm-3M-9kH" userLabel="First Responder" sceneMemberID="firstResponder"/>
