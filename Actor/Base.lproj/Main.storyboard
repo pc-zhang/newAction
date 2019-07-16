@@ -1394,19 +1394,19 @@
                                 <color key="backgroundColor" red="0.074509803921568626" green="0.078431372549019607" blue="0.078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <progressView hidden="YES" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jJH-MA-mLy">
-                                <rect key="frame" x="31" y="576" width="313" height="2"/>
+                                <rect key="frame" x="15" y="576" width="345" height="2"/>
                                 <color key="progressTintColor" red="1" green="0.32941176470588235" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </progressView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1je-62-IX8" customClass="RecorderProgressView" customModule="Actor" customModuleProvider="target">
-                                <rect key="frame" x="31" y="574.66666666666663" width="313" height="5"/>
+                                <rect key="frame" x="15" y="574.66666666666663" width="345" height="5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="5" id="shn-eb-M8P"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QHs-uY-2hT">
-                                <rect key="frame" x="49" y="572.66666666666663" width="2" height="9"/>
+                                <rect key="frame" x="33" y="572.66666666666663" width="2" height="9"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="9" id="50k-tg-Jqe"/>
@@ -1456,7 +1456,7 @@
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="trailing" secondItem="f6y-xw-AQe" secondAttribute="trailing" constant="-100" id="KeA-Ig-kOz"/>
                             <constraint firstItem="yUa-QS-mz5" firstAttribute="height" secondItem="AUB-RB-VQP" secondAttribute="height" id="L3j-PU-efY"/>
                             <constraint firstItem="daE-wV-wrl" firstAttribute="centerX" secondItem="mOa-iB-dyb" secondAttribute="centerX" id="L51-S0-Zda"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="jJH-MA-mLy" secondAttribute="trailing" constant="15" id="L76-On-5f0"/>
+                            <constraint firstAttribute="trailing" secondItem="jJH-MA-mLy" secondAttribute="trailing" constant="15" id="L76-On-5f0"/>
                             <constraint firstItem="STj-kt-I4b" firstAttribute="top" secondItem="mXv-Nj-aeI" secondAttribute="top" constant="5" id="MCX-ei-5gl"/>
                             <constraint firstItem="7lY-tY-A1C" firstAttribute="top" secondItem="XW8-zr-hed" secondAttribute="bottom" id="MvK-jY-olt"/>
                             <constraint firstItem="XW8-zr-hed" firstAttribute="leading" secondItem="mXv-Nj-aeI" secondAttribute="leading" id="OWf-xa-eR4"/>
@@ -1477,7 +1477,7 @@
                             <constraint firstItem="yUa-QS-mz5" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="f0b-Ms-siw"/>
                             <constraint firstItem="STj-kt-I4b" firstAttribute="centerX" secondItem="FKQ-hn-Gut" secondAttribute="centerX" id="fvU-r6-Dji"/>
                             <constraint firstItem="Dna-cf-e4X" firstAttribute="leading" secondItem="mXv-Nj-aeI" secondAttribute="leading" id="g1K-JU-g5y"/>
-                            <constraint firstItem="jJH-MA-mLy" firstAttribute="leading" secondItem="FKQ-hn-Gut" secondAttribute="leadingMargin" constant="15" id="hpB-XG-ocd"/>
+                            <constraint firstItem="jJH-MA-mLy" firstAttribute="leading" secondItem="FKQ-hn-Gut" secondAttribute="leading" constant="15" id="hpB-XG-ocd"/>
                             <constraint firstItem="mXv-Nj-aeI" firstAttribute="bottom" secondItem="7lY-tY-A1C" secondAttribute="bottom" constant="15" id="hvi-jh-glV"/>
                             <constraint firstItem="XW8-zr-hed" firstAttribute="top" secondItem="jJH-MA-mLy" secondAttribute="bottom" constant="12" id="lb6-Vs-u8R"/>
                             <constraint firstItem="Dna-cf-e4X" firstAttribute="top" secondItem="f6y-xw-AQe" secondAttribute="bottom" constant="15" id="ocZ-vT-d7K"/>
@@ -1497,7 +1497,8 @@
                         <outlet property="_previewWrapperView" destination="9rc-7d-jwX" id="Ucc-N3-eNJ"/>
                         <outlet property="converCameraPosition" destination="1ZS-F0-8n4" id="nap-RF-pEw"/>
                         <outlet property="deleteButton" destination="i6W-Lo-VYt" id="zHM-jC-61M"/>
-                        <outlet property="nextButton" destination="f6y-xw-AQe" id="BBX-ta-v3h"/>
+                        <outlet property="nextButton" destination="EjU-hz-p6G" id="Gb0-Ao-dPh"/>
+                        <outlet property="nextButtonGreenBlock" destination="f6y-xw-AQe" id="BBX-ta-v3h"/>
                         <outlet property="nextButtonPosition" destination="KeA-Ig-kOz" id="dIo-IZ-J2U"/>
                         <outlet property="progressV" destination="1je-62-IX8" id="dxa-5T-h5s"/>
                         <outlet property="proportionImage" destination="STj-kt-I4b" id="SBL-Cf-tIB"/>

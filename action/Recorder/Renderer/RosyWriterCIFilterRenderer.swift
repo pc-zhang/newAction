@@ -78,12 +78,12 @@ class RosyWriterCIFilterRenderer: NSObject, RosyWriterRenderer {
     func copyRenderedPixelBuffer(_ pixelBuffer: CVPixelBuffer!) -> CVPixelBuffer! {
         var renderedOutputPixelBuffer: CVPixelBuffer? = nil
         
-        let sourceImage = CIImage(cvPixelBuffer: pixelBuffer, options: nil)
-        
-        _beautifyFilter.setValue(sourceImage, forKey: kCIInputImageKey)
-        let beautifiedImage = _beautifyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
-        _rosyFilter.setValue(beautifiedImage, forKey: kCIInputImageKey)
-        let filteredImage = _rosyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
+        let filteredImage = CIImage(cvPixelBuffer: pixelBuffer, options: nil)
+//
+//        _beautifyFilter.setValue(sourceImage, forKey: kCIInputImageKey)
+//        let beautifiedImage = _beautifyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
+//        _rosyFilter.setValue(beautifiedImage, forKey: kCIInputImageKey)
+//        let filteredImage = _rosyFilter.value(forKey: kCIOutputImageKey) as! CIImage?
         
         let err = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _bufferPool, &renderedOutputPixelBuffer)
         if err != 0 {
@@ -92,7 +92,7 @@ class RosyWriterCIFilterRenderer: NSObject, RosyWriterRenderer {
             
             // render the filtered image out to a pixel buffer (no locking needed as CIContext's render method will do that)
             if filteredImage != nil {
-            _ciContext.render(filteredImage!, to: renderedOutputPixelBuffer!, bounds: filteredImage!.extent, colorSpace: _rgbColorSpace)
+            _ciContext.render(filteredImage, to: renderedOutputPixelBuffer!, bounds: filteredImage.extent, colorSpace: _rgbColorSpace)
             }
         }
         

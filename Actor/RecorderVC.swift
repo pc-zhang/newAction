@@ -59,11 +59,21 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     
     @IBAction func changeProportion(_ sender: Any) {
         if topMaskViewHeight.multiplier != 1/8.0 {
-            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/8.0)
+//            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/8.0)
             proportionImage.image = #imageLiteral(resourceName: "top_proportion_1")
+            
+            UIView.animate(withDuration: 0.3) {
+                self.topMaskViewHeight = self.topMaskViewHeight.setMultiplier(multiplier: 1/8.0)
+                self.view.layoutIfNeeded()
+            }
         } else {
-            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/800.0)
+//            topMaskViewHeight = topMaskViewHeight.setMultiplier(multiplier: 1/800.0)
             proportionImage.image = #imageLiteral(resourceName: "top_proportion_4")
+            
+            UIView.animate(withDuration: 0.3) {
+                self.topMaskViewHeight = self.topMaskViewHeight.setMultiplier(multiplier: 1/800.0)
+                self.view.layoutIfNeeded()
+            }
         }
     }
     
@@ -90,32 +100,46 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             recordProgressBar.isHidden = true
             progressV.isHidden = true
             
-            tabBarPositionY.constant = 15
+//            tabBarPositionY.constant = 15
             
             converCameraPosition.constant = 20
             proportionImage.isHidden = false
             nextButtonPosition.constant = -100
+            
+            UIView.animate(withDuration: 0.3) {
+                self.proportionImage.alpha = 1
+                self.tabBarPositionY.constant = 15
+                self.view.layoutIfNeeded()
+            }
         } else {
-            deleteButton.isHidden = false
+            deleteButton.isHidden = _recording || false
             recordProgressView.isHidden = true
             recordedSecondsWrapper.isHidden = false
             recordedSecondsLabel.isHidden = false
             recordProgressBar.isHidden = false
             progressV.isHidden = false
             
-            tabBarPositionY.constant = -100
+//            tabBarPositionY.constant = -100
             
             converCameraPosition.constant = 174
             proportionImage.isHidden = true
             nextButtonPosition.constant = 16
+            
+            UIView.animate(withDuration: 0.3) {
+                self.proportionImage.alpha = 0
+                self.tabBarPositionY.constant = -100
+                self.view.layoutIfNeeded()
+            }
         }
     }
     
-    @IBOutlet weak var nextButton: UIButton! {
+    @IBOutlet weak var nextButtonGreenBlock: UIButton! {
         didSet {
-            nextButton.layer.cornerRadius = 14
+            nextButtonGreenBlock.layer.cornerRadius = 14
         }
     }
+    
+    @IBOutlet weak var nextButton: UIButton!
     
     @IBOutlet weak var recordProgressBar: UIView! {
         didSet {
@@ -165,7 +189,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             _recording = true
         }
         
-        self.viewDidLayoutSubviews()
+        view.layoutIfNeeded()
     }
     
     private var _backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier(rawValue: 0)
@@ -182,6 +206,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
         
         _capturePipeline?.stopRecording() // a no-op if we aren't recording
         
+        _capturePipeline.stopRunning()
+        
         // We reset the OpenGLPixelBufferView to ensure all resources have been cleared when going to the background.
         _previewView?.reset()
     }
@@ -189,6 +215,8 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     @objc func applicationWillEnterForeground() {
         _allowedToUseGPU = true
         _capturePipeline?.renderingEnabled = true
+        
+        _capturePipeline.startRunning(0)
     }
     
     //MARK: - View lifecycle
@@ -274,6 +302,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     // Recording
     func capturePipelineRecordingDidStart(_ capturePipeline: RosyWriterCapturePipeline) {
         recordButton.isEnabled = true
+        nextButton.isEnabled = false
         
         UIView.animate(withDuration: 0.3) {
             self.recordButtonWidthConstraint.constant = 30
@@ -302,6 +331,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
         UIView.animate(withDuration: 0.3) {
             self.recordButtonWidthConstraint.constant = 68
             self.recordRedCircle.layer.cornerRadius = 34
+            self.deleteButton.isHidden = false
             self.view.layoutIfNeeded()
         }
         
@@ -444,10 +474,14 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     private func recordingStopped() {
         _recording = false
         recordButton.isEnabled = true
+        nextButton.isEnabled = true
         UIApplication.shared.isIdleTimerDisabled = false
         
         UIApplication.shared.endBackgroundTask(_backgroundRecordingID)
         _backgroundRecordingID = UIBackgroundTaskIdentifier.invalid
+        
+//        view.layoutIfNeeded()
+        
     }
     
     private func setupPreviewView() {
