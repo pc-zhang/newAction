@@ -1163,7 +1163,7 @@ class ActionVC: UIViewController, RosyWriterCapturePipelineDelegate, UICollectio
     
     override func viewDidLayoutSubviews() {
         if isRecording {
-            _capturePipeline.startRunning(actionSegment.selectedSegmentIndex)
+            _capturePipeline.startRunning()
             if let width = videoComposition?.renderSize.width, let height = videoComposition?.renderSize.height {
                 
                 if _previewView != nil {

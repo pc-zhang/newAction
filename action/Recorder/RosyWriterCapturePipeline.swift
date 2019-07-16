@@ -103,8 +103,6 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     private var _sessionQueue: DispatchQueue
     private var _videoDataOutputQueue: DispatchQueue
     
-    private var selectedSegmentIndex: Int = 0
-    
     var audioChannels: [AVCaptureAudioChannel]? {
         return _audioConnection?.audioChannels
     }
@@ -168,9 +166,8 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
     //MARK: Capture Session
     // These methods are synchronous
     
-    func startRunning(_ selectedSegmentIndex: Int) {
+    func startRunning() {
         _sessionQueue.sync {
-            self.selectedSegmentIndex = selectedSegmentIndex
             self.setupCaptureSession()
             
             if let captureSession = self._captureSession {
@@ -212,7 +209,6 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             self.applicationWillEnterForeground()
         }
         
-        if selectedSegmentIndex == 1 {
             /* Audio */
             let audioDevice = AVCaptureDevice.default(for: .audio)!
             let audioIn = try! AVCaptureDeviceInput(device: audioDevice)
@@ -232,7 +228,8 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             
             // Get the recommended compression settings after configuring the session/device.
             _audioCompressionSettings = audioOut.recommendedAudioSettingsForAssetWriter(writingTo: AVFileType.mov) as! [String: Any]
-        } else if selectedSegmentIndex == 0 {
+
+        
             /* Video */
             guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
                 fatalError("AVCaptureDevice of type AVMediaTypeVideo unavailable!")
@@ -301,8 +298,7 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
             _videoCompressionSettings = videoOut.recommendedVideoSettingsForAssetWriter(writingTo: AVFileType.mov)!
             
             _videoBufferOrientation = _videoConnection!.videoOrientation
-        }
-        
+    
         return
     }
     
@@ -577,13 +573,13 @@ class RosyWriterCapturePipeline: NSObject, AVCaptureAudioDataOutputSampleBufferD
 
         let recorder = MovieRecorder(url: _recordingURL, delegate: self, callbackQueue: callbackQueue)
         
-        if selectedSegmentIndex == 1 {
-            recorder.addAudioTrackWithSourceFormatDescription(self.outputAudioFormatDescription!, settings: _audioCompressionSettings)
-        } else if selectedSegmentIndex == 0 {
-            // Front camera recording shouldn't be mirrored
+
+        recorder.addAudioTrackWithSourceFormatDescription(self.outputAudioFormatDescription!, settings: _audioCompressionSettings)
+
+        // Front camera recording shouldn't be mirrored
             let videoTransform = self.transformFromVideoBufferOrientationToOrientation(self.recordingOrientation, withAutoMirroring: true)
         recorder.addVideoTrackWithSourceFormatDescription(self.outputVideoFormatDescription!, transform: videoTransform, settings: _videoCompressionSettings)
-        }
+
         
         _recorder = recorder
         

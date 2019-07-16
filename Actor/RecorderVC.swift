@@ -216,7 +216,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
         _allowedToUseGPU = true
         _capturePipeline?.renderingEnabled = true
         
-        _capturePipeline.startRunning(0)
+        _capturePipeline.startRunning()
     }
     
     //MARK: - View lifecycle
@@ -224,7 +224,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        _capturePipeline.startRunning(0)
+        _capturePipeline.startRunning()
         
         if _previewView == nil {
             setupPreviewView()
