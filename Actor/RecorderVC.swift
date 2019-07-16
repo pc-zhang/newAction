@@ -321,6 +321,10 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
             self.recordProgressView.progress += 1 / 600.0
             self.recordedSecondsLabel.text = String(format: "%.1fs", self.recordProgressView.progress * 60)
             self.progressV.setNeedsDisplay()
+            
+            if self.recordProgressView.progress >= 1 {
+                self._capturePipeline.stopRecording()
+            }
         }
     }
     
@@ -451,6 +455,10 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
                 self.push()
                 
                 self.progressV.setNeedsDisplay()
+                
+                if self.composition!.duration.seconds > 5 {
+                    self.nextButton.isEnabled = true
+                }
             }
         }
         
@@ -474,7 +482,7 @@ class RecorderVC: UIViewController, RosyWriterCapturePipelineDelegate, RecorderP
     private func recordingStopped() {
         _recording = false
         recordButton.isEnabled = true
-        nextButton.isEnabled = true
+        
         UIApplication.shared.isIdleTimerDisabled = false
         
         UIApplication.shared.endBackgroundTask(_backgroundRecordingID)
